@@ -619,7 +619,7 @@ exports.handler = handler
 exports.deleteUpdate = deleteUpdate
 
 
-const file = global.__filename(require.meta.url, true);
+const file = global.__filename(_filename, true);
 watchFile(file, async () => {
   unwatchFile(file);
   console.log(chalk.redBright('Update \'handler.js\''));
