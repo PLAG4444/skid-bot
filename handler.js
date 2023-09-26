@@ -1,9 +1,11 @@
 // no es literalmente un handler pero maneja los eventos de baileys
 const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins }= require('./lib/fuctions')
 const { makeInMemoryStore, useMultiFileAuthState, DisconnectReason, proto , jidNormalizedUser,WAMessageStubType, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, getAggregateVotesInPollMessage } = require("@whiskeysockets/baileys")
+const gradient = require('gradient-string')
 const store = require('./lib/store.js')
 const fs = require('fs')
 const fetch = require('node-fetch')
+const chalk = require('chalk')
 
 async function handler(chatUpdate) {
 this.msgqueque = this.msgqueque || [];
@@ -313,13 +315,14 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
   const groupName = m.isGroup ? groupMetadata.subject : '' 
   const participants = m.isGroup ? await groupMetadata.participants : '' 
   const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : '' 
+  const pushname = m.pushName || "Sin nombre" 
   const msgs = (message) => { 
   if (message.length >= 10) { 
   return `${message.substr(0, 500)}` 
   } else { 
   return `${message}`}}
  if (m.message) { 
- this.logger.info(chalk.bold.white(`▣────────────···\n│${botname} ${this.user.id == global.numBot2 ? '' : '(jadibot)'}`),  
+ this.logger.info(chalk.bold.white(`\n▣────────────···\n│${botname} ${this.user.id == global.numBot2 ? '' : '(jadibot)'}`),  
  chalk.bold.white('\n│📑TIPO (SMS): ') + chalk.yellowBright(`${type}`),  
  chalk.bold.white('\n│📊USUARIO: ') + chalk.cyanBright(pushname) + ' ➜', gradient.rainbow(m.sender),  
  m.isGroup ? chalk.bold.white('\n│📤GRUPO: ') + chalk.greenBright(groupName) + ' ➜ ' + gradient.rainbow(from) : chalk.bold.greenBright('\n│📥PRIVADO'),  
