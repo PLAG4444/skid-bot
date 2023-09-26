@@ -465,6 +465,18 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
  }
  
   require("./main")(this, m, chatUpdate, store)
+  switch (command) {
+  case 'reset':
+  if (isCreator) return
+  this.reply('reiniciando...')
+  sleep(5000)
+  process.exit()
+  break
+  default:
+  
+  }
+  
+  
   } catch (e) {
   console.log(e)
   }
