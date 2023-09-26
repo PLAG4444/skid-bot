@@ -33,51 +33,62 @@ async function handler(chatUpdate) {
       return
     }
     
-    var budy = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
-    if (m.key.id.startsWith("BAE5")) return  
-    var body = (typeof m.text == 'string' ? m.text : '') 
-        
-        if (global.db.data.chats[m.chat].autoSticker) {  
-          if (/image/.test(mime)) {  
-          reply(mess.wait)  
-          media = await quoted.download()  
-          let encmedia = await this.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author })  
-          await fs.unlinkSync(encmedia)  
-        } else if (/video/.test(mime)) {  
-          if ((quoted.msg || quoted).seconds > 40) return reply('¡Máximo 40 segundos!')  
-          media = await quoted.download()  
-          let encmedia = await this.sendVideoAsSticker(m.chat, media, m, { packname: global.packname, author: goblal.author })  
-          await new Promise((resolve) => setTimeout(resolve, 2000));   
-          await fs.unlinkSync(encmedia)  
-      }}
-      
-    
-
-    if (global.db.data.chats[m.chat].antiFake) {
-     if (m.chat && m.sender.startsWith('1')) return this.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
-    }
-    
-    if (global.db.data.chats[m.chat].antiArabe) {
-      if (m.chat && m.sender.startsWith('212')) return this.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
-        }
-
-    if (global.db.data.chats[m.chat].isBanned && isCmd && !isGroupAdmins) {
-    return
-    }
+  var budy = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
+  if (m.key.id.startsWith("BAE5")) return  
+  var body = (typeof m.text == 'string' ? m.text : '') 
+  const msgs = (message) => { 
+  if (message.length >= 10) { 
+  return `${message.substr(0, 500)}` 
+  } else { 
+  return `${message}`}}
   
+  const isCmd = body.startsWith(prefix)   
+  const from = m.chat 
+  const msg = JSON.parse(JSON.stringify(m, undefined, 2)) 
+  const content = JSON.stringify(m.message) 
+  const type = m.mtype 
+  const arg = body.substring(body.indexOf(' ') + 1) 
+  const command = isCmd ? body.slice(1).trim().split(/ +/).shift().toLocaleLowerCase() : null
+  const args = body.trim().split(/ +/).slice(1) 
+  const q = args.join(" ") 
+  let t = m.messageTimestamp 
+  const pushname = m.pushName || "Sin nombre" 
+  const _isBot = conn.user.jid
+  const userSender = m.key.fromMe ? _isBot : m.isGroup && m.key.participant.includes(":") ? m.key.participant.split(":")[0] + "@s.whatsapp.net" : m.key.remoteJid.includes(":") ? m.key.remoteJid.split(":")[0] + "@s.whatsapp.net" : m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid  
+  const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(userSender) 
+  const itsMe = m.sender == conn.user.id ? true : false 
+  const text = args.join(" ") 
+  const quoted = m.quoted ? m.quoted : m 
+  const sender = m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid 
+  const mime = (quoted.msg || quoted).mimetype || ''  
+  const isMedia = /image|video|sticker|audio/.test(mime)
+  const mentions = []  
 
-  if (global.db.data.chats[m.chat].antilink) {  
-  if (budy.match(`chat.whatsapp.com`)) {  
-  let delet = m.key.participant  
-  let bang = m.key.id  
-  reply(`*「 ANTI LINK 」*\n\n*𝚕𝚒𝚗𝚔 𝚍𝚎𝚝𝚎𝚌𝚝𝚊𝚍𝚘*\n*𝚕𝚘 𝚜𝚒𝚎𝚗𝚝𝚘 𝚙𝚎𝚛𝚘 𝚗𝚘 𝚜𝚎 𝚙𝚎𝚛𝚖𝚒𝚝𝚎𝚗 𝚕𝚒𝚗𝚔𝚜 𝚜𝚎𝚛𝚊𝚜 𝚎𝚕𝚒𝚖𝚒𝚗𝚊𝚍𝚘*`)  
-  if (!isBotAdmins) return reply(`𝚎𝚕 𝚋𝚘𝚝 𝚗𝚎𝚌𝚎𝚜𝚒𝚝𝚊 𝚜𝚎𝚛 𝚊𝚍𝚖𝚒𝚗`)  
-  if (isGroupAdmins) throw '*eres admin -_-*'
-  let gclink = (`https://chat.whatsapp.com/`+await this.groupInviteCode(m.chat))  
-  let isLinkThisGc = new RegExp(gclink, 'i')  
-  let isgclink = isLinkThisGc.test(m.text)  
-  this.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet }})  
-  this.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}}  
+  const groupMetadata = m.isGroup ? await conn.groupMetadata(from) : ''
+  const groupName = m.isGroup ? groupMetadata.subject : '' 
+  const participants = m.isGroup ? await groupMetadata.participants : '' 
+  const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : '' 
+  
+  const isBotAdmins = m.isGroup ? groupAdmins.includes(_isBot) : false  
+  const isGroupAdmins = m.isGroup ? groupAdmins.includes(userSender) : false 
+  const isBaneed = m.isGroup ? blockList.includes(userSender) : false 
+  const isPremium = m.isGroup ? premium.includes(userSender) : false   
+  const who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
+  
+  
+  const isAudio = type == 'audioMessage' // Mensaje de Audio  
+  const isSticker = type == 'stickerMessage' // Mensaje de Sticker  
+  const isContact = type == 'contactMessage' // Mensaje de Contacto  
+  const isLocation = type == 'locationMessage' // Mensaje de Localización   
+  const isQuotedImage = type === 'extendedTextMessage' && content.includes('imageMessage')  
+  const isQuotedVideo = type === 'extendedTextMessage' && content.includes('videoMessage')  
+  const isQuotedAudio = type === 'extendedTextMessage' && content.includes('audioMessage')  
+  const isQuotedSticker = type === 'extendedTextMessage' && content.includes('stickerMessage')  
+  const isQuotedDocument = type === 'extendedTextMessage' && content.includes('documentMessage')  
+  const isQuotedMsg = type === 'extendedTextMessage' && content.includes('Message') // Mensaje citado de cualquier tipo  
+  const isViewOnce = (type === 'viewOnceMessage') // Verifica si el tipo de mensaje es (mensaje de vista única)
+        
+        
   
     if (!this.public && m.key.fromMe) {
     return
@@ -356,24 +367,52 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
 }
 
 
-
-  try {
-  const type = m.mtype 
-  const from = m.chat
-  const groupMetadata = m.isGroup ? await this.groupMetadata(from) : ''
-  const groupName = m.isGroup ? groupMetadata.subject : '' 
-  const participants = m.isGroup ? await groupMetadata.participants : '' 
-  const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : '' 
-  const pushname = m.pushName || "Sin nombre"
-  const quoted = m.quoted ? m.quoted : m 
-  const mime = (quoted.msg || quoted).mimetype || ''  
-  const isMedia = /image|video|sticker|audio/.test(mime) 
-  const msgs = (message) => { 
-  if (message.length >= 10) { 
-  return `${message.substr(0, 500)}` 
-  } else { 
-  return `${message}`}}
   
+  
+  if (global.db.data.chats[m.chat].autoSticker) {  
+          if (/image/.test(mime)) {  
+          reply(mess.wait)  
+          media = await quoted.download()  
+          let encmedia = await this.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author })  
+          await fs.unlinkSync(encmedia)  
+        } else if (/video/.test(mime)) {  
+          if ((quoted.msg || quoted).seconds > 40) return reply('¡Máximo 40 segundos!')  
+          media = await quoted.download()  
+          let encmedia = await this.sendVideoAsSticker(m.chat, media, m, { packname: global.packname, author: goblal.author })  
+          await new Promise((resolve) => setTimeout(resolve, 2000));   
+          await fs.unlinkSync(encmedia)  
+      }}
+      
+    
+
+    if (global.db.data.chats[m.chat].antiFake) {
+     if (m.chat && m.sender.startsWith('1')) return this.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+    }
+    
+    if (global.db.data.chats[m.chat].antiArabe) {
+      if (m.chat && m.sender.startsWith('212')) return this.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+        }
+
+    if (global.db.data.chats[m.chat].isBanned && isCmd && !isGroupAdmins) {
+    return
+    }
+  
+
+  if (global.db.data.chats[m.chat].antilink) {  
+  if (budy.match(`chat.whatsapp.com`)) {  
+  let delet = m.key.participant  
+  let bang = m.key.id  
+  reply(`*「 ANTI LINK 」*\n\n*𝚕𝚒𝚗𝚔 𝚍𝚎𝚝𝚎𝚌𝚝𝚊𝚍𝚘*\n*𝚕𝚘 𝚜𝚒𝚎𝚗𝚝𝚘 𝚙𝚎𝚛𝚘 𝚗𝚘 𝚜𝚎 𝚙𝚎𝚛𝚖𝚒𝚝𝚎𝚗 𝚕𝚒𝚗𝚔𝚜 𝚜𝚎𝚛𝚊𝚜 𝚎𝚕𝚒𝚖𝚒𝚗𝚊𝚍𝚘*`)  
+  if (!isBotAdmins) return reply(`𝚎𝚕 𝚋𝚘𝚝 𝚗𝚎𝚌𝚎𝚜𝚒𝚝𝚊 𝚜𝚎𝚛 𝚊𝚍𝚖𝚒𝚗`)  
+  if (isGroupAdmins) throw '*eres admin -_-*'
+  let gclink = (`https://chat.whatsapp.com/`+await this.groupInviteCode(m.chat))  
+  let isLinkThisGc = new RegExp(gclink, 'i')  
+  let isgclink = isLinkThisGc.test(m.text)  
+  this.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet }})  
+  this.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}}  
+  
+  
+  try {
   if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
         if (m.isBaileys) return
         if (!m.message) return

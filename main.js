@@ -1157,6 +1157,9 @@ case 'play2': {
    
    
    case 'setwelcome': case 'bienvenida': {
+   if (!m.isGroup) return reply(mess.group);  
+    if (!isBotAdmins) return reply(mess.botAdmin);  
+    if (!isGroupAdmins) return reply(mess.admin);  
    let chats = global.db.data.chats[m.chat]
    if (!text) throw '*❗ Pon algo para poner una bienvenida*\n*@user* = etiqueta al usuario\n*@subject* = nombre del grupo\n*@desc* = descripción'
    chats.sWelcome = text
@@ -1164,6 +1167,9 @@ case 'play2': {
    }
    break
    case 'setbye': case 'despedida': {
+   if (!m.isGroup) return reply(mess.group);  
+    if (!isBotAdmins) return reply(mess.botAdmin);  
+    if (!isGroupAdmins) return reply(mess.admin);  
    let chats = global.db.data.chats[m.chat]
    if (!text) throw '*❗ Pon algo para poner una despedida*\n*@user* = etiqueta al usuario'
    chats.sBye = text
