@@ -1,5 +1,5 @@
 // no es literalmente un handler pero maneja los eventos de baileys
-const { smsg, sleep, makeWaSocket, protoType, serialize }= require('./lib/fuctions')
+const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins }= require('./lib/fuctions')
 const { makeInMemoryStore, useMultiFileAuthState, DisconnectReason, proto , jidNormalizedUser,WAMessageStubType, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, getAggregateVotesInPollMessage } = require("@whiskeysockets/baileys")
 const store = require('./lib/store.js')
 const fs = require('fs')
