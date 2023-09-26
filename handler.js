@@ -53,10 +53,10 @@ async function handler(chatUpdate) {
   const q = args.join(" ") 
   let t = m.messageTimestamp 
   const pushname = m.pushName || "Sin nombre" 
-  const _isBot = conn.user.jid
+  const _isBot = this.user.jid
   const userSender = m.key.fromMe ? _isBot : m.isGroup && m.key.participant.includes(":") ? m.key.participant.split(":")[0] + "@s.whatsapp.net" : m.key.remoteJid.includes(":") ? m.key.remoteJid.split(":")[0] + "@s.whatsapp.net" : m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid  
   const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(userSender) 
-  const itsMe = m.sender == conn.user.id ? true : false 
+  const itsMe = m.sender == this.user.id ? true : false 
   const text = args.join(" ") 
   const quoted = m.quoted ? m.quoted : m 
   const sender = m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid 
@@ -64,7 +64,7 @@ async function handler(chatUpdate) {
   const isMedia = /image|video|sticker|audio/.test(mime)
   const mentions = []  
 
-  const groupMetadata = m.isGroup ? await conn.groupMetadata(from) : ''
+  const groupMetadata = m.isGroup ? await this.groupMetadata(from) : ''
   const groupName = m.isGroup ? groupMetadata.subject : '' 
   const participants = m.isGroup ? await groupMetadata.participants : '' 
   const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : '' 
@@ -73,7 +73,7 @@ async function handler(chatUpdate) {
   const isGroupAdmins = m.isGroup ? groupAdmins.includes(userSender) : false 
   const isBaneed = m.isGroup ? blockList.includes(userSender) : false 
   const isPremium = m.isGroup ? premium.includes(userSender) : false   
-  const who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
+  const who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? this.user.jid : m.sender;
   
   
   const isAudio = type == 'audioMessage' // Mensaje de Audio  
