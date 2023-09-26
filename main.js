@@ -66,7 +66,7 @@
   
   if (m.key.id.startsWith("BAE5")) return  
   var body = (typeof m.text == 'string' ? m.text : '') 
-  const _prefix = new RegExp('^[' + (opts['prefix'] || '*/i!#$%+£¢€¥^°=¶∆×÷π√✓©®:;?&.\\-.@').replace(/[|\\{}()[\]^$+*?.\-\^]/g, '\\$&') + ']');
+  var _prefix = /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#%^&.©^]/gi)[0] : ""
   global.prefix = _prefix
   const isCmd = body.startsWith(prefix)   
   const from = m.chat 
