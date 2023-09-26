@@ -460,21 +460,14 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
  chalk.bold.white('\n│📑TIPO (SMS): ') + chalk.yellowBright(`${type}`),  
  chalk.bold.white('\n│📊USUARIO: ') + chalk.cyanBright(pushname) + ' ➜', gradient.rainbow(m.sender),  
  m.isGroup ? chalk.bold.white('\n│📤GRUPO: ') + chalk.greenBright(groupName) + ' ➜ ' + gradient.rainbow(from) : chalk.bold.greenBright('\n│📥PRIVADO'),  
- //chalk.bold.white('\n️│🏷️ TAGS: ') + chalk.bold.white(`[${this.public ? 'Publico' : 'Privado'}]`),  
+ chalk.bold.white('\n️│🏷️ TAGS: ') + chalk.bold.white(`[${this.public ? 'Publico' : 'Privado'}]`),  
  chalk.bold.white('\n│💬MENSAJE: ') + chalk.bold.white(`${msgs(m.text)}`) + chalk.whiteBright(`\n▣────────────···\n`)) 
  }
  
+ 
+ 
   require("./main")(this, m, chatUpdate, store)
-  switch (command) {
-  case 'reset':
-  if (isCreator) return
-  this.reply('reiniciando...')
-  sleep(5000)
-  process.exit()
-  break
-  default:
   
-  }
   
   
   } catch (e) {
