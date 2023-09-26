@@ -365,8 +365,8 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
   const participants = m.isGroup ? await groupMetadata.participants : '' 
   const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : '' 
   const pushname = m.pushName || "Sin nombre"
-  const mime = (quoted.msg || quoted).mimetype || ''  
   const quoted = m.quoted ? m.quoted : m 
+  const mime = (quoted.msg || quoted).mimetype || ''  
   const isMedia = /image|video|sticker|audio/.test(mime) 
   const msgs = (message) => { 
   if (message.length >= 10) { 
