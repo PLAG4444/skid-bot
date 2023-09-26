@@ -7,6 +7,7 @@ const fs = require('fs')
 const { watchFile, unwatchFile } = require('fs')
 const fetch = require('node-fetch')
 const chalk = require('chalk')
+const path = require('path')
 
 async function handler(chatUpdate) {
   this.msgqueque = this.msgqueque || []
@@ -619,7 +620,7 @@ exports.handler = handler
 exports.deleteUpdate = deleteUpdate
 
 
-const file = global.__filename(_filename, true);
+const file = global.__filename(path.basename(__filename), true);
 watchFile(file, async () => {
   unwatchFile(file);
   console.log(chalk.redBright('Update \'handler.js\''));

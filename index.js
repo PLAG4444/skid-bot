@@ -15,7 +15,7 @@ const util = require('util')
 const pino = require('pino')
 const store = require('./lib/store.js')
 const { tmpdir } = require('os')
-const { join } = require('path')
+const { join, basename } = require('path')
 const { readdirSync, statSync, unlinkSync } = require('fs')
 const color = (text, color) => {
 return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(text) : chalk.keyword(color)(text)
@@ -58,7 +58,11 @@ loadDatabase() //mario baboso me lo robas y te rompo tu madre
 if (global.db) setInterval(async () => {
     if (global.db.data) await global.db.write()
   }, 30 * 1000)
- 
+
+global.__filename = function filename(pathURL = path.basename(__filename), rmPrefix = platform !== 'win32') {
+  return rmPrefix ? /file:\/\/\//.test(pathURL) ? fileURLToPath(pathURL) : pathURL : pathToFileURL(pathURL).toString();
+}
+
 function clearTmp() {
   const tmp = [tmpdir(), join(__dirname, './temp')]
   const filename = []
@@ -88,9 +92,7 @@ if (!opts['test']) {
  }
 setInterval(async () => {
 await clearTmp()
-await console.log(
-            color('[SYS]', '#009FFF'),
-            color(moment().format('DD/MM/YY HH:mm:ss'), '#A1FFCE'),
+await conn.logger.info(
             color(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ ✅ Eliminando archivos temporales\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`, '#00FFFF')
         )
 }, 180000)
