@@ -1221,6 +1221,21 @@ case 'play2': {
    }
    break
    
+   
+   case 'setwelcome': case 'bienvenida': {
+   let chats = global.db.data.chats[m.chat]
+   if (!text) throw '*❗ Pon algo para poner una bienvenida*\n*@user* = etiqueta al usuario\n*@subject* = nombre del grupo\n*@desc* = descripción'
+   chats.sWelcome = text
+   conn.reply(m.chat, '*❗ tu bienvenida fue configurada correctamente*', m)
+   }
+   break
+   case 'setwelcome': case 'bienvenida': {
+   let chats = global.db.data.chats[m.chat]
+   if (!text) throw '*❗ Pon algo para poner una despedida*\n*@user* = etiqueta al usuario'
+   chats.sBye = text
+   conn.reply(m.chat, '*❗ tu bienvenida fue configurada correctamente*', m)
+   }
+   break
    case 'minar': {
    let date = global.db.data.users[m.sender].lastmiming + 600000
    if (new Date - global.db.data.users[m.sender].lastmiming < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(date - new Date())} para volver a trabajar!!*`)  
@@ -1590,6 +1605,14 @@ case 'play2': {
             inChat.antidelete = true
             conn.sendCart(m.chat, inSuccess, success)
             break
+            case 'antiviewonce':
+	        if (!m.isGroup) return reply(mess.group);  
+            if (!isBotAdmins) return reply(mess.botAdmin);  
+            if (!isGroupAdmins) return reply(mess.admin);
+            if (inChat.antiviewonce) return conn.sendCart(m.chat, actived, global.query, botname)
+            inChat.antiviewonce = true
+            conn.sendCart(m.chat, inSuccess, success)
+            break
 			case 'antilink':
 			if (!m.isGroup) return reply(mess.group);  
             if (!isBotAdmins) return reply(mess.botAdmin);  
@@ -1688,6 +1711,14 @@ case 'play2': {
             if (!isGroupAdmins) return reply(mess.admin);  
 			if (!Chat.antilink) return conn.sendCart(m.chat, disable, global.query, botname)
 			Chat.antilink = false
+			conn.sendCart(m.chat, inSuccessDisable, success)
+			break
+			case 'antiviewonce':
+			if (!m.isGroup) return reply(mess.group);  
+            if (!isBotAdmins) return reply(mess.botAdmin);  
+            if (!isGroupAdmins) return reply(mess.admin);  
+			if (!Chat.antiviewonce) return conn.sendCart(m.chat, disable, global.query, botname)
+			Chat.antiviewonce = false
 			conn.sendCart(m.chat, inSuccessDisable, success)
 			break
 			case 'antinsfw': case 'antiporno':

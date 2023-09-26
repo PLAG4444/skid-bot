@@ -8,15 +8,15 @@ const fetch = require('node-fetch')
 const chalk = require('chalk')
 
 async function handler(chatUpdate) {
-this.msgqueque = this.msgqueque || [];
-  this.uptime = this.uptime || Date.now();
+this.msgqueque = this.msgqueque || []
+  this.uptime = this.uptime || Date.now()
   if (!chatUpdate) {
-    return;
+    return
   }
-  this.pushMessage(chatUpdate.messages).catch(console.error);
-  let m = chatUpdate.messages[chatUpdate.messages.length - 1];
+  this.pushMessage(chatUpdate.messages).catch(console.error)
+  let m = chatUpdate.messages[chatUpdate.messages.length - 1]
   if (!m) {
-    return;
+    return
   }
   try {
   m = smsg(this, m) || m
@@ -24,26 +24,27 @@ this.msgqueque = this.msgqueque || [];
       return
     }
     if (opts['nyimak']) {
-      return;
+      return
     }
     if (!m.fromMe && opts['self']) {
-      return;
+      return
     }
     if (opts['pconly'] && m.chat.endsWith('g.us')) {
-      return;
+      return
     }
     if (opts['gconly'] && !m.chat.endsWith('g.us')) {
-      return;
+      return
     }
     if (opts['swonly'] && m.chat !== 'status@broadcast') {
-      return;
+      return
     }
     if (typeof m.text !== 'string') {
-      m.text = '';
+      m.text = ''
     }
     if (m.isBaileys) {
-      return;
+      return
     }
+  if (!this.public && !m.key.fromMe && chatUpdate.type === 'notify') return
   try {
   let isNumber = x => typeof x === 'number' && !isNaN(x)  // NaN in number?
   let user = global.db.data.users[m.sender]  
@@ -147,11 +148,12 @@ this.msgqueque = this.msgqueque || [];
   if (!('autoDetect' in chats)) chats.autoDetect = false 
   if (!('antiBadWord' in chats)) chats.antiBadWord = false
   if (!('detect2' in chats)) chats.detect2 = false
-  if (!('sWelcome' in chats)) chatssWelcome = '';
-  if (!('sBye' in chats)) chats.sBye = '';
-  if (!('sPromote' in chats)) chats.sPromote = '';
-  if (!('sDemote' in chats)) chats.sDemote = '';
+  if (!('sWelcome' in chats)) chatssWelcome = ''
+  if (!('sBye' in chats)) chats.sBye = ''
+  if (!('sPromote' in chats)) chats.sPromote = ''
+  if (!('sDemote' in chats)) chats.sDemote = ''
   if (!('antidelete' in chats)) chats.antidelete = false
+  if (!('antiviewonce' in chats)) chats.antiviewonce = false
   } else global.db.data.chats[m.chat] = {  
   antilink: false,  
   isBanned: false,   
@@ -170,6 +172,7 @@ this.msgqueque = this.msgqueque || [];
   sPromote: '',
   sDemote: '',
   antidelete: false,
+  antiviewonce: false,
   }
   
   let setting = global.db.data.settings[this?.user?.jid]
@@ -308,6 +311,8 @@ botAdmin: " 𝚎𝚕 𝚋𝚘𝚝 𝚗𝚎𝚜𝚎𝚌𝚒𝚝𝚊 𝚜𝚎𝚛 
 wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length} usuarios usandome, Puedo ser lenta >w<*`
 }
 
+
+
   try {
   const type = m.mtype 
   const from = m.chat
@@ -321,6 +326,26 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
   return `${message.substr(0, 500)}` 
   } else { 
   return `${message}`}}
+  
+  
+   if (chats.antiviewonce) {
+   if (/^[.~#/\$,](read)?viewonce/.test(m.text)) return 
+   if (m.mtype == 'viewOnceMessageV2') { 
+     const msg = m.message.viewOnceMessageV2.message 
+     const type = Object.keys(msg)[0] 
+     const media = await downloadContentFromMessage(msg[type], type == 'imageMessage' ? 'image' : 'video') 
+     let buffer = Buffer.from([]) 
+     for await (const chunk of media) { 
+       buffer = Buffer.concat([buffer, chunk]) 
+     } 
+     const cap = '*- En este grupo, no se permite ocultar nada.*' 
+     if (/video/.test(type)) { 
+       return this.sendFile(m.chat, buffer, 'error.mp4', `${msg[type].caption ? msg[type].caption + '\n\n' + cap : cap}`, m) 
+     } else if (/image/.test(type)) { 
+       return this.sendFile(m.chat, buffer, 'error.jpg', `${msg[type].caption ? msg[type].caption + '\n\n' + cap : cap}`, m) 
+     } 
+   }}
+   
  if (m.message) { 
  this.logger.info(chalk.bold.white(`\n▣────────────···\n│${botname} ${this.user.id == global.numBot2 ? '' : '(jadibot)'}`),  
  chalk.bold.white('\n│📑TIPO (SMS): ') + chalk.yellowBright(`${type}`),  
@@ -335,7 +360,6 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
   console.log(e)
   }
   
-
 } catch (e) {
 console.error(e)
 }
@@ -438,7 +462,7 @@ let date = d.toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'nu
     
 *■ Para desactivar esta función, escribe el comando:*
 *#disable antidelete
-┗━━━━━━━━━⬣  𝘼𝙉𝙏𝙄 𝘿𝙀𝙇𝙀𝙏𝙀  ⬣━━━━━━━━━`.trim();
+┗━━━━━━━━━⬣  𝘼𝙉𝙏𝙄 𝘿𝙀𝙇𝙀𝙏𝙀  ⬣━━━━━━━━━`.trim()
         await this.sendMessage(msg.chat, {text: antideleteMessage, mentions: [participant]}, {quoted: msg})
         this.copyNForward(msg.chat, msg).catch(e => console.log(e, msg))
     } catch (e) {
