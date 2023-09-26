@@ -3,6 +3,7 @@ require("./settings")
 const { makeInMemoryStore, useMultiFileAuthState, DisconnectReason, proto , jidNormalizedUser,WAMessageStubType, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, getAggregateVotesInPollMessage, MessageRetryMap } = require("@whiskeysockets/baileys")
 const chalk = require('chalk')
 const moment = require('moment')
+const ws = require('ws')
 const { Boom } = require('@hapi/boom')   
 const fs = require('fs')
 const yargs = require('yargs/yargs')
@@ -172,7 +173,7 @@ async function connectionUpdate(update) {
   global.stopped = connection
   if (isNewLogin) conn.isInit = true
   const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
-  if (code && code !== DisconnectReason.loggedOut && conn?.ws.socket == null) {
+  if (code && code !== DisconnectReason.loggedOut && conn?.ws?.socket == null) {
     await global.reload(true).catch(console.error)
   }
   if (global.db.data == null) loadDatabase()
@@ -212,6 +213,7 @@ if (connection === 'close') {
     }
 }
 }
+
 
 let isInit = true
 let handler = require('./handler.js')
