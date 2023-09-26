@@ -327,7 +327,7 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
   } else { 
   return `${message}`}}
   
-  
+    let chats = global.db.data.chats[m.chat]  
    if (chats.antiviewonce) {
    if (/^[.~#/\$,](read)?viewonce/.test(m.text)) return 
    if (m.mtype == 'viewOnceMessageV2') { 
