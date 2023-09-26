@@ -1186,7 +1186,7 @@ case 'play2': {
    case 'xp': {
      if (global.db.data.users[m.sender].money >= cost) {
      __exp = Math.floor(Math.random() * 10000)
-     global.db.data.users[m.sender].exp += newXp
+     global.db.data.users[m.sender].exp += __exp
      global.db.data.users[m.sender].money -= cost
      m.reply(`*✅ Comprastes ${newXp} Xp*`)
      } else { 
