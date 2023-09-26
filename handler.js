@@ -33,6 +33,9 @@ async function handler(chatUpdate) {
       return
     }
     
+    var budy = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
+    if (m.key.id.startsWith("BAE5")) return  
+    var body = (typeof m.text == 'string' ? m.text : '') 
         
         if (global.db.data.chats[m.chat].autoSticker) {  
           if (/image/.test(mime)) {  
@@ -363,6 +366,7 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
   const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : '' 
   const pushname = m.pushName || "Sin nombre"
   const mime = (quoted.msg || quoted).mimetype || ''  
+  const quoted = m.quoted ? m.quoted : m 
   const isMedia = /image|video|sticker|audio/.test(mime) 
   const msgs = (message) => { 
   if (message.length >= 10) { 
