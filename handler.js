@@ -1,5 +1,5 @@
 // no es literalmente un handler pero maneja los eventos de baileys
-const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins }= require('./lib/fuctions')
+const { smsg, sleep, makeWaSocket, areJidsSameUser, protoType, serialize, getGroupAdmins }= require('./lib/fuctions')
 const { makeInMemoryStore, useMultiFileAuthState, DisconnectReason, proto , jidNormalizedUser,WAMessageStubType, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, getAggregateVotesInPollMessage } = require("@whiskeysockets/baileys")
 const gradient = require('gradient-string')
 const store = require('./lib/store.js')
@@ -8,7 +8,7 @@ const fetch = require('node-fetch')
 const chalk = require('chalk')
 
 async function handler(chatUpdate) {
-this.msgqueque = this.msgqueque || []
+  this.msgqueque = this.msgqueque || []
   this.uptime = this.uptime || Date.now()
   if (!chatUpdate) {
     return
@@ -23,12 +23,6 @@ this.msgqueque = this.msgqueque || []
     if (!m) {
       return
     }
-    if (opts['nyimak']) {
-      return
-    }
-    if (!m.fromMe && opts['self']) {
-      return
-    }
     if (opts['pconly'] && m.chat.endsWith('g.us')) {
       return
     }
@@ -37,6 +31,72 @@ this.msgqueque = this.msgqueque || []
     }
     if (opts['swonly'] && m.chat !== 'status@broadcast') {
       return
+    }
+    if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
+        if (m.isBaileys) return
+        if (!m.message) return
+        let hash = global.db.data.sticker[m.msg.fileSha256.toString('base64')]
+        let { text, mentionedJid } = hash
+        let messages = await generateWAMessage(m.chat, { text: text, mentions: mentionedJid }, {
+            userJid: this.user.id,
+            quoted: m.quoted && m.quoted.fakeObj
+        })
+        messages.key.fromMe = areJidsSameUser(m.sender, this.user.id)
+        messages.key.id = m.key.id
+        messages.pushName = m.pushName
+        if (m.isGroup) messages.participant = m.sender
+        let msg = {
+            ...chatUpdate,
+            messages: [proto.WebMessageInfo.fromObject(messages)],
+            type: 'append'
+        }
+        this.ev.emit('messages.upsert', msg)
+        }
+        
+        if (global.db.data.chats[m.chat].autoSticker) {  
+          if (/image/.test(mime)) {  
+          reply(mess.wait)  
+          media = await quoted.download()  
+          let encmedia = await this.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author })  
+          await fs.unlinkSync(encmedia)  
+        } else if (/video/.test(mime)) {  
+          if ((quoted.msg || quoted).seconds > 40) return reply('¡Máximo 40 segundos!')  
+          media = await quoted.download()  
+          let encmedia = await this.sendVideoAsSticker(m.chat, media, m, { packname: global.packname, author: goblal.author })  
+          await new Promise((resolve) => setTimeout(resolve, 2000));   
+          await fs.unlinkSync(encmedia)  
+      }}
+      
+    
+
+    if (global.db.data.chats[m.chat].antiFake) {
+     if (m.chat && m.sender.startsWith('1')) return this.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+    }
+    
+    if (global.db.data.chats[m.chat].antiArabe) {
+      if (m.chat && m.sender.startsWith('212')) return this.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+        }
+
+    if (global.db.data.chats[m.chat].isBanned && isCmd && !isGroupAdmins) {
+    return
+    }
+  
+
+  if (global.db.data.chats[m.chat].antilink) {  
+  if (budy.match(`chat.whatsapp.com`)) {  
+  let delet = m.key.participant  
+  let bang = m.key.id  
+  reply(`*「 ANTI LINK 」*\n\n*𝚕𝚒𝚗𝚔 𝚍𝚎𝚝𝚎𝚌𝚝𝚊𝚍𝚘*\n*𝚕𝚘 𝚜𝚒𝚎𝚗𝚝𝚘 𝚙𝚎𝚛𝚘 𝚗𝚘 𝚜𝚎 𝚙𝚎𝚛𝚖𝚒𝚝𝚎𝚗 𝚕𝚒𝚗𝚔𝚜 𝚜𝚎𝚛𝚊𝚜 𝚎𝚕𝚒𝚖𝚒𝚗𝚊𝚍𝚘*`)  
+  if (!isBotAdmins) return reply(`𝚎𝚕 𝚋𝚘𝚝 𝚗𝚎𝚌𝚎𝚜𝚒𝚝𝚊 𝚜𝚎𝚛 𝚊𝚍𝚖𝚒𝚗`)  
+  if (isGroupAdmins) throw '*eres admin -_-*'
+  let gclink = (`https://chat.whatsapp.com/`+await this.groupInviteCode(m.chat))  
+  let isLinkThisGc = new RegExp(gclink, 'i')  
+  let isgclink = isLinkThisGc.test(m.text)  
+  this.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet }})  
+  this.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}}  
+  
+    if (!this.public && m.key.fromMe) {
+    return
     }
     if (typeof m.text !== 'string') {
       m.text = ''
@@ -351,7 +411,7 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
  chalk.bold.white('\n│📑TIPO (SMS): ') + chalk.yellowBright(`${type}`),  
  chalk.bold.white('\n│📊USUARIO: ') + chalk.cyanBright(pushname) + ' ➜', gradient.rainbow(m.sender),  
  m.isGroup ? chalk.bold.white('\n│📤GRUPO: ') + chalk.greenBright(groupName) + ' ➜ ' + gradient.rainbow(from) : chalk.bold.greenBright('\n│📥PRIVADO'),  
- //chalk.bold.white('\n️│🏷️ TAGS: ') + chalk.bold.white(`[${conn.public ? 'Publico' : 'Privado'}]`),  
+ //chalk.bold.white('\n️│🏷️ TAGS: ') + chalk.bold.white(`[${this.public ? 'Publico' : 'Privado'}]`),  
  chalk.bold.white('\n│💬MENSAJE: ') + chalk.bold.white(`${msgs(m.text)}`) + chalk.whiteBright(`\n▣────────────···\n`)) 
  }
  
