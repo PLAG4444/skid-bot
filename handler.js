@@ -1,9 +1,10 @@
 // no es literalmente un handler pero maneja los eventos de baileys
-const { smsg, sleep, makeWaSocket, areJidsSameUser, protoType, serialize, getGroupAdmins }= require('./lib/fuctions')
-const { makeInMemoryStore, useMultiFileAuthState, DisconnectReason, proto , jidNormalizedUser,WAMessageStubType, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, getAggregateVotesInPollMessage } = require("@whiskeysockets/baileys")
+const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins }= require('./lib/fuctions')
+const { areJidsSameUser, useMultiFileAuthState, DisconnectReason, proto, jidNormalizedUser, WAMessageStubType, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, getAggregateVotesInPollMessage } = require("@whiskeysockets/baileys")
 const gradient = require('gradient-string')
 const store = require('./lib/store.js')
 const fs = require('fs')
+const { watchFile, unwatchFile } = require('fs')
 const fetch = require('node-fetch')
 const chalk = require('chalk')
 
@@ -618,10 +619,9 @@ exports.handler = handler
 exports.deleteUpdate = deleteUpdate
 
 
-let file = require.resolve(__filename)  
-  fs.watchFile(file, () => {  
-  fs.unwatchFile(file)  
-  console.log(chalk.redBright(`Update ${__filename}`))  
-  delete require.cache[file]  
-  require(file)  
-  })
+const file = global.__filename(import.meta.url, true);
+watchFile(file, async () => {
+  unwatchFile(file);
+  console.log(chalk.redBright('Update \'handler.js\''));
+  if (global.reload) console.log(await global.reload()); 
+})
