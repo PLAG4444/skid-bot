@@ -32,26 +32,7 @@ async function handler(chatUpdate) {
     if (opts['swonly'] && m.chat !== 'status@broadcast') {
       return
     }
-    if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
-        if (m.isBaileys) return
-        if (!m.message) return
-        let hash = global.db.data.sticker[m.msg.fileSha256.toString('base64')]
-        let { text, mentionedJid } = hash
-        let messages = await generateWAMessage(m.chat, { text: text, mentions: mentionedJid }, {
-            userJid: this.user.id,
-            quoted: m.quoted && m.quoted.fakeObj
-        })
-        messages.key.fromMe = areJidsSameUser(m.sender, this.user.id)
-        messages.key.id = m.key.id
-        messages.pushName = m.pushName
-        if (m.isGroup) messages.participant = m.sender
-        let msg = {
-            ...chatUpdate,
-            messages: [proto.WebMessageInfo.fromObject(messages)],
-            type: 'append'
-        }
-        this.ev.emit('messages.upsert', msg)
-        }
+    
         
         if (global.db.data.chats[m.chat].autoSticker) {  
           if (/image/.test(mime)) {  
@@ -380,14 +361,37 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
   const groupName = m.isGroup ? groupMetadata.subject : '' 
   const participants = m.isGroup ? await groupMetadata.participants : '' 
   const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : '' 
-  const pushname = m.pushName || "Sin nombre" 
+  const pushname = m.pushName || "Sin nombre"
+  const mime = (quoted.msg || quoted).mimetype || ''  
+  const isMedia = /image|video|sticker|audio/.test(mime) 
   const msgs = (message) => { 
   if (message.length >= 10) { 
   return `${message.substr(0, 500)}` 
   } else { 
   return `${message}`}}
   
-    let chats = global.db.data.chats[m.chat]  
+  if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
+        if (m.isBaileys) return
+        if (!m.message) return
+        let hash = global.db.data.sticker[m.msg.fileSha256.toString('base64')]
+        let { text, mentionedJid } = hash
+        let messages = await generateWAMessage(m.chat, { text: text, mentions: mentionedJid }, {
+            userJid: this.user.id,
+            quoted: m.quoted && m.quoted.fakeObj
+        })
+        messages.key.fromMe = areJidsSameUser(m.sender, this.user.id)
+        messages.key.id = m.key.id
+        messages.pushName = m.pushName
+        if (m.isGroup) messages.participant = m.sender
+        let msg = {
+            ...chatUpdate,
+            messages: [proto.WebMessageInfo.fromObject(messages)],
+            type: 'append'
+        }
+        this.ev.emit('messages.upsert', msg)
+        }
+        
+   let chats = global.db.data.chats[m.chat]  
    if (chats.antiviewonce) {
    if (/^[.~#/\$,](read)?viewonce/.test(m.text)) return 
    if (m.mtype == 'viewOnceMessageV2') { 

@@ -161,73 +161,7 @@
 
    
 
-if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
-        if (m.isBaileys) return
-        if (!m.message) return
-        let hash = global.db.data.sticker[m.msg.fileSha256.toString('base64')]
-        let { text, mentionedJid } = hash
-        let messages = await generateWAMessage(m.chat, { text: text, mentions: mentionedJid }, {
-            userJid: conn.user.id,
-            quoted: m.quoted && m.quoted.fakeObj
-        })
-        messages.key.fromMe = areJidsSameUser(m.sender, conn.user.id)
-        messages.key.id = m.key.id
-        messages.pushName = m.pushName
-        if (m.isGroup) messages.participant = m.sender
-        let msg = {
-            ...chatUpdate,
-            messages: [proto.WebMessageInfo.fromObject(messages)],
-            type: 'append'
-        }
-        conn.ev.emit('messages.upsert', msg)
-        }
-        
-        if (global.db.data.chats[m.chat].autoSticker) {  
-          if (/image/.test(mime)) {  
-          reply(mess.wait)  
-          media = await quoted.download()  
-          let encmedia = await conn.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author })  
-          await fs.unlinkSync(encmedia)  
-        } else if (/video/.test(mime)) {  
-          if ((quoted.msg || quoted).seconds > 40) return reply('¡Máximo 40 segundos!')  
-          media = await quoted.download()  
-          let encmedia = await conn.sendVideoAsSticker(m.chat, media, m, { packname: global.packname, author: goblal.author })  
-          await new Promise((resolve) => setTimeout(resolve, 2000));   
-          await fs.unlinkSync(encmedia)  
-      }}
-      
-    
 
-    if (global.db.data.chats[m.chat].antiFake) {
-     if (m.chat && m.sender.startsWith('1')) return conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
-    }
-    
-    if (global.db.data.chats[m.chat].antiArabe) {
-      if (m.chat && m.sender.startsWith('212')) return conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
-        }
-
-    if (global.db.data.chats[m.chat].isBanned && isCmd && !isGroupAdmins) {
-    return
-    }
-  
-  if (global.db.data.chats[m.chat].modeAdmin && isCmd && !isGroupAdmins) return
-    
-  if (global.db.data.chats[m.chat].antilink) {  
-  if (budy.match(`chat.whatsapp.com`)) {  
-  let delet = m.key.participant  
-  let bang = m.key.id  
-  reply(`*「 ANTI LINK 」*\n\n*𝚕𝚒𝚗𝚔 𝚍𝚎𝚝𝚎𝚌𝚝𝚊𝚍𝚘*\n*𝚕𝚘 𝚜𝚒𝚎𝚗𝚝𝚘 𝚙𝚎𝚛𝚘 𝚗𝚘 𝚜𝚎 𝚙𝚎𝚛𝚖𝚒𝚝𝚎𝚗 𝚕𝚒𝚗𝚔𝚜 𝚜𝚎𝚛𝚊𝚜 𝚎𝚕𝚒𝚖𝚒𝚗𝚊𝚍𝚘*`)  
-  if (!isBotAdmins) return reply(`𝚎𝚕 𝚋𝚘𝚝 𝚗𝚎𝚌𝚎𝚜𝚒𝚝𝚊 𝚜𝚎𝚛 𝚊𝚍𝚖𝚒𝚗`)  
-  if (isGroupAdmins) throw '*eres admin -_-*'
-  let gclink = (`https://chat.whatsapp.com/`+await conn.groupInviteCode(m.chat))  
-  let isLinkThisGc = new RegExp(gclink, 'i')  
-  let isgclink = isLinkThisGc.test(m.text)  
-  conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet }})  
-  conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}}  
-  
-  if (!conn.public) {
-    if (!m.key.fromMe) return
-    }
 
   let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
 for (let jid of mentionUser) {
@@ -1229,7 +1163,7 @@ case 'play2': {
    conn.reply(m.chat, '*❗ tu bienvenida fue configurada correctamente*', m)
    }
    break
-   case 'setwelcome': case 'bienvenida': {
+   case 'setbye': case 'despedida': {
    let chats = global.db.data.chats[m.chat]
    if (!text) throw '*❗ Pon algo para poner una despedida*\n*@user* = etiqueta al usuario'
    chats.sBye = text
