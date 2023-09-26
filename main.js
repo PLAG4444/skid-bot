@@ -245,7 +245,7 @@ user.afkReason = ''
  
    case 'menu': {
    conn.adReply(m.chat, skmenu(conn, prefix, pushname, m), global.menu, fkontak, true)
-   m.reply(`*Recuerda que este bot aun no esta terminado al %100*\n*se añadieron nuevos comandos rpg >w< ⁠♡*\n*Comandos nuevos:*\n.follar\n.minar\n.afk\ndebido a que el bot tiene ${Object.keys(global.db.data.users).length} usarios tiene bajo rendimiento\nsi el bot no responde puede renviar el comando\nse sabe que el bot esta en grupos de rol asi que el rol de skid es gawr gura`)
+   m.reply(`*Recuerda que este bot aun no esta terminado al %100*\n*se añadieron nuevos comandos >w< ⁠♡*\n*Comandos nuevos:*\n.setwelcome\n.setbye\n.serbot\n.serbot --code\nesta es mi actualización de rendimiento asi que cualquier bug/problema reporten en el grupo oficial`)
    }
    break 
    case 'afk': {
