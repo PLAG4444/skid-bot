@@ -42,7 +42,7 @@ async function handler(chatUpdate) {
   } else { 
   return `${message}`}}
   
-  const isCmd = body.startsWith(prefix)   
+  const isCmd = body.startsWith(global.prefix)   
   const from = m.chat 
   const msg = JSON.parse(JSON.stringify(m, undefined, 2)) 
   const content = JSON.stringify(m.message) 
@@ -598,7 +598,7 @@ for(const { key, update } of chatUpdate) {
 						})
 	                var toCmd = pollUpdate.filter(v => v.voters.length !== 0)[0]?.name
 	                if (toCmd == undefined) return
-                    var prefCmd = prefix+toCmd
+                    var prefCmd = global.prefix+toCmd
 	                this.appendTextMessage(prefCmd, chatUpdate)
 				}
 			}
