@@ -92,7 +92,7 @@ if (!opts['test']) {
  }
 setInterval(async () => {
 await clearTmp()
-await conn.logger.info(
+await this.logger?.info(
             color(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ ✅ Eliminando archivos temporales\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`, '#00FFFF')
         )
 }, 180000)
