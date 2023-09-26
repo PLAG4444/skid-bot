@@ -1,0 +1,5 @@
+node_modules/
+jadibot/
+connection/
+database.json
+package.json
