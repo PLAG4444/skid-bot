@@ -158,7 +158,24 @@
      delete this.confirm[sender]; 
    }
    }
-
+if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
+let hash = global.db.data.sticker[m.msg.fileSha256.toString('base64')]
+let { text, mentionedJid } = hash
+let messages = await generateWAMessage(from, { text: text, mentions: mentionedJid }, {
+userJid: conn.user.id,
+quoted : m.quoted && m.quoted.fakeObj
+})
+messages.key.fromMe = areJidsSameUser(m.sender, conn.user.id)
+messages.key.id = m.key.id
+messages.pushName = m.pushName
+if (m.isGroup) messages.participant = m.sender
+let msg = {
+...chatUpdate,
+messages: [proto.WebMessageInfo.fromObject(messages)],
+type: 'append'
+}
+conn.ev.emit('messages.upsert', msg)
+}
    
 
 
@@ -827,6 +844,8 @@ conn.sendMessage(m.chat, docAd, { quoted: m })
    }
    }
    break
+   
+   
    case 'removebg': case 'removerfondo': {
    if (/image/.test(mime)) {
    _miMedia = await conn.downloadAndSaveMediaMessage(quoted)
