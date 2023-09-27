@@ -1244,15 +1244,9 @@ case 'play2': {
                 if (!m.quoted) throw '*❗ Etiqueta un Sticker*'
                 if (!m.quoted.fileSha256) throw '*❗ Etiqueta un Sticker*'
                 if (!text) throw '*Que comando vas a añadir?*'
-                let hash = m.quoted.fileSha256.toString('base64')
-                if (global.db.data.sticker[hash] && global.db.data.sticker[hash].locked) throw 'You have no permission to change this sticker command'
-                global.db.data.sticker[hash] = {
-text,
-mentionedJid: m.mentionedJid,
-creator: m.sender,
-at: + new Date,
-locked: false,
-}
+                let sticker = global.db.data.sticker
+                let hash = m.quoted.fileSha256.toString('base64'); 
+                sticker[hash] = {text, mentionedJid: m.mentionedJid, creator: m.sender, at: + new Date, locked: false};
                 m.reply('*✅ Hecho*')
                 }
             break
