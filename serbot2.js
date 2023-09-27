@@ -43,11 +43,10 @@
    else global.listJadibot = []   
   exports.listJadibot = listJadibot
 
-  const jadibot = async (conn, m, command, args) => {
+  const jadibot = async (m, command, args) => {
   if (!global.db.data.settings[conn.user.jid].jadibot) return m.reply(`*[❗] este comando fue desabilitado por el creador*`)
   if (conn.user.jid !== global.numBot) return m.reply(`*[❗] Este comando solo puede ser usado en el Bot principal!!*\n\n*—◉ Da click aquí para ir:*\n*◉* https://api.whatsapp.com/send/?phone=${global.numBot.split`@`[0]}&text=${prefix + command}&type=phone_number&app_absent=0`)
   const mcode = args[0] && args[0].includes("--code") ? true : args[1] && args[1].includes("--code") ? true : false // stoled from aiden hehe
-  const  skmod = conn
   async function jadibt() {
   const id = m.sender
       
@@ -100,12 +99,12 @@
     let conn = makeWaSocket(JadibotSettings)
     conn.isInit = false
     let isInit = true
-    
+    const skmod = conn
   async function connection(update) {
   const {connection, lastDisconnect, isNewLogin, qr} = update
   if (isNewLogin) conn.isInit = false
     if (global.db.data == null) loadDatabase()
-    const _0x339e4e=_0x3b97;(function(_0x33b6a9,_0x21851b){const _0x367557=_0x3b97,_0x19d806=_0x33b6a9();while(!![]){try{const _0x4823bb=parseInt(_0x367557(0x163))/0x1+-parseInt(_0x367557(0x16e))/0x2+parseInt(_0x367557(0x171))/0x3*(parseInt(_0x367557(0x16f))/0x4)+parseInt(_0x367557(0x170))/0x5+-parseInt(_0x367557(0x172))/0x6*(-parseInt(_0x367557(0x169))/0x7)+parseInt(_0x367557(0x168))/0x8*(-parseInt(_0x367557(0x16d))/0x9)+-parseInt(_0x367557(0x161))/0xa;if(_0x4823bb===_0x21851b)break;else _0x19d806['push'](_0x19d806['shift']());}catch(_0x5c9dbe){_0x19d806['push'](_0x19d806['shift']());}}}(_0x4444,0x6f49e));if(qr&&!mcode)return skmod[_0x339e4e(0x16a)](m['chat'],{'image':await qrcode['toBuffer'](qr,{'scale':0x8}),'caption':rtx+crm9[_0x339e4e(0x16b)]('utf-8')},{'quoted':m});function _0x3b97(_0x74d584,_0xce2df){const _0x444444=_0x4444();return _0x3b97=function(_0x3b9761,_0x3030cb){_0x3b9761=_0x3b9761-0x161;let _0x433091=_0x444444[_0x3b9761];return _0x433091;},_0x3b97(_0x74d584,_0xce2df);}function _0x4444(){const _0x22de85=['261VXhwFs','851340LxEptE','1712548SQgQeb','1422720ubyYBJ','3tvvtsi','198ssFxxq','669240llNTBW','sender','169629EkhFzC','split','requestPairingCode','chat','utf-8','193624RhsxRK','162911cEHdVR','sendMessage','toString','reply'];_0x4444=function(){return _0x22de85;};return _0x4444();}if(qr&&mcode){skmod[_0x339e4e(0x16a)](m[_0x339e4e(0x166)],{'text':rtx2+crm9['toString'](_0x339e4e(0x167))},{'quoted':m}),await sleep(0x1388);let secret=await conn[_0x339e4e(0x165)](m[_0x339e4e(0x162)][_0x339e4e(0x164)]`@`[0x0]);await skmod[_0x339e4e(0x16c)](m['chat'],secret,m);}
+    function _0x3a1f(){const _0x5aedf5=['675SohFWf','toBuffer','39544TuYslC','requestPairingCode','840322nvVekk','2326535EtnemU','2874174WhzmvO','2001180QaFNnS','chat','209VJAUJY','14wmizqh','sendMessage','2024235vxAfTw','47276RrvOxP','2LMxVjA'];_0x3a1f=function(){return _0x5aedf5;};return _0x3a1f();}const _0x48ce3a=_0x53b6;(function(_0xd3f883,_0x49a3d4){const _0x2613e7=_0x53b6,_0x2de185=_0xd3f883();while(!![]){try{const _0xf99ba2=-parseInt(_0x2613e7(0x11c))/0x1*(parseInt(_0x2613e7(0x117))/0x2)+-parseInt(_0x2613e7(0x115))/0x3+parseInt(_0x2613e7(0x116))/0x4+-parseInt(_0x2613e7(0x11d))/0x5+-parseInt(_0x2613e7(0x11e))/0x6*(parseInt(_0x2613e7(0x113))/0x7)+parseInt(_0x2613e7(0x11a))/0x8*(-parseInt(_0x2613e7(0x118))/0x9)+parseInt(_0x2613e7(0x11f))/0xa*(parseInt(_0x2613e7(0x112))/0xb);if(_0xf99ba2===_0x49a3d4)break;else _0x2de185['push'](_0x2de185['shift']());}catch(_0x257fac){_0x2de185['push'](_0x2de185['shift']());}}}(_0x3a1f,0x7b448));if(qr&&!mcode)skmod[_0x48ce3a(0x114)](m[_0x48ce3a(0x111)],{'image':await qrcode[_0x48ce3a(0x119)](qr,{'scale':0x8}),'caption':rtx+crm9},{'quoted':m});function _0x53b6(_0x3bfeb1,_0x3a6f07){const _0x3a1f80=_0x3a1f();return _0x53b6=function(_0x53b6d5,_0xdca212){_0x53b6d5=_0x53b6d5-0x111;let _0x5d549b=_0x3a1f80[_0x53b6d5];return _0x5d549b;},_0x53b6(_0x3bfeb1,_0x3a6f07);}if(qr&&mcode){let code=await conn[_0x48ce3a(0x11b)](m['sender']['split']`@`[0x0]);skmod[_0x48ce3a(0x114)](m[_0x48ce3a(0x111)],{'text':rtx2+crm9},{'quoted':m}),await sleep(0x1388),skmod[_0x48ce3a(0x114)](m['chat'],{'text':code},{'quoted':m});}
     if (connection == 'open') {
     conn.isInit = true
     global.listJadibot.push(conn)
@@ -174,7 +173,7 @@ let handler = require('./handler.js')
   if (restatConn) {
     const oldChats = conn.chats
     try {
-    conn.ws.close();
+    conn.ws.close()
     } catch { }
     conn.ev.removeAllListeners();
     conn = makeWaSocket(JadibotSettings, {chats: oldChats});
