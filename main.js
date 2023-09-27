@@ -1240,34 +1240,44 @@ case 'play2': {
  break
  
  
- case 'setcmd':  case 'addcmd':
+ case 'setcmd':  case 'addcmd': {
                 if (!m.quoted) throw '*❗ Etiqueta un Sticker*'
                 if (!m.quoted.fileSha256) throw '*❗ Etiqueta un Sticker*'
                 if (!text) throw '*Que comando vas a añadir?*'
                 let hash = m.quoted.fileSha256.toString('base64')
                 if (global.db.data.sticker[hash] && global.db.data.sticker[hash].locked) throw 'You have no permission to change this sticker command'
-                global.db.data.sticker[hash] = {text, mentionedJid: m.mentionedJid, creator: m.sender, at: + new Date, locked: false}
+                global.db.data.sticker[hash] = {
+text,
+mentionedJid: m.mentionedJid,
+creator: m.sender,
+at: + new Date,
+locked: false,
+}
                 m.reply('*✅ Hecho*')
+                }
             break
-            case 'delcmd': 
-                let _sh = m.quoted.fileSha256.toString('base64')
-                if (!_sh) throw '*Este id de sticker no existe*'
-                if (global.db.data.sticker[_sh] && global.db.data.sticker[_sh].locked) throw '*❌ No tienes permiso de eliminar este comando*'        
-                delete global.db.data.sticker[_sh]
+            case 'delcmd': {
+                let hash = m.quoted.fileSha256.toString('base64')
+                if (!hash) throw '*Este id de sticker no existe*'
+                if (global.db.data.sticker[hash] && global.db.data.sticker[_sh].locked) throw '*❌ No tienes permiso de eliminar este comando*'        
+                delete global.db.data.sticker[hash]
                 m.reply('*✅ Hecho*')
+                }
             break
-            case 'listcmd': 
+            case 'listcmd': {
                 let _teks = `*Lista de comandos*\n*⚠️ Info los stickers con bold estan bloqueados!!*\n${Object.entries(global.db.data.sticker).map(([key, value], index) => `${index + 1}. ${value.locked ? `*${key}*` : key} : ${value.text}`).join('\n')}`.trim()
                 conn.sendText(m.chat, _teks, m, { mentions: Object.values(global.db.data.sticker).map(x => x.mentionedJid).reduce((a,b) => [...a, ...b], []) })
+                }
             break
-            case 'lockcmd': 
+            case 'lockcmd':  {
                 if (!isCreator) throw mess.owner
                 if (!m.quoted) throw '*❗Etiqueta un sticker*'
                 if (!m.quoted.fileSha256) throw '*❗Etiqueta un sticker*'
-                let _hash = m.quoted.fileSha256.toString('base64')
-                if (!(_hash in global.db.data.sticker)) throw '*❗Este sticker no esta en mi base de datos*'
-                global.db.data.sticker[_hash].locked = !/^un/i.test(command)
+                let hash = m.quoted.fileSha256.toString('base64')
+                if (!(hash in global.db.data.sticker)) throw '*❗Este sticker no esta en mi base de datos*'
+                global.db.data.sticker[hash].locked = !/^un/i.test(command)
                 m.reply('*✅ Hecho*')
+                }
             break
             
 
