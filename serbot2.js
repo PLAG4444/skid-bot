@@ -120,20 +120,20 @@
             fs.rm("./jadibots/" + id, { recursive: true })
         } else if (code === DisconnectReason.connectionClosed) {
             skmod.sendMessage(m.chat, {text : "*❗ La conexión se cerró, se intentara reconectar automáticamente...*\n" }, { quoted: m })
-            await creloadHandler(true).catch(console.error)
+            await reloadHandler(true).catch(console.error)
         } else if (code === DisconnectReason.connectionLost) {
             skmod.sendMessage(m.chat, {text : "*❗ La conexión se perdió, se intentara reconectar automáticamente...*"}, { quoted: m })
-            await creloadHandler(true).catch(console.error)
+            await reloadHandler(true).catch(console.error)
         } else if (code === DisconnectReason.connectionReplaced) {
             skmod.sendMessage(m.chat, {text : "*❗ La conexión se reemplazó, Su conexion se cerro*"}, { quoted: m })
         } else if (code === DisconnectReason.loggedOut) {
             skmod.sendMessage(m.chat, {text : "*❗ La sesión actual se cerró, Si desea volver a conectarse tendra que iniciar sesion de nuevo*"}, { quoted: m })
         } else if (code === DisconnectReason.restartRequired) {
             skmod.sendMessage(m.chat, {text : "*❗ Reinicio requerido, se intentara reconectar automáticamente...*"}, { quoted: m })
-            await creloadHandler(true).catch(console.error)
+            await reloadHandler(true).catch(console.error)
         } else if (code === DisconnectReason.timedOut) {
             skmod.sendMessage(m.chat, {text : "*❗ La conexión se agotó, se intentara reconectar automáticamente...*"}, { quoted: m })
-            await creloadHandler(true).catch(console.error)
+            await reloadHandler(true).catch(console.error)
         } else {
             skmod.sendMessage(m.chat, {text : ` ⚠  Razón de desconexión desconocida. ${code || ''}: ${connection || ''} Por favor reporte al desarollador.`}, { quoted: m })
         }
