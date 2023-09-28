@@ -58,16 +58,16 @@
     if (args[0] == "") args[0] = undefined
     console.log(args[0])
   }
-    if (!fs.existsSync("./jadibot/"+ id)){
-        fs.mkdirSync("./jadibot/"+ id, { recursive: true });
+    if (!fs.existsSync("./jadibots/"+ id)){
+        fs.mkdirSync("./jadibots/"+ id, { recursive: true });
     }
-    args[0] && args[0] != undefined ? fs.writeFileSync("./jadibot/" + id + "/creds.json", JSON.stringify(JSON.parse(Buffer.from(args[0], "base64").toString("utf-8")), null, '\t')) : ""
+    args[0] && args[0] != undefined ? fs.writeFileSync("./jadibots/" + id + "/creds.json", JSON.stringify(JSON.parse(Buffer.from(args[0], "base64").toString("utf-8")), null, '\t')) : ""
 
-    if (fs.existsSync("./jadibot/" + id + "/creds.json")) {
-        let creds = JSON.parse(fs.readFileSync("./jadibot/" + id + "/creds.json"))
+    if (fs.existsSync("./jadibots/" + id + "/creds.json")) {
+        let creds = JSON.parse(fs.readFileSync("./jadibots/" + id + "/creds.json"))
         if (creds) {
             if (creds.registered = false) {
-                fs.unlinkSync("./jadibot/" + id + "/creds.json")
+                fs.unlinkSync("./jadibots/" + id + "/creds.json")
             }
 
         }
@@ -77,7 +77,7 @@
    let { version, isLatest } = await fetchLatestBaileysVersion()
    const msgRetryCounterMap = (MessageRetryMap) => { }
    const msgRetryCounterCache = new NodeCache()
-   const { state, saveState, saveCreds } = await useMultiFileAuthState("./jadibot" + id)
+   const { state, saveState, saveCreds } = await useMultiFileAuthState("./jadibots/" + id)
    
    
    const JadibotSettings = {
@@ -151,7 +151,7 @@ if (connection == 'open') {
     return console.log(await reloadHandler(false).catch(console.error))
     }
     await sleep(5000)
-    if (!args[0]) return skmod.sendMessage(m.chat, {text: `${ prefix + command} ` + Buffer.from(fs.readFileSync("./jadibot/" + id + "/creds.json"), "utf-8").toString("base64")}, { quoted: m })
+    if (!args[0]) return skmod.sendMessage(m.chat, {text: `${ prefix + command} ` + Buffer.from(fs.readFileSync("./jadibots/" + id + "/creds.json"), "utf-8").toString("base64")}, { quoted: m })
     }
 }
     
@@ -218,10 +218,10 @@ jadibt()
 
 const killJadibot = async (conn, m, command) => {
 try {
-if (!fs.existsSync(path.join(__dirname, `./jadibot/${m.sender}`))) {
+if (!fs.existsSync(path.join(__dirname, `./jadibots/${m.sender}`))) {
 return m.reply(`tu sesion no existe`)
 } else {
-fs.rmdirSync(`./jadibot/` + m.sender, { recursive: true })
+fs.rmdirSync(`./jadibots/` + m.sender, { recursive: true })
 return m.reply(`*❗ se elimino correctamente tu sesion*`)
 }
 } catch (e) {
