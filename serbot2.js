@@ -142,17 +142,16 @@
  delete global.listJadibot[i] 
  global.listJadibot.splice(i, 1) // I stole it from aiden (credits to him) 
 }
-if (connection == 'open') {
+   if (connection == 'open') {
     conn.isInit = true
     global.listJadibot.push(conn)
     await skmod.sendMessage(m.chat, {text : args[0] ? "*[❗] Reconectado con éxito!!*" : `*❗ Conectado con éxito!! Para volver a conectarte usa ${prefix + command}*`}, { quoted: m })
     if (connection === 'open'){
     skmod.sendMessage(m.chat, {text: `*❗Ya estas conectado*,\n*por favor espera a que de carguen tus mensajes*`}, { quoted: m }) 
     return console.log(await reloadHandler(false).catch(console.error))
-    }
+}
     await sleep(5000)
     if (!args[0]) return skmod.sendMessage(m.chat, {text: `${ prefix + command} ` + Buffer.from(fs.readFileSync("./jadibots/" + id + "/creds.json"), "utf-8").toString("base64")}, { quoted: m })
-    }
 }
     
 
