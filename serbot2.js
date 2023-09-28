@@ -54,7 +54,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   const { version, isLatest } = await fetchLatestBaileysVersion()   
 
   const connectionSettings = {
-    printQRInTerminal: true,
+    printQRInTerminal: false,
     logger: pino({ level: 'silent' }),
     auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({level: 'silent'})) },
     msgRetry,
@@ -142,7 +142,7 @@ setInterval(async () => {
   global.listJadibot.splice(i, 1) 
   }}, 60000) //again aiden -.-
   let reloadHandler = async function(restatConn) { 
-  let handler = require('../handler.js') 
+  let handler = require('./handler.js') 
    if (restatConn) { 
    try { conn.ws.close() } catch { } 
    conn.ev.removeAllListeners() 
