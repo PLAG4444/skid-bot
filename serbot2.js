@@ -175,7 +175,7 @@ let handler = require('./handler.js')
   if (restatConn) {
   try { conn.ws.close() } catch { }
   conn.ev.removeAllListeners()
-  conn = makeWASocket(JadibotSettings)
+  conn = makeWaSocket(JadibotSettings)
   isInit = true
   }
   if (!isInit) {
