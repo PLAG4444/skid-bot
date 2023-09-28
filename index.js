@@ -112,17 +112,17 @@ const connectionSettings = {
     printQRInTerminal: true,
     logger: pino({ level: 'silent' }),
     auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({level: 'silent'})) },
-    browser: ['Skid-Bot', 'Safari', '1.0.0'],
     msgRetry,
     msgRetryCache,
     version,
     syncFullHistory: true,
+    browser: ['SkidBot', 'Safari', '1.0.0'],
     getMessage: async (key) => { 
     if (store) { 
     const msg = await store.loadMessage(key.remoteJid, key.id) 
     return conn.chats[key.remoteJid] && conn.chats[key.remoteJid].messages[key.id] ? conn.chats[key.remoteJid].messages[key.id].message : undefined 
     } 
-    return proto.Message.fromObject({}) 
+    return proto.Message.fromObject({})
     }
 }
 
