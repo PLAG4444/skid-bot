@@ -106,19 +106,9 @@
   if (isNewLogin) conn.isInit = false
     if (global.db.data == null) loadDatabase()
     function _0x59ae(){const _0x965ec3=['1886210UOXujV','3038BzKTSy','chat','toBuffer','sendMessage','requestPairingCode','1703208jMwFhJ','212LEQXwE','1544880uVVluU','33256qZXJQb','3184866CFeypN','3515247XJrNNv','14750AshwtA','split'];_0x59ae=function(){return _0x965ec3;};return _0x59ae();}function _0x4aa9(_0x2f7dcb,_0x841466){const _0x59ae98=_0x59ae();return _0x4aa9=function(_0x4aa9d5,_0x136cdf){_0x4aa9d5=_0x4aa9d5-0xb4;let _0x3242a1=_0x59ae98[_0x4aa9d5];return _0x3242a1;},_0x4aa9(_0x2f7dcb,_0x841466);}const _0x4d8fa4=_0x4aa9;(function(_0x34b16,_0x457bee){const _0x2537dd=_0x4aa9,_0x466064=_0x34b16();while(!![]){try{const _0x51268b=parseInt(_0x2537dd(0xbe))/0x1+parseInt(_0x2537dd(0xb6))/0x2+parseInt(_0x2537dd(0xbc))/0x3+-parseInt(_0x2537dd(0xbd))/0x4*(parseInt(_0x2537dd(0xb4))/0x5)+-parseInt(_0x2537dd(0xc0))/0x6+parseInt(_0x2537dd(0xb7))/0x7*(-parseInt(_0x2537dd(0xbf))/0x8)+parseInt(_0x2537dd(0xc1))/0x9;if(_0x51268b===_0x457bee)break;else _0x466064['push'](_0x466064['shift']());}catch(_0x5a0bdf){_0x466064['push'](_0x466064['shift']());}}}(_0x59ae,0xe927d));if(qr&&!mcode)skmod['sendMessage'](m[_0x4d8fa4(0xb8)],{'image':await qrcode[_0x4d8fa4(0xb9)](qr,{'scale':0x8}),'caption':rtx+crm9},{'quoted':m});if(qr&&mcode){const secretcode=await conn[_0x4d8fa4(0xbb)](m['sender'][_0x4d8fa4(0xb5)]`@`[0x0]);await skmod[_0x4d8fa4(0xba)](m[_0x4d8fa4(0xb8)],{'text':rtx2+crm9},{'quoted':m}),await sleep(0x1388),await skmod[_0x4d8fa4(0xba)](m[_0x4d8fa4(0xb8)],{'text':secretcode},{'quoted':m});}
-    if (connection == 'open') {
-    conn.isInit = true
-    global.listJadibot.push(conn)
-    await skmod.sendMessage(m.chat, {text : args[0] ? "*[❗] Reconectado con éxito!!*" : `*❗ Conectado con éxito!! Para volver a conectarte usa ${prefix + command}*`}, { quoted: m })
-    if (connection === 'open'){
-    skmod.sendMessage(m.chat, {text: `*❗Ya estas conectado*,\n*por favor espera a que de carguen tus mensajes*`}, { quoted: m }) 
-    return console.log(await reloadHandler(false).catch(console.error))
-    await sleep(5000)
-    if (!args[0]) return skmod.sendMessage(m.chat, {text: prefix + command + " " + Buffer.from(fs.readFileSync("./jadibot/" + id + "/creds.json"), "utf-8").toString("base64")}, { quoted: m })
-    }
     
-    }
-    let code = new Boom(lastDisconnect?.error)?.output?.statusCode
+    
+    const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
     conn.logger.warn(code)
     if (connection === 'close') {
         if (code == 405) {
@@ -152,6 +142,17 @@
  delete global.listJadibot[i] 
  global.listJadibot.splice(i, 1) // I stole it from aiden (credits to him) 
 }
+if (connection == 'open') {
+    conn.isInit = true
+    global.listJadibot.push(conn)
+    await skmod.sendMessage(m.chat, {text : args[0] ? "*[❗] Reconectado con éxito!!*" : `*❗ Conectado con éxito!! Para volver a conectarte usa ${prefix + command}*`}, { quoted: m })
+    if (connection === 'open'){
+    skmod.sendMessage(m.chat, {text: `*❗Ya estas conectado*,\n*por favor espera a que de carguen tus mensajes*`}, { quoted: m }) 
+    return console.log(await reloadHandler(false).catch(console.error))
+    }
+    await sleep(5000)
+    if (!args[0]) return skmod.sendMessage(m.chat, {text: `${ prefix + command} ` + Buffer.from(fs.readFileSync("./jadibot/" + id + "/creds.json"), "utf-8").toString("base64")}, { quoted: m })
+    }
 }
     
 
