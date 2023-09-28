@@ -137,7 +137,7 @@
         } else {
             skmod.sendMessage(m.chat, {text : `[ ⚠ ] Razón de desconexión desconocida. ${code || ''}: ${connection || ''} Por favor reporte al desarollador.`}, { quoted: m })
         }
- let i = global.listJadibot.indexOf(skmod) 
+ let i = global.listJadibot.indexOf(conn) 
  if (i < 0) return console.log("No se encontro") 
  delete global.listJadibot[i] 
  global.listJadibot.splice(i, 1) // I stole it from aiden (credits to him) 
@@ -173,13 +173,10 @@ if (connection == 'open') {
 let reloadHandler = async function(restatConn) {
 let handler = require('./handler.js')
   if (restatConn) {
-    const oldChats = conn.chats
-    try {
-    conn.ws.close()
-    } catch { }
-    conn.ev.removeAllListeners();
-    conn = makeWaSocket(JadibotSettings, {chats: oldChats});
-    isInit = true;
+  try { conn.ws.close() } catch { }
+  conn.ev.removeAllListeners()
+  conn = makeWASocket(JadibotSettings)
+  isInit = true
   }
   if (!isInit) {
     conn.ev.off('messages.upsert', conn.connection)
