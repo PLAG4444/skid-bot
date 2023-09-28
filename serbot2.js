@@ -50,28 +50,9 @@
   if (conn.user.jid !== global.numBot) return m.reply(`*[❗] Este comando solo puede ser usado en el Bot principal!!*\n\n*—◉ Da click aquí para ir:*\n*◉* https://api.whatsapp.com/send/?phone=${global.numBot.split`@`[0]}&text=${prefix + command}&type=phone_number&app_absent=0`)
   const mcode = args[0] && args[0].includes("--code") ? true : args[1] && args[1].includes("--code") ? true : false // stoled from aiden hehe
   async function jadibt() {
-  const id = m.sender
+  const id = m.sender.split("@")
       
-  if (mcode) {
-    args[0] = args[0].replace("--code", "").trim()
-    if (args[1]) args[1] = args[1].replace("--code", "").trim()
-    if (args[0] == "") args[0] = undefined
-    console.log(args[0])
-  }
-    if (!fs.existsSync("./jadibots/"+ id)){
-        fs.mkdirSync("./jadibots/"+ id, { recursive: true });
-    }
-    args[0] && args[0] != undefined ? fs.writeFileSync("./jadibots/" + id + "/creds.json", JSON.stringify(JSON.parse(Buffer.from(args[0], "base64").toString("utf-8")), null, '\t')) : ""
-
-    if (fs.existsSync("./jadibots/" + id + "/creds.json")) {
-        let creds = JSON.parse(fs.readFileSync("./jadibots/" + id + "/creds.json"))
-        if (creds) {
-            if (creds.registered = false) {
-                fs.unlinkSync("./jadibots/" + id + "/creds.json")
-            }
-
-        }
-    }
+  
   
    console.info = () => {}
    let { version, isLatest } = await fetchLatestBaileysVersion()
@@ -105,8 +86,13 @@
   const {connection, lastDisconnect, isNewLogin, qr} = update
   if (isNewLogin) conn.isInit = false
     if (global.db.data == null) loadDatabase()
-    function _0x59ae(){const _0x965ec3=['1886210UOXujV','3038BzKTSy','chat','toBuffer','sendMessage','requestPairingCode','1703208jMwFhJ','212LEQXwE','1544880uVVluU','33256qZXJQb','3184866CFeypN','3515247XJrNNv','14750AshwtA','split'];_0x59ae=function(){return _0x965ec3;};return _0x59ae();}function _0x4aa9(_0x2f7dcb,_0x841466){const _0x59ae98=_0x59ae();return _0x4aa9=function(_0x4aa9d5,_0x136cdf){_0x4aa9d5=_0x4aa9d5-0xb4;let _0x3242a1=_0x59ae98[_0x4aa9d5];return _0x3242a1;},_0x4aa9(_0x2f7dcb,_0x841466);}const _0x4d8fa4=_0x4aa9;(function(_0x34b16,_0x457bee){const _0x2537dd=_0x4aa9,_0x466064=_0x34b16();while(!![]){try{const _0x51268b=parseInt(_0x2537dd(0xbe))/0x1+parseInt(_0x2537dd(0xb6))/0x2+parseInt(_0x2537dd(0xbc))/0x3+-parseInt(_0x2537dd(0xbd))/0x4*(parseInt(_0x2537dd(0xb4))/0x5)+-parseInt(_0x2537dd(0xc0))/0x6+parseInt(_0x2537dd(0xb7))/0x7*(-parseInt(_0x2537dd(0xbf))/0x8)+parseInt(_0x2537dd(0xc1))/0x9;if(_0x51268b===_0x457bee)break;else _0x466064['push'](_0x466064['shift']());}catch(_0x5a0bdf){_0x466064['push'](_0x466064['shift']());}}}(_0x59ae,0xe927d));if(qr&&!mcode)skmod['sendMessage'](m[_0x4d8fa4(0xb8)],{'image':await qrcode[_0x4d8fa4(0xb9)](qr,{'scale':0x8}),'caption':rtx+crm9},{'quoted':m});if(qr&&mcode){const secretcode=await conn[_0x4d8fa4(0xbb)](m['sender'][_0x4d8fa4(0xb5)]`@`[0x0]);await skmod[_0x4d8fa4(0xba)](m[_0x4d8fa4(0xb8)],{'text':rtx2+crm9},{'quoted':m}),await sleep(0x1388),await skmod[_0x4d8fa4(0xba)](m[_0x4d8fa4(0xb8)],{'text':secretcode},{'quoted':m});}
-    
+    if (qr && !mcode) return skmod.sendMessage(m.chat, { image: await qrcode.toBuffer(qr, { scale: 8 }), caption: rtx + crm9.toString("utf-8")}, { quoted: m})
+    if (qr && mcode) {
+        skmod.sendMessage(m.chat, {text : rtx2 + crm9.toString("utf-8") }, { quoted: m })
+        await sleep(5000)
+        let secret = await conn.requestPairingCode((m.sender.split`@`[0]))
+        await skmod.reply(m.chat, secret, m)
+    }
     
     const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
     console.log(code)
