@@ -44,6 +44,7 @@
   exports.listJadibot = listJadibot
 
   const jadibot = async (conn, m, command, args) => {
+  args = args || []
   const skmod = conn
   if (!global.db.data.settings[conn.user.jid].jadibot) return m.reply(`*[❗] este comando fue desabilitado por el creador*`)
   if (conn.user.jid !== global.numBot) return m.reply(`*[❗] Este comando solo puede ser usado en el Bot principal!!*\n\n*—◉ Da click aquí para ir:*\n*◉* https://api.whatsapp.com/send/?phone=${global.numBot.split`@`[0]}&text=${prefix + command}&type=phone_number&app_absent=0`)
@@ -76,8 +77,7 @@
    let { version, isLatest } = await fetchLatestBaileysVersion()
    const msgRetryCounterMap = (MessageRetryMap) => { }
    const msgRetryCounterCache = new NodeCache()
-   const { state, saveState, saveCreds } = await useMultiFileAuthState("./jadibot/" + id)
-   
+   const { state, saveState, saveCreds } = await useMultiFileAuthState("./jadibot" + id)
    
    
    const JadibotSettings = {
@@ -109,33 +109,33 @@
     
     
     const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
-    conn.logger.warn(code)
+    console.log(code)
     if (connection === 'close') {
         if (code == 405) {
-            fs.unlinkSync("./jadibot/" + id + "/creds.json")
-            return skmod.reply(m.chat, "*❗ reenvia el comando*", m)
+            fs.unlinkSync("./jadibots/" + id + "/creds.json")
+            return skmod.sendMessage(m.chat, {text : "*❗ Por favor, reenvia el comando*"}, { quoted: m })
           }
         if (code === DisconnectReason.badSession) {
-            skmod.sendMessage(m.chat, {text : "*[❗] La sesión actual es inválida, Tendras que iniciar sesion de nuevo."}, { quoted: m })
-            fs.rmdirSync("./jadibot/" + id, { recursive: true })
+            skmod.sendMessage(m.chat, {text : "*❗ La sesión actual es inválida, Tendras que iniciar sesion de nuevo."}, { quoted: m })
+            fs.rm("./jadibots/" + id, { recursive: true })
         } else if (code === DisconnectReason.connectionClosed) {
-        await reloadHandler(true).catch(console.error)
-        skmod.reply('*❗ la conexión se cerro*\n*intentando reconectar*')
+            skmod.sendMessage(m.chat, {text : "*❗ La conexión se cerró, se intentara reconectar automáticamente...*\n" }, { quoted: m })
+            await creloadHandler(true).catch(console.error)
         } else if (code === DisconnectReason.connectionLost) {
-        await reloadHandler(true).catch(console.error)
-        await skmod.reply(m.chat, `*❗ Conexion perdida del servidor*\n*reconexion Forzada*`, m)
+            skmod.sendMessage(m.chat, {text : "*❗ La conexión se perdió, se intentara reconectar automáticamente...*"}, { quoted: m })
+            await creloadHandler(true).catch(console.error)
         } else if (code === DisconnectReason.connectionReplaced) {
-        await skmod.sendMessage(m.chat, {text : "*[❗] La conexión se reemplazó, Su conexion se cerro*"}, { quoted: m })
+            skmod.sendMessage(m.chat, {text : "*❗ La conexión se reemplazó, Su conexion se cerro*"}, { quoted: m })
         } else if (code === DisconnectReason.loggedOut) {
-        await skmod.reply(m.chat, `*❗ la conexión se cerrro!!*\nintenta *reconectarte* con *${prefix + command}*`, m)
+            skmod.sendMessage(m.chat, {text : "*❗ La sesión actual se cerró, Si desea volver a conectarse tendra que iniciar sesion de nuevo*"}, { quoted: m })
         } else if (code === DisconnectReason.restartRequired) {
-        skmod.reply(m.chat, '*🕐 Espera*\nestoy haciendo un *reinicio requerido* para *tu conexion*', m)
-        await reloadHandler(true).catch(console.error)
+            skmod.sendMessage(m.chat, {text : "*❗ Reinicio requerido, se intentara reconectar automáticamente...*"}, { quoted: m })
+            await creloadHandler(true).catch(console.error)
         } else if (code === DisconnectReason.timedOut) {
-        await reloadHandler(true).catch(console.error)
-        return skmod.reply(m.chat, '❗ tu conexion *se agoto*\nintentando *reconectar*', m)
+            skmod.sendMessage(m.chat, {text : "*❗ La conexión se agotó, se intentara reconectar automáticamente...*"}, { quoted: m })
+            await creloadHandler(true).catch(console.error)
         } else {
-            skmod.sendMessage(m.chat, {text : `[ ⚠ ] Razón de desconexión desconocida. ${code || ''}: ${connection || ''} Por favor reporte al desarollador.`}, { quoted: m })
+            skmod.sendMessage(m.chat, {text : ` ⚠  Razón de desconexión desconocida. ${code || ''}: ${connection || ''} Por favor reporte al desarollador.`}, { quoted: m })
         }
  let i = global.listJadibot.indexOf(conn) 
  if (i < 0) return console.log("No se encontro") 
@@ -212,9 +212,9 @@ let handler = require('./handler.js')
   return true
 }
 reloadHandler(false)
-  }
-    jadibt()
-  }
+}
+jadibt()
+}
 
 const killJadibot = async (conn, m, command) => {
 try {
