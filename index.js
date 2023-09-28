@@ -248,7 +248,7 @@ conn.sSubject = '*「 Grupos 」*\n*el nombre del grupo fue cambiado!!*\n*el nue
 conn.sIcon = '*「 Grupos 」*\n*Se cambio la foto del grupo ^w^*'
 conn.sRevoke = '*「 Grupos 」*\n*Hay un nuevo link del grupo nwn*\n*nuevo link:* @revoke'
 
-  conn.connection = handler.handler.bind(conn)
+  conn.connection = handler.handler.bind(global.conn)
   conn.participantsUpdate = handler.participantsUpdate.bind(global.conn)
   conn.groupsUpdate = handler.groupsUpdate.bind(global.conn)
   conn.deleteUpdate = handler.deleteUpdate.bind(global.conn)

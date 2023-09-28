@@ -179,38 +179,37 @@ let handler = require('./handler.js')
   isInit = true
   }
   if (!isInit) {
-    conn.ev.off('messages.upsert', conn.connection)
-    conn.ev.off('call', conn.onCall)
-    conn.ev.off('group-participants.update', conn.participantsUpdate)
-    conn.ev.off("groups.update", conn.groupsUpdate)
-    conn.ev.off('connection.update', conn.connectionUpdate);
-    conn.ev.off('creds.update', conn.credsUpdate);
+  conn.ev.off('messages.upsert', conn.connection)
+  conn.ev.off('call', conn.onCall)
+  conn.ev.off('group-participants.update', conn.participantsUpdate)
+  conn.ev.off("groups.update", conn.groupsUpdate)
+  conn.ev.off('message.delete', conn.deleteUpdate)
+  conn.ev.off('connection.update', conn.connectionUpdate)
+  conn.ev.off('creds.update', conn.credsUpdate)
+  conn.ev.off('messages.update', conn.pollCmd)
   }
-
 
   conn.connection = handler.handler.bind(conn)
-  conn.participantsUpdate = handler.participantsUpdate.bind(global.conn)
-  conn.groupsUpdate = handler.groupsUpdate.bind(global.conn)
-  conn.onCall = handler.callUpdate.bind(global.conn)
-  conn.connectionUpdate = connection.bind(global.conn);
-  conn.credsUpdate = saveCreds.bind(global.conn, true);
+  conn.participantsUpdate = handler.participantsUpdate.bind(conn)
+  conn.groupsUpdate = handler.groupsUpdate.bind(conn)
+  conn.deleteUpdate = handler.deleteUpdate.bind(conn)
+  conn.onCall = handler.callUpdate.bind(conn)
+  conn.pollCmd = handler.pollCmd.bind(conn)
+  conn.connectionUpdate = connectionUpdate.bind(conn)
+  conn.credsUpdate = saveCreds.bind(conn, true)
+  
 
-  const currentDateTime = new Date();
-  const messageDateTime = new Date(conn.ev);
-  if (currentDateTime >= messageDateTime) {
-    const chats = Object.entries(conn.chats).filter(([jid, chat]) => !jid.endsWith('@g.us') && chat.isChats).map((v) => v[0]);
-  } else {
-    const chats = Object.entries(conn.chats).filter(([jid, chat]) => !jid.endsWith('@g.us') && chat.isChats).map((v) => v[0]);
-  }
-
+  
   conn.ev.on('messages.upsert', conn.connection)
   conn.ev.on('call', conn.onCall)
   conn.ev.on('group-participants.update', conn.participantsUpdate)
   conn.ev.on("groups.update", conn.groupsUpdate)
-  conn.ev.on('connection.update', conn.connectionUpdate);
-  conn.ev.on('creds.update', conn.credsUpdate);
-  isInit = false;
-  return true;
+  conn.ev.on('message.delete', conn.deleteUpdate)
+  conn.ev.on('connection.update', conn.connectionUpdate)
+  conn.ev.on('creds.update', conn.credsUpdate)
+  conn.ev.on('messages.update', conn.pollCmd)
+  isInit = false
+  return true
 }
 reloadHandler(false)
   }
