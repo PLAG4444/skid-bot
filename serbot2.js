@@ -75,7 +75,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   * @type {import('@whiskeysockets/baileys').WASocket | import('@whiskeysockets/baileys').WALegacySocket | import('./lib/fuctions.js').makeWaSocket}
   */
   
-  let conn = makeWaSocket(connectionOptions)
+  let conn = makeWaSocket(connectionSettings)
   let isInit = true
   conn.isInit = false
   
