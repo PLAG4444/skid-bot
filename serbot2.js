@@ -152,8 +152,9 @@
 }
     await sleep(5000)
     if (!args[0]) return skmod.sendMessage(m.chat, {text: `${ prefix + command} ` + Buffer.from(fs.readFileSync("./jadibots/" + id + "/creds.json"), "utf-8").toString("base64")}, { quoted: m })
+    }
 }
-    
+     
 
   
   setInterval(async () => {
