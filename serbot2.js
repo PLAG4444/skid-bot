@@ -172,14 +172,7 @@ let handler = require('./handler.js')
   conn.ev.off('messages.update', conn.pollCmd)
   }
   
-  conn.ev.on('messages.upsert', conn.connection)
-  conn.ev.on('call', conn.onCall)
-  conn.ev.on('group-participants.update', conn.participantsUpdate)
-  conn.ev.on("groups.update", conn.groupsUpdate)
-  conn.ev.on('message.delete', conn.deleteUpdate)
-  conn.ev.on('connection.update', conn.connectionUpdate)
-  conn.ev.on('creds.update', conn.credsUpdate)
-  conn.ev.on('messages.update', conn.pollCmd)
+  
   
   conn.connection = handler.handler.bind(conn)
   conn.participantsUpdate = handler.participantsUpdate.bind(conn)
@@ -190,7 +183,14 @@ let handler = require('./handler.js')
   conn.connectionUpdate = connectionUpdate.bind(conn)
   conn.credsUpdate = saveCreds.bind(conn, true)
   
-
+  conn.ev.on('messages.upsert', conn.connection)
+  conn.ev.on('call', conn.onCall)
+  conn.ev.on('group-participants.update', conn.participantsUpdate)
+  conn.ev.on("groups.update", conn.groupsUpdate)
+  conn.ev.on('message.delete', conn.deleteUpdate)
+  conn.ev.on('connection.update', conn.connectionUpdate)
+  conn.ev.on('creds.update', conn.credsUpdate)
+  conn.ev.on('messages.update', conn.pollCmd)
   
   
   isInit = false
