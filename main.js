@@ -1,6 +1,6 @@
 // Código desde cero y comentarios hecho por:   
 // @gata_dios  
-// @Skidy89  
+// @Skidy89  | Come ratas
 // Ladron de codigo
 // @elrebelde21
   
@@ -815,6 +815,30 @@ conn.sendMessage(m.chat, docAd, { quoted: m })
    let _res = await (/2/.test(command) ? wallpaperv2 : wallpaper)(text) 
    let _img = _res[Math.floor(Math.random() * _res.length)]
    conn.sendMessage(m.chat, { image: { url: _img }, caption: `*✨ Aqui tienes tu wallpaper de ${text}*`}, { quoted: fgif })
+   break
+   case 'animeplanet': { //pal putaku de skid
+  if (!text) return m.reply(`*[❗] INGRESE EL NAME DEL ANIME QUE DESEA BUSCAR*`);
+  try {
+    const xn = await fetch(`https://api-diego-ofc.vercel.app/api/animeplanet?q=${text}`)
+    const gPlay = await xn.json();
+
+    if (gPlay.error) {
+      throw new Error(gPlay.error);
+    }
+    let caption = `*⊜ RESULTADOS🔎*\n`;
+    for (let x of gPlay.resultado) {
+      caption += `🔍 titulo: 
+${x.titulo}
+
+⛓️ Link: ${x.link}  
+🖼️ Imagen: ${x.image}
+  `;
+    }
+    conn.sendMessage(m.chat, {text: caption}, {quoted: m});
+  } catch (error) {
+    await m.reply('*[❗𝐈𝐍𝐅𝐎❗] ERROR, POR FAVOR VUELVE A INTENTARLO*');
+  }
+   }
    break
    case 'anime': {
    if (/image/.test(mime)) {
