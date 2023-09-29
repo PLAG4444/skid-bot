@@ -35,8 +35,8 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   if (global.listJadibot instanceof Array) console.log()   
   else global.listJadibot = []   
   
-  const jadibot = async (conn, m, command, args) => {
-  const skmod = conn
+  const jadibot = async (rsmod, m, command, args) => {
+  const skmod = rsmod
   
   
   async function jadibots() {
@@ -98,7 +98,6 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
    }
    const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode 
    console.log(code)
-   skmod.logger.warn(lastDisconnect)
    if (connection === 'close') {
    if (code == 405) { 
    fs.unlinkSync("./jadibot/" + id + "/creds.json") 
