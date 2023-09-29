@@ -40,7 +40,8 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   
   
   async function jadibots() {
-  const id = `${m.sender.split("@")[0]}`
+  let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? skmod.user.jid : m.sender
+  let uniqid = `${who.split`@`[0]}` 
   const mcode = args[0] && args[0].includes("--code") ? true : args[1] && args[1].includes("--code") ? true : false // stoled from aiden hehe
   if (mcode) {
     args[0] = args[0].replace("--code", "").trim()
@@ -84,8 +85,8 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   const { connection, lastDisconnect, isNewLogin, qr } = up
   if (isNewLogin) conn.isInit = false
   if (global.db.data == null) loadDatabase()
-  const _0x474876=_0x3af8;function _0x3af8(_0x3f1c8f,_0x21bce5){const _0x9f30e6=_0x9f30();return _0x3af8=function(_0x3af864,_0xe3a2e5){_0x3af864=_0x3af864-0x13f;let _0x2a0b5c=_0x9f30e6[_0x3af864];return _0x2a0b5c;},_0x3af8(_0x3f1c8f,_0x21bce5);}(function(_0x420b0b,_0x482f33){const _0x3b126a=_0x3af8,_0x3d41fa=_0x420b0b();while(!![]){try{const _0x1c923f=-parseInt(_0x3b126a(0x149))/0x1+parseInt(_0x3b126a(0x142))/0x2*(parseInt(_0x3b126a(0x148))/0x3)+parseInt(_0x3b126a(0x14e))/0x4+-parseInt(_0x3b126a(0x152))/0x5+-parseInt(_0x3b126a(0x147))/0x6*(parseInt(_0x3b126a(0x14d))/0x7)+parseInt(_0x3b126a(0x14b))/0x8*(-parseInt(_0x3b126a(0x145))/0x9)+parseInt(_0x3b126a(0x143))/0xa*(parseInt(_0x3b126a(0x141))/0xb);if(_0x1c923f===_0x482f33)break;else _0x3d41fa['push'](_0x3d41fa['shift']());}catch(_0x4be0d6){_0x3d41fa['push'](_0x3d41fa['shift']());}}}(_0x9f30,0x3608c));if(qr&&!mcode)return skmod['sendMessage'](m[_0x474876(0x151)],{'image':await qrcode[_0x474876(0x14a)](qr,{'scale':0x8}),'caption':rtx+crm9[_0x474876(0x140)]('utf-8')},{'quoted':m});if(qr&&mcode){skmod[_0x474876(0x144)](m[_0x474876(0x151)],{'text':rtx2+crm9[_0x474876(0x140)](_0x474876(0x14c))},{'quoted':m}),await sleep(0x1388);let secret=await conn[_0x474876(0x14f)](m[_0x474876(0x13f)][_0x474876(0x146)]`@`[0x0]);await skmod[_0x474876(0x150)](m[_0x474876(0x151)],secret,m);}function _0x9f30(){const _0x4b38b4=['381athFuD','420691MBryCY','toBuffer','3520992unCXaW','utf-8','329NuiNIW','507660kTHtWL','requestPairingCode','reply','chat','1300105avBlay','sender','toString','25399EuYrpb','3502DdOQHb','4610hRvniS','sendMessage','9OBKGHH','split','9138axDPTl'];_0x9f30=function(){return _0x4b38b4;};return _0x9f30();}
-  if (connection == "open") {   
+  const _0x1977ba=_0x2b3f;(function(_0x53c3d8,_0x47afbe){const _0x7c7db0=_0x2b3f,_0x5d2e7d=_0x53c3d8();while(!![]){try{const _0xebe0b=-parseInt(_0x7c7db0(0x1ce))/0x1+parseInt(_0x7c7db0(0x1d0))/0x2+parseInt(_0x7c7db0(0x1d4))/0x3*(-parseInt(_0x7c7db0(0x1d2))/0x4)+parseInt(_0x7c7db0(0x1d7))/0x5+-parseInt(_0x7c7db0(0x1d5))/0x6+parseInt(_0x7c7db0(0x1cc))/0x7*(parseInt(_0x7c7db0(0x1cd))/0x8)+parseInt(_0x7c7db0(0x1d6))/0x9;if(_0xebe0b===_0x47afbe)break;else _0x5d2e7d['push'](_0x5d2e7d['shift']());}catch(_0x165c7c){_0x5d2e7d['push'](_0x5d2e7d['shift']());}}}(_0x25eb,0xa520c));function _0x2b3f(_0x4e2d46,_0xc65e1a){const _0x25eb89=_0x25eb();return _0x2b3f=function(_0x2b3fcc,_0x5456fe){_0x2b3fcc=_0x2b3fcc-0x1cc;let _0x296fed=_0x25eb89[_0x2b3fcc];return _0x296fed;},_0x2b3f(_0x4e2d46,_0xc65e1a);}if(qr&&!mcode)skmod[_0x1977ba(0x1cf)](m[_0x1977ba(0x1d8)],{'image':await qrcode[_0x1977ba(0x1d1)](qr,{'scale':0x8}),'caption':rtx+crm9},{'quoted':m});function _0x25eb(){const _0x549271=['sendMessage','2295000fzOTvL','toBuffer','5303552wCDaRF','split','3LcWUTs','4871148ZYyecJ','14542560CtxWCp','2826370wxxqKm','chat','sender','337659IfJMJA','88EvEfUN','1045111pKpUio'];_0x25eb=function(){return _0x549271;};return _0x25eb();}if(qr&&mcode){let code=await conn['requestPairingCode'](m[_0x1977ba(0x1d9)][_0x1977ba(0x1d3)]`@`[0x0]);skmod[_0x1977ba(0x1cf)](m[_0x1977ba(0x1d8)],{'text':rtx2+crm9},{'quoted':m}),await sleep(0x1388),skmod[_0x1977ba(0x1cf)](m[_0x1977ba(0x1d8)],{'text':code},{'quoted':m});}
+   if (connection == "open") {   
    conn.isInit = true
    global.listJadibot.push(conn)
    await skmod.sendMessage(m.chat, { text: args[0] ? "*✅ Reconectando...*" : `*✅ Conectado con exito*\n*Si tu bot fue desconectado usa ${prefix + command}*` }, { quoted: m })
@@ -129,18 +130,22 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   delete global.listJadibot[i]  
   global.listJadibot.splice(i, 1) // I stole it from aiden (credits to him)  
   }}
+  
 setInterval(async () => { 
   if (!conn.user) { 
   try { 
   conn.ws.close() 
   } catch {  
   } 
+  
   conn.ev.removeAllListeners() 
   let i = global.listJadibot.indexOf(conn) 
   if (i < 0) return  
   delete global.listJadibot[i] 
   global.listJadibot.splice(i, 1) 
   }}, 60000) //again aiden -.-
+  
+  
   let reloadHandler = async function(restatConn) { 
   let handler = require('./handler.js') 
    if (restatConn) { 
@@ -188,7 +193,7 @@ setInterval(async () => {
   }
   const killJadibot = async (conn, m, command) => {
   try {
-  if (!fs.existsSync(path.join(__dirname, `./jadibot/${id}`))) {
+  if (!fs.existsSync(path.join(__dirname, `./jadibots/${id}`))) {
   return m.reply(`tu sesion no existe`)
   } else {
   fs.rmdirSync(`./jadibots/` + id, { recursive: true })
