@@ -41,7 +41,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   
   async function jadibots() {
   let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? skmod.user.jid : m.sender
-  let uniqid = `${who.split`@`[0]}` 
+  let id = `${who.split`@`[0]}` 
   const mcode = args[0] && args[0].includes("--code") ? true : args[1] && args[1].includes("--code") ? true : false // stoled from aiden hehe
   if (mcode) {
     args[0] = args[0].replace("--code", "").trim()
