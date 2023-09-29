@@ -196,7 +196,7 @@ let handler = require('./handler.js')
   isInit = false
   return true
   }
-  reloadHandler()
+  reloadHandler(false)
   }
   jadibots()
   }
