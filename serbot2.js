@@ -35,8 +35,8 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   if (global.listJadibot instanceof Array) console.log()   
   else global.listJadibot = []   
   
-  const jadibot = async (rsmod, m, command, args) => {
-  const skmod = rsmod
+  const jadibot = async (conn, m, command, args) => {
+  const skmod = conn
   
   
   async function jadibots() {
@@ -130,7 +130,8 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   if (i < 0) return console.log("No se encontro")  
   delete global.listJadibot[i]  
   global.listJadibot.splice(i, 1) // I stole it from aiden (credits to him)  
-  }}
+  }
+  }
   
 setInterval(async () => { 
   if (!conn.user) { 
@@ -152,7 +153,7 @@ let handler = require('./handler.js')
   if (restatConn) {
   try { conn.ws.close() } catch { }
   conn.ev.removeAllListeners()
-  conn = makeWaSocket(JadibotSettings)
+  conn = makeWaSocket(connectionSettings)
   isInit = true
   }
   if (!isInit) {
