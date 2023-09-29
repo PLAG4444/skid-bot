@@ -384,33 +384,7 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
   this.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet }})  
   this.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}}  
   
-  this.confirm = this.confirm ? this.confirm : {}
-  if (this.confirm[m.sender]) {
-  let { timeout, sender, message, to, type, count } = this.confirm[m.sender]
-  let user = global.db.data.users[sender]
-  let _user = global.db.data.users[to]
-  if (/^No|no$/i.test(body)) {
-  clearTimeout(timeout)
-  delete this.confirm[sender]
-  return this.sendTextWithMentions(m.chat, `@${sender.split("@")[0]} *cancelo la transferencia*`, m)
-  }
-
-  if (/^Si|si$/i.test(m.text)) { 
-   let previous = user[type] * 1
-   let _previous = _user[type] * 1
-   user[type] -= count * 1
-   _user[type] += count * 1
-   if (previous > user[type] * 1 && _previous < _user[type] * 1) {
-   this.sendMessage(m.chat, {text: `*[❗] Se transfirierón correctamente ${count} ${type} a @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m}); 
-     } else { 
-       user[type] = previous; 
-       _user[type] = _previous; 
-       this.sendMessage(m.chat, {text: `*[❗] Error al transferir ${count} ${type} a @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m}); 
-     } 
-     clearTimeout(timeout); 
-     delete this.confirm[sender]; 
-   }
-  }
+  
   
   try {
   
