@@ -78,17 +78,7 @@ async function handler(chatUpdate) {
   const isQuotedMsg = type === 'extendedTextMessage' && content.includes('Message') 
   const isViewOnce = (type === 'viewOnceMessage') 
   
-  const isROwner = [conn.decodeJid(global.conn.user.id), ...global.owner.map(([number]) => number)].map((v) => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender);
-  const isOwner = isROwner || m.fromMe;
-  const isMods = isOwner || global.mods.map((v) => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender);
-  const isPrems = isROwner || isOwner || isMods || global.db.data.users[m.sender].premiumTime > 0; // || global.db.data.users[m.sender].premium = 'true'
-  const groupMetadata = (m.isGroup ? ((conn.chats[m.chat] || {}).metadata || await this.groupMetadata(m.chat).catch((_) => null)) : {}) || {};
-  const participants = (m.isGroup ? groupMetadata.participants : []) || [];
-  const user = (m.isGroup ? participants.find((u) => conn.decodeJid(u.id) === m.sender) : {}) || {}; // User Data
-  const bot = (m.isGroup ? participants.find((u) => conn.decodeJid(u.id) == this.user.jid) : {}) || {}; // Your Data
-  const isRAdmin = user?.admin == 'superadmin' || false;
-  const isAdmin = isRAdmin || user?.admin == 'admin' || false
-  const isBotAdmin = bot?.admin || false
+  
   
   if (!this.public && m.key.fromMe) return
   if (typeof m.text !== 'string') {
