@@ -51,7 +51,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   console.info = () => {} 
   const msgRetry = (MessageRetryMap) => { }
   const msgRetryCache = new NodeCache()
-  const {state, saveState, saveCreds} = await useMultiFileAuthState('jadibot' + id)
+  const {state, saveState, saveCreds} = await useMultiFileAuthState('./jadibot/' + id)
   const { version, isLatest } = await fetchLatestBaileysVersion()   
 
   const connectionSettings = {
