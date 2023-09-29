@@ -119,7 +119,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
    skmod.sendMessage(m.chat, {text : "*❗ La sesión actual se cerró, Si desea volver a conectarse tendra que iniciar sesion de nuevo*"}, { quoted: m }) 
    } else if (code === DisconnectReason.restartRequired) { 
    skmod.sendMessage(m.chat, {text : "*❗ Reinicio requerido, se intentara reconectar automáticamente...*"}, { quoted: m }) 
-   await jadibots()catch(console.error) 
+   await jadibots().catch(console.error) 
    } else if (code === DisconnectReason.timedOut) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se agotó, se intentara reconectar automáticamente...*"}, { quoted: m }) 
    await jadibots().catch(console.error) 
@@ -146,14 +146,7 @@ setInterval(async () => {
   global.listJadibot.splice(i, 1) 
   }}, 60000) //again aiden -.-
   
-  conn.ev.on('messages.upsert', conn.connection) 
-  conn.ev.on('call', conn.onCall) 
-  conn.ev.on('group-participants.update', conn.participantsUpdate) 
-  conn.ev.on("groups.update", conn.groupsUpdate) 
-  conn.ev.on('message.delete', conn.deleteUpdate) 
-  conn.ev.on('connection.update', conn.connectionUpdate) 
-  conn.ev.on('creds.update', conn.credsUpdate) 
-  conn.ev.on('messages.update', conn.pollCmd) 
+  
   let handler = require('./handler.js') 
 
   
@@ -169,7 +162,15 @@ setInterval(async () => {
   conn.onCall = handler.callUpdate.bind(conn) 
   conn.pollCmd = handler.pollCmd.bind(conn) 
   conn.connectionUpdate = connectionUpdate.bind(conn) 
-  conn.credsUpdate = saveCreds.bind(conn, true)    
+  conn.credsUpdate = saveCreds.bind(conn, true)   
+  conn.ev.on('messages.upsert', conn.connection) 
+  conn.ev.on('call', conn.onCall) 
+  conn.ev.on('group-participants.update', conn.participantsUpdate) 
+  conn.ev.on("groups.update", conn.groupsUpdate) 
+  conn.ev.on('message.delete', conn.deleteUpdate) 
+  conn.ev.on('connection.update', conn.connectionUpdate) 
+  conn.ev.on('creds.update', conn.credsUpdate) 
+  conn.ev.on('messages.update', conn.pollCmd)  
   }
   jadibots()
   }
