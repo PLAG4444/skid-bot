@@ -97,7 +97,6 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
    await skmod.sendMessage(m.chat, { text: args[0] ?  `*✅ Reconexion Exitosa*\n*tus mensajes se estan cargando*` : `*✅ Jadibot Conectado*\n*se te enviara un codigo para volver a conectarte*` }, { quoted: m })
    await sleep(5000)
    if (!args[0]) skmod.sendMessage(m.chat, { text: `${prefix + command } ` + Buffer.from(fs.readFileSync(`./jadibot/${id}/creds.json`), "utf-8").toString("base64") }, { quoted: m })
-   return console.log(await reloadHandler(false).catch(console.error))
    }
    const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode 
    console.log(code)
@@ -113,10 +112,10 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
    fs.rm("./jadibot/" + id, { recursive: true }) 
    } else if (code === DisconnectReason.connectionClosed) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se cerró, se intentara reconectar automáticamente...*\n" }, { quoted: m }) 
-   await reloadHandler(true).catch(console.error)
+   await jadibots()
    } else if (code === DisconnectReason.connectionLost) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se perdió, se intentara reconectar automáticamente...*"}, { quoted: m }) 
-   await reloadHandler(true).catch(console.error)
+   await jadibots()
    } else if (code === DisconnectReason.connectionReplaced) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se reemplazó, Su conexion se cerro*"}, { quoted: m }) 
    } else if (code === DisconnectReason.loggedOut) { 
@@ -124,10 +123,9 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
    } else if (code === DisconnectReason.restartRequired) { 
    skmod.sendMessage(m.chat, {text : "*❗ Reinicio requerido, se intentara reconectar automáticamente...*"}, { quoted: m }) 
    await jadibots()
-   await reloadHandler().catch(console.error)
    } else if (code === DisconnectReason.timedOut) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se agotó, se intentara reconectar automáticamente...*"}, { quoted: m }) 
-   await reloadHandler(true).catch(console.error)
+   await jadibots()
    } else { 
    skmod.sendMessage(m.chat, {text : ` ⚠  Razón de desconexión desconocida. ${code || ''}: ${connection || ''} Por favor reporte al desarollador.`}, { quoted: m }) 
    }
@@ -153,7 +151,7 @@ setInterval(async () => {
   }}, 60000) //again aiden -.-
   
   
-let reloadHandler = async function(restatConn) {
+/*let reloadHandler = async function(restatConn) {
 let handler = require('./handler.js')
   if (restatConn) {
   try { conn.ws.close() } catch { }
@@ -195,8 +193,26 @@ let handler = require('./handler.js')
   
   isInit = false
   return true
-  }
-  reloadHandler(false)
+  } */
+  
+  const handler = require('./handler.js')
+  conn.handler = handler.handler.bind(conn)
+  conn.welcome = handler.participantsUpdate.bind(conn)
+  conn.groups = handler.groupsUpdate.bind(conn)
+  conn.delete = handler.deleteUpdate.bind(conn)
+  conn.Call = handler.callUpdate.bind(conn)
+  conn.poll = handler.pollCmd.bind(conn)
+  conn.connection = connectionUpdate.bind(conn)
+  conn.creds = saveCreds.bind(conn, true)
+  
+  conn.ev.on('messages.upsert', conn.handler)
+  conn.ev.on('call', conn.Call)
+  conn.ev.on('group-participants.update', conn.welcome)
+  conn.ev.on("groups.update", conn.groups)
+  conn.ev.on('message.delete', conn.delete)
+  conn.ev.on('connection.update', conn.connection)
+  conn.ev.on('creds.update', conn.creds)
+  conn.ev.on('messages.update', conn.poll)
   }
   jadibots()
   }
