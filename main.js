@@ -5,6 +5,7 @@
 // @elrebelde21
   
   // Importaciones   
+  require("./settings")
   const { WaMessageStubType, areJidsSameUser, downloadContentFromMessage, generateWAMessageContent, generateWAMessageFromContent, generateWAMessage, prepareWAMessageMedia, relayMessage} = require('@whiskeysockets/baileys'); 
   const moment = require('moment-timezone')  
   const yts = require("youtube-yts")
@@ -16,7 +17,6 @@
   const fetch = require('node-fetch')  
   const axios = require('axios')  
   const cheerio = require('cheerio')
-  const QrCode = require('qrcode-reader')
   const qrcode = require('qrcode')
   const { TelegraPh, UploadFileUgu, webp2mp4File, floNime } = require('./lib/uploader.js')
   const { toAudio, toPTT, toVideo } = require('./lib/converter.js')
@@ -34,23 +34,9 @@
   const { skmenu } = require('./lib/menu.js')
   const { skrpg } = require('./lib/rpg.js')
   const { jadibot, listJadibot, killJadibot } = require('./serbot2.js')
-  require("./settings")
-  const { before } = require('./handler')
   const { canLevelUp, xpRange } = require('./lib/levelling.js')
   
-  const msgs = (message) => { 
-  if (message.length >= 10) { 
-  return `${message.substr(0, 500)}` 
-  } else { 
-  return `${message}`}} 
     
-  const getFileBuffer = async (mediakey, MediaType) => {  
-  const stream = await downloadContentFromMessage(mediakey, MediaType)  
-  let buffer = Buffer.from([])  
-  for await(const chunk of stream) {  
-  buffer = Buffer.concat([buffer, chunk]) }  
-  return buffer
-  }
    
 
   
@@ -60,30 +46,19 @@
   * @param {import("@whiskeysockets/baileys").WASocket}   
   */  
   module.exports = conn = async (conn, m, chatUpdate, store) => {  
-  var budy = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
-
-
-  
-  if (m.key.id.startsWith("BAE5")) return  
   var body = (typeof m.text == 'string' ? m.text : '') 
   var _prefix = /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#%^&.©^]/gi)[0] : ""
   global.prefix = _prefix
   const isCmd = body.startsWith(prefix)   
-  const from = m.chat 
-  const msg = JSON.parse(JSON.stringify(m, undefined, 2)) 
-  const content = JSON.stringify(m.message) 
-  const type = m.mtype 
-  const arg = body.substring(body.indexOf(' ') + 1) 
   const command = isCmd ? body.slice(1).trim().split(/ +/).shift().toLocaleLowerCase() : null
   const args = body.trim().split(/ +/).slice(1) 
-  const q = args.join(" ") 
-  let t = m.messageTimestamp 
+  
   const pushname = m.pushName || "Sin nombre" 
   const _isBot = conn.user.jid
   const userSender = m.key.fromMe ? _isBot : m.isGroup && m.key.participant.includes(":") ? m.key.participant.split(":")[0] + "@s.whatsapp.net" : m.key.remoteJid.includes(":") ? m.key.remoteJid.split(":")[0] + "@s.whatsapp.net" : m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid  
   const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(userSender) 
   const itsMe = m.sender == conn.user.id ? true : false 
-  const text = args.join(" ") 
+  const text = args.join(" ") || m.text
   const quoted = m.quoted ? m.quoted : m 
   const sender = m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid 
   const mime = (quoted.msg || quoted).mimetype || ''  
@@ -106,31 +81,13 @@
   const fgif = { key: {  participant: "0@s.whatsapp.net", }, message: { videoMessage: { title: botname, h: `Hmm`, seconds: "999999999", gifPlayback: "true", caption: m.pushName, jpegThumbnail: success, }, }, }
   global.fakevovid = { key: { fromMe: false, participant: '0@s.whatsapp.net', remoteJid: 'status@broadcast' }, message: { videoMessage: { mimetype: 'video/mp4', caption: botname, jpegThumbnail: success, viewOnce: true }}}
   global.fpay = { "key": { "participant": `0@s.whatsapp.net`, "remoteJid": "6287834993722-1621306547@g.us", "fromMe": false, "id": "3B64558B07848BD81108C1D14712018E" }, "message": { "requestPaymentMessage": { "currencyCodeIso4217": "USD", "amount1000": "100000", "requestFrom": "5218442114446@s.whatsapp.net", "noteMessage": { "extendedTextMessage": { "text": botname }}, "expiryTimestamp": "0", "amount": { "value": "100000", "offset": 1000, "currencyCode": "USD" }, "background": { "id": "BBB9307B17C17F928E57A7435E45033E", "fileLength": "94896", "width": 64, "height": 64, "mimetype": "image/webp", "placeholderArgb": 4288282521, "textArgb": 4278190080, "subtextArgb": 4288282521}}}}
-  const kick = function (from, orangnya) {  
-  for (let i of orangnya) {  
-  conn.groupParticipantsUpdate(m.chat, [i], "remove");  
-  }}  
-  const time = moment(Number(msg.messageTimestamp + "000")).locale("es-mx").tz("America/Asuncion").format('MMMM Do YYYY, h:mm:ss a')  
   
-  const reply = (text) => {  
-  m.reply(text)} 
-  const sendAdMessage = (text, title, body, image, url) => { conn.sendMessage(m.chat, {text: text, contextInfo: { externalAdReply: { title: title, body: body, mediaUrl: url, sourceUrl: url, previewType: 'PHOTO', showAdAttribution: true, thumbnail: image, sourceUrl: url }}}, {})}  
-  const sendImage = ( image, caption ) => { conn.sendMessage(m.chat, { image: image, caption: caption }, { quoted: m })}  
+  
+  
   const sendImageAsUrl = ( url, caption ) => { conn.sendMessage(m.chat, { image:  {url: url }, caption: caption }, { quoted: m })}  
 
+   
   
-  // ‿︵‿︵ʚɞ『 TIPOS DE MENSAJES Y CITADOS 』ʚɞ‿︵‿︵  
-  const isAudio = type == 'audioMessage' // Mensaje de Audio  
-  const isSticker = type == 'stickerMessage' // Mensaje de Sticker  
-  const isContact = type == 'contactMessage' // Mensaje de Contacto  
-  const isLocation = type == 'locationMessage' // Mensaje de Localización   
-  const isQuotedImage = type === 'extendedTextMessage' && content.includes('imageMessage')  
-  const isQuotedVideo = type === 'extendedTextMessage' && content.includes('videoMessage')  
-  const isQuotedAudio = type === 'extendedTextMessage' && content.includes('audioMessage')  
-  const isQuotedSticker = type === 'extendedTextMessage' && content.includes('stickerMessage')  
-  const isQuotedDocument = type === 'extendedTextMessage' && content.includes('documentMessage')  
-  const isQuotedMsg = type === 'extendedTextMessage' && content.includes('Message') // Mensaje citado de cualquier tipo  
-  const isViewOnce = (type === 'viewOnceMessage') // Verifica si el tipo de mensaje es (mensaje de vista única)  
   this.confirm = this.confirm ? this.confirm : {}
   if (this.confirm[m.sender]) {
   let { timeout, sender, message, to, type, count } = this.confirm[m.sender]
@@ -161,7 +118,7 @@
 if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
 let hash = global.db.data.sticker[m.msg.fileSha256.toString('base64')]
 let { text, mentionedJid } = hash
-let messages = await generateWAMessage(from, { text: text, mentions: mentionedJid }, {
+let messages = await generateWAMessage(m.chat, { text: text, mentions: mentionedJid }, {
 userJid: conn.user.id,
 quoted : m.quoted && m.quoted.fakeObj
 })
@@ -180,21 +137,7 @@ conn.ev.emit('messages.upsert', msg)
 
 
 
-  let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
-for (let jid of mentionUser) {
-let user = global.db.data.users[jid]
-if (!user) continue
-let afkTime = user.afkTime
-if (!afkTime || afkTime < 0) continue
-let reason = user.afkReason || ''
-m.reply(`*❗ No lo etiquetes*\n*El esta afk ${reason ? 'por la razon ' + reason : 'Sin ninguna razon -_-'}*\nDurante ${clockString(new Date - afkTime)}`.trim())
-}
-if (global.db.data.users[m.sender].afkTime > -1) {
-let user = global.db.data.users[m.sender]
-m.reply(`*❗Dejaste de estar afk ${user.afkReason ? 'Por ' + user.afkReason : ''}*\n*Durante ${clockString(new Date - user.afkTime)} ^_^*`.trim())
-user.afkTime = -1
-user.afkReason = ''
-}
+  
 
  
   try {  
@@ -222,7 +165,7 @@ user.afkReason = ''
   fs.unlinkSync(media)
   if (err) throw err
   let buffer = fs.readFileSync(ran)
-  conn.sendMessage(from, { image: buffer }, { quoted: m})
+  conn.sendMessage(m.chat, { image: buffer }, { quoted: m})
   fs.unlinkSync(ran)
   })
   }
@@ -400,9 +343,9 @@ user.afkReason = ''
     break
     
     case 'del': { 
-    if (!m.isGroup) return reply(mess.group);  
-    if (!isBotAdmins) return reply(mess.botAdmin);  
-    if (!isGroupAdmins) return reply(mess.admin);
+    if (!m.isGroup) return m.reply(mess.group);  
+    if (!isBotAdmins) return m.reply(mess.botAdmin);  
+    if (!isGroupAdmins) return m.reply(mess.admin);
     if (!m.quoted) throw `*❗ Etiqueta un mensaje*`
       try { 
      const delet = m.message.extendedTextMessage.contextInfo.participant; 
@@ -415,9 +358,9 @@ user.afkReason = ''
      break
 
      case 'grupo': {
-    if (!m.isGroup) return reply(mess.group);  
-    if (!isBotAdmins) return reply(mess.botAdmin);  
-    if (!isGroupAdmins) return reply(mess.admin)
+    if (!m.isGroup) return m.reply(mess.group);  
+    if (!isBotAdmins) return m.reply(mess.botAdmin);  
+    if (!isGroupAdmins) return m.reply(mess.admin)
       if (args[0] === 'abrir') {
     m.reply(`*GRUPO ABIERTO CON EXITO✅*`)
     await conn.groupSettingUpdate(m.chat, 'not_announcement')
@@ -467,9 +410,9 @@ user.afkReason = ''
       te += "Usuario: " + i.name + "\n";
       te += "Numero: https://wa.me/+" + y.split("@")[0] + "?text=.estado\n\n";
     }
-    conn.sendMessage(from, { text: te }, { quoted: m });
+    conn.sendMessage(m.chat, { text: te }, { quoted: m });
   } catch (err) {
-    reply(`*no hay subbots activos*`);
+    m.reply(`*no hay subbots activos*`);
   }
   }
     break;
@@ -544,18 +487,18 @@ user.afkReason = ''
       case 's':  
       case 'sticker': {  
           if (/image/.test(mime)) {  
-          reply(mess.wait)  
+          m.reply(mess.wait)  
           media = await quoted.download()  
           let encmedia = await conn.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author })  
           await fs.unlinkSync(encmedia)  
         } else if (/video/.test(mime)) {  
-          if ((quoted.msg || quoted).seconds > 40) return reply('¡Máximo 40 segundos!')  
+          if ((quoted.msg || quoted).seconds > 40) return m.reply('¡Máximo 40 segundos!')  
           media = await quoted.download()  
           let encmedia = await conn.sendVideoAsSticker(m.chat, media, m, { packname: packname, author: author })  
           await new Promise((resolve) => setTimeout(resolve, 2000));   
           await fs.unlinkSync(encmedia)  
       } else {  
-          reply(`*Envía una imagen/video con ${prefix + command}*\n_*(La duración del video solo puede ser de 10 segundos)*_`)  
+          m.reply(`*Envía una imagen/video con ${prefix + command}*\n_*(La duración del video solo puede ser de 10 segundos)*_`)  
           }  
       }  
       break
@@ -599,14 +542,14 @@ user.afkReason = ''
        break
             
   case 'getcase':  
-    if (!isCreator) return conn.sendMessage(m.chat, { text: mess.owner }, { quoted: msg });  
+    if (!isCreator) return conn.sendMessage(m.chat, { text: mess.owner }, { quoted: m});  
     if (!text) return m.reply(`no hay comando a buscar o que?`)  
     try {  
     bbreak = 'break'  
-  reply('case ' + `'${args[0]}'` + fs.readFileSync('./main.js').toString().split(`case '${args[0]}'`)[1].split(bbreak)[0] + bbreak)  
+  m.reply('case ' + `'${args[0]}'` + fs.readFileSync('./main.js').toString().split(`case '${args[0]}'`)[1].split(bbreak)[0] + bbreak)  
   } catch (err) {  
   console.error(err)  
-  reply(" Error, tal vez no existe el comando")  
+  m.reply(" Error, tal vez no existe el comando")  
   }  
   break
   
@@ -627,7 +570,7 @@ user.afkReason = ''
 
 
   case 'attp':  
-    if (!text) return reply('ingresa algo para convertirlo a sticker :v')  
+    if (!text) return m.reply('ingresa algo para convertirlo a sticker :v')  
     link = `https://api.lolhuman.xyz/api/attp?apikey=${lolkeysapi}&text=${text}`  
     conn.sendMessage(m.chat, { sticker: { url: link } }, { quoted: fkontak })  
     break  
@@ -646,34 +589,34 @@ user.afkReason = ''
   
   
   case 'leave': {  
-    if (!isCreator) return reply(`*este comando solo es para mi jefe*`);  
-    reply(m.chat, `*Adios fue un gusto estar aqui hasta pronto*`);  
+    if (!isCreator) return m.reply(`*este comando solo es para mi jefe*`);  
+    m.reply(m.chat, `*Adios fue un gusto estar aqui hasta pronto*`);  
     await conn.groupLeave(m.chat);  
   }  
   break  
   
   case 'kick': {  
-    if (!m.isGroup) return reply(mess.group);  
-    if (!isBotAdmins) return reply(mess.botAdmin);  
-    if (!isGroupAdmins) return reply(mess.admin);  
+    if (!m.isGroup) return m.reply(mess.group);  
+    if (!isBotAdmins) return m.reply(mess.botAdmin);  
+    if (!isGroupAdmins) return m.reply(mess.admin);  
     let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net';  
     conn.groupParticipantsUpdate(m.chat, [users], 'remove');  
   }  
   break  
   
   case 'promote': {  
-    if (!m.isGroup) return reply(mess.group);  
-    if (!isBotAdmins) return reply(mess.botAdmin);  
-    if (!isGroupAdmins) return reply(mess.admin);  
+    if (!m.isGroup) return m.reply(mess.group);  
+    if (!isBotAdmins) return m.reply(mess.botAdmin);  
+    if (!isGroupAdmins) return m.reply(mess.admin);  
     let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net';  
     await conn.groupParticipantsUpdate(m.chat, [users], 'promote')
   }  
   break  
   
   case 'demote': {  
-    if (!m.isGroup) return reply(mess.group);  
-    if (!isBotAdmins) return reply(mess.botAdmin);  
-    if (!isGroupAdmins) return reply(mess.admin);  
+    if (!m.isGroup) return m.reply(mess.group);  
+    if (!isBotAdmins) return m.reply(mess.botAdmin);  
+    if (!isGroupAdmins) return m.reply(mess.admin);  
     let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net';  
     await conn.groupParticipantsUpdate(m.chat, [users], 'demote')
   }  
@@ -694,18 +637,18 @@ user.afkReason = ''
   break		
   
   case 'hidetag':  
-    if (!m.isGroup) return reply(mess.group)
+    if (!m.isGroup) return m.reply(mess.group)
     if (!isGroupAdmins) return m.reply(mess.admin)
     if (isGroupAdmins || isCreator || !m.quoted ) {  
-      conn.sendMessage(m.chat, { text: q ? q : "", mentions: participants.map((a) => a.id) }, { quoted: m })  
+      conn.sendMessage(m.chat, { text: text ? text : "", mentions: participants.map((a) => a.id) }, { quoted: m })  
     }
     if (m.quoted) return conn.sendMessage(m.chat, { forward: m.quoted.fakeObj, mentions: participants.map(a => a.id) }, { quoted: m }) // Mario is going to steal it
     break;  
   
   case 'tagall': {  
-    if (!m.isGroup) return reply(mess.group);  
-    if (!isBotAdmins) return reply(mess.botAdmin);  
-    if (!isGroupAdmins) return reply(mess.admin);  
+    if (!m.isGroup) return m.reply(mess.group);  
+    if (!isBotAdmins) return m.reply(mess.botAdmin);  
+    if (!isGroupAdmins) return m.reply(mess.admin);  
     let teks = `✿ ━〔 *🍬 𝐈𝐍𝐕𝐎𝐂𝐀𝐂𝐈𝐎́𝐍 𝐌𝐀𝐒𝐈𝐕𝐀  🍬* 〕━ ✿\n\n`;  
     teks += `✿ 𝐒𝐔 𝐀𝐃𝐌𝐈𝐍 𝐋𝐎𝐒 𝐈𝐍𝐕𝐎𝐂𝐀, 𝐑𝐄𝐕𝐈𝐕𝐀𝐍\n\n`;  
     teks += `✿ 𝐌𝐄𝐍𝐒𝐀𝐉𝐄:  ${text ? text : 'no hay mensaje :v'}\n\n`;  
@@ -820,20 +763,6 @@ conn.sendMessage(m.chat, docAd, { quoted: m })
    let _res = await (/2/.test(command) ? wallpaperv2 : wallpaper)(text) 
    let _img = _res[Math.floor(Math.random() * _res.length)]
    conn.sendMessage(m.chat, { image: { url: _img }, caption: `*✨ Aqui tienes tu wallpaper de ${text}*`}, { quoted: fgif })
-   break
-   case 'animeplanet': {
-const xn = await fetch(`https://api-diego-ofc.vercel.app/api/animeplanet?q=${text}`)
-    const gPlay = await xn.json();
-
-    let caption = `🔍 titulo: 
-
-${gPlay.data.resultado[0].titulo}
-
-⛓️ Link: ${gPlay.data.resultado[0].link}  
-
-🖼️ Imagen: ${gPlay.data.resultado[0].image}`
-    
-    conn.sendMessage(m.chat, {text: caption}, {quoted: m});}
    break
    case 'anime': {
    if (/image/.test(mime)) {
@@ -1005,7 +934,7 @@ case 'play2': {
     let { webp2mp4File } = require('./lib/uploader')
     let media = await conn.downloadAndSaveMediaMessage(quoted)
     let webpToMp4 = await webp2mp4File(media)
-    await conn.sendMessage(from, { video: { url: webpToMp4.result, caption: 'Convert Webp To Video' }, gifPlayback: true }, {quoted:m})
+    await conn.sendMessage(m.chat, { video: { url: webpToMp4.result, caption: 'Convert Webp To Video' }, gifPlayback: true }, {quoted:m})
     await fs.unlinkSync(media)
     }
     break
@@ -1195,9 +1124,9 @@ case 'play2': {
    
    
    case 'setwelcome': case 'bienvenida': {
-   if (!m.isGroup) return reply(mess.group);  
-    if (!isBotAdmins) return reply(mess.botAdmin);  
-    if (!isGroupAdmins) return reply(mess.admin);  
+   if (!m.isGroup) return m.reply(mess.group);  
+    if (!isBotAdmins) return m.reply(mess.botAdmin);  
+    if (!isGroupAdmins) return m.reply(mess.admin);  
    let chats = global.db.data.chats[m.chat]
    if (!text) throw '*❗ Pon algo para poner una bienvenida*\n*@user* = etiqueta al usuario\n*@subject* = nombre del grupo\n*@desc* = descripción'
    chats.sWelcome = text
@@ -1205,9 +1134,9 @@ case 'play2': {
    }
    break
    case 'setbye': case 'despedida': {
-   if (!m.isGroup) return reply(mess.group);  
-    if (!isBotAdmins) return reply(mess.botAdmin);  
-    if (!isGroupAdmins) return reply(mess.admin);  
+   if (!m.isGroup) return m.reply(mess.group);  
+    if (!isBotAdmins) return m.reply(mess.botAdmin);  
+    if (!isGroupAdmins) return m.reply(mess.admin);  
    let chats = global.db.data.chats[m.chat]
    if (!text) throw '*❗ Pon algo para poner una despedida*\n*@user* = etiqueta al usuario'
    chats.sBye = text
@@ -1248,7 +1177,7 @@ case 'play2': {
  if (!text) throw `*⚠️ que música quieres ${conn.getName(m.sender)}?*\n*ejempo: ${prefix + command} say with me*`
  const { lyrics, lyricsv2 } = require('@bochilteam/scraper')
  const resu = await lyricsv2(text).catch(async _ => await lyrics(text))
- reply(`*Titulo: ${resu.title}*\n*Autor: ${resu.author}*\n*link: ${resu.link}*\n*lyrics: ${resu.lyrics}*`)
+ m.reply(`*Titulo: ${resu.title}*\n*Autor: ${resu.author}*\n*link: ${resu.link}*\n*lyrics: ${resu.lyrics}*`)
  break
  case 'image': case 'imagen':
  let { googleImage } = require('@bochilteam/scraper')
@@ -1300,22 +1229,22 @@ case 'play2': {
   case 'ping':  
     var timestamp = speed();  
     var latensi = speed() - timestamp  
-    conn.sendMessage(m.chat, { text: `*Pong 🏓  ${latensi.toFixed(4)}*` }, { quoted: msg });  
+    conn.sendMessage(m.chat, { text: `*Pong 🏓  ${latensi.toFixed(4)}*` }, { quoted: m});  
     break  
   
           case 'update':  
-            if (!isCreator) return conn.sendMessage(m.chat, { text: mess.owner }, { quoted: msg });  
+            if (!isCreator) return conn.sendMessage(m.chat, { text: mess.owner }, { quoted: m});  
            try {  
-           let stdout = execSync('git pull' + (m.fromMe && q ? ' ' + q : ''))  
-            await conn.sendMessage(m.chat, { text: stdout.toString() }, { quoted: msg });  
+           let stdout = execSync('git pull' + (m.fromMe && text ? ' ' + text : ''))  
+            await conn.sendMessage(m.chat, { text: stdout.toString() }, { quoted: m});  
           } catch {  
            let updatee = execSync('git remote set-url origin https://github.com/Skidy89/skid-bot && git pull')  
-            await conn.sendMessage(m.chat, { text: updatee.toString() }, { quoted: msg });  
+            await conn.sendMessage(m.chat, { text: updatee.toString() }, { quoted: m});  
          }  
            break  
   
          case 'simi': case 'bot': {
-          if (!text) return conn.sendMessage(m.chat, { text: `*Dime algo para hablar contigo (sim simi) ♡*` }, { quoted: msg });  
+          if (!text) return conn.sendMessage(m.chat, { text: `*Dime algo para hablar contigo (sim simi) ♡*` }, { quoted: m});  
           await conn.sendPresenceUpdate('composing', m.chat);  
             let anu = await fetchJson(`https://api.simsimi.net/v2/?text=${text}&lc=es&cf=false`);  
             let res = anu.success;  
@@ -1370,7 +1299,7 @@ case 'play2': {
  break
          
           case 'pinterest':  
-          if (!text) return reply('𝚒𝚗𝚐𝚛𝚎𝚜𝚊 𝚞𝚗 𝚝𝚎𝚡𝚝𝚘 𝚙𝚊𝚛𝚊 𝚋𝚞𝚜𝚌𝚊𝚛 𝚎𝚗 𝚙𝚒𝚗𝚝𝚎𝚛𝚎𝚜𝚝')  
+          if (!text) return m.reply('𝚒𝚗𝚐𝚛𝚎𝚜𝚊 𝚞𝚗 𝚝𝚎𝚡𝚝𝚘 𝚙𝚊𝚛𝚊 𝚋𝚞𝚜𝚌𝚊𝚛 𝚎𝚗 𝚙𝚒𝚗𝚝𝚎𝚛𝚎𝚜𝚝')  
           m.reply(mess.wait)  
           lol = await pinterest(text) //.catch(m.reply)  
           result = lol[Math.floor(Math.random() * lol.length)];  
@@ -1416,7 +1345,7 @@ case 'play2': {
 		    case 'summersand':
 		    case 'horrorblood':
 		    case 'thunder':
-			if (args.length == 0) return reply(`Ejemplo de uso: ${prefix + command} ${botname}`)
+			if (args.length == 0) return m.reply(`Ejemplo de uso: ${prefix + command} ${botname}`)
 			conn.sendMessage(m.chat, { image: { url: `https://api.lolhuman.xyz/api/textprome/${command}?apikey=${lolkeysapi}&text=${text}` } })
 			break
 			case 'wetglass':
@@ -1449,7 +1378,7 @@ case 'play2': {
     		case 'goldplaybutton':
     		case 'silverplaybutton':
     		case 'freefire':
-			if (args.length == 0) return reply(`Ejemplo: ${prefix + command} skid bot`)
+			if (args.length == 0) return m.reply(`Ejemplo: ${prefix + command} skid bot`)
 			conn.sendMessage(m.chat, { image: { url: `https://api.lolhuman.xyz/api/ephoto1/${command}?apikey=${lolkeysapi}&text=${text}` } })
 			break
 			case 'shadow':
@@ -1476,7 +1405,7 @@ case 'play2': {
 	    	case 'flamming':
 	    	case 'harrypotter':
 	    	case 'carvedwood':
-			if (args.length == 0) return reply(`Ejemplo de uso: ${prefix + command} ${botname}`)
+			if (args.length == 0) return m.reply(`Ejemplo de uso: ${prefix + command} ${botname}`)
 			conn.sendMessage(m.chat, { image: { url: `https://api.lolhuman.xyz/api/photooxy1/${command}?apikey=${lolkeysapi}&text=${text}` }}, {quoted: m })
 			break
           case 'bass': case 'blown': case 'deep': case 'earrape': case 'fast': case 'fat': case 'nightcore': case 'reverse': case 'robot': case 'slow': case 'smooth': case 'squirrel':  
@@ -1499,12 +1428,12 @@ case 'play2': {
                   let ran = getRandom('.mp3')  
                   exec(`ffmpeg -i ${media} ${set} ${ran}`, (err, stderr, stdout) => {  
                   fs.unlinkSync(media)  
-                  if (err) return reply(err)  
+                  if (err) return m.reply(err)  
                   let buff = fs.readFileSync(ran)  
                   conn.sendMessage(m.chat, { audio: buff, mimetype: 'audio/mpeg' }, { quoted : m })  
                   fs.unlinkSync(ran)  
                   })  
-                  } else reply(`Reply to the audio you want to change with a caption *${prefix + command}*`)  
+                  } else m.reply(`Reply to the audio you want to change with a caption *${prefix + command}*`)  
                   } catch (e) {  
                   m.reply(`hubo un error... ${e}`)  
                   }  
@@ -1580,81 +1509,81 @@ case 'play2': {
 			let inBotSuccess = `*el ${inEnable} fue activado en este bot*`
 			switch (inEnable) { // inEnable ? inEnable : commands
 			case 'antidelete':
-	        if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+	        if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
             if (inChat.antidelete) return conn.sendCart(m.chat, actived, global.query, botname)
             inChat.antidelete = true
             conn.sendCart(m.chat, inSuccess, success)
             break
             case 'antiviewonce':
-	        if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+	        if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
             if (inChat.antiviewonce) return conn.sendCart(m.chat, actived, global.query, botname)
             inChat.antiviewonce = true
             conn.sendCart(m.chat, inSuccess, success)
             break
 			case 'antilink':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (inChat.antilink) return conn.sendCart(m.chat, `*el ${inEnable} ya esta activado!!*\n*puedes desactivarlo con ${prefix}disable ${inEnable}*`, global.query, botname)
 			inChat.antilink = true
 			conn.sendCart(m.chat, inSuccess, success)
 			break
 			case 'antinsfw':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (inChat.antiNsfw) return conn.sendCart(m.chat, `*el ${inEnable} ya esta activado!!*\n*puedes desactivarlo con ${prefix}disable ${inEnable}*`, global.query, botname)
 			inChat.antiNsfw = true
 			conn.sendCart(m.chat, inSuccess, success)
 			break
 			case 'detect':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (inChat.autoDetect) return conn.sendCart(m.chat, `*el ${inEnable} ya esta activado!!*\n*puedes desactivarlo con ${prefix}disable ${inEnable}*`, query)
 			inChat.autoDetect = true
 			conn.sendCart(m.chat, inSuccess, success)
 			break
 			case 'antifakes':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (inChat.antiFake) return conn.sendCart(m.chat, `*el ${inEnable} ya esta activado!!*\n*puedes desactivarlo con ${prefix}disable ${inEnable}*`, query)
 			inChat.antiFake = true
 			conn.sendCart(m.chat, inSuccess, success)
 			break
 			case 'audios':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (inChat.audios) return conn.sendCart(m.chat, `*el ${inEnable} ya esta activado!!*\n*puedes desactivarlo con ${prefix}disable ${inEnable}*`, query)
 			inChat.audios = true
 			conn.sendCart(m.chat, inSuccess, success)
 			break
 			case 'antiarabes':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (inChat.antiArabe) return conn.sendCart(m.chat, `*el ${inEnable} ya esta activado!!*\n*puedes desactivarlo con ${prefix}disable ${inEnable}*`, query)
 			inChat.antiArabe = true
 			conn.sendCart(m.chat, inSuccess, success)
 			break
 			case 'welcome':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (inChat.welcome) return conn.sendCart(m.chat, `*el ${inEnable} ya esta activado!!*\n*puedes desactivarlo con ${prefix}disable ${inEnable}*`, query)
 			inChat.welcome = true
 			conn.sendCart(m.chat, inSuccess, success)
 			break
 			case 'modoadmin':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (!inChat.modeAdmin) return conn.sendCart(m.chat, `*el ${inEnable} ya esta activado!!*\n*puedes desactivarlo con ${prefix}disable ${inEnable}*`, query)
 			inChat.modeAdmin = true
 			conn.sendCart(m.chat, inSuccess, success)
@@ -1688,81 +1617,81 @@ case 'play2': {
 			switch (inDisable) { // inDisable ? inDisable : commands
 			
 			case 'antilink':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);  
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);  
 			if (!Chat.antilink) return conn.sendCart(m.chat, disable, global.query, botname)
 			Chat.antilink = false
 			conn.sendCart(m.chat, inSuccessDisable, success)
 			break
 			case 'antiviewonce':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);  
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);  
 			if (!Chat.antiviewonce) return conn.sendCart(m.chat, disable, global.query, botname)
 			Chat.antiviewonce = false
 			conn.sendCart(m.chat, inSuccessDisable, success)
 			break
 			case 'antinsfw': case 'antiporno':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);  
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);  
 			if (!Chat.antiNsfw) return conn.sendCart(m.chat, disable, global.query, botname)
 			Chat.antiNsfw = false
 			conn.sendCart(m.chat, inSuccessDisable, success)
 			break
 			case 'detect':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (!Chat.autoDetect) return conn.sendCart(m.chat, disable, query)
 			Chat.autoDetect = false
 			conn.sendCart(m.chat, inSuccessDisable, success)
 			break
 			case 'antidelete':
-	        if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+	        if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
             if (chat.antidelete) return conn.sendCart(m.chat, disable, global.query, botname)
             Chat.antidelete = false
             conn.sendCart(m.chat, inSuccessDisable, success)
             break
 			case 'antifakes':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (!Chat.antiFake) return conn.sendCart(m.chat, disable, query)
 			Chat.antiFake = false
 			conn.sendCart(m.chat, inSuccessDisable, success)
 			break
 			case 'audios':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (!Chat.audios) return conn.sendCart(m.chat, disable, query)
 			Chat.audios = false
 			conn.sendCart(m.chat, inSuccessDisable, success)
 			break
 			case 'antiarabes':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (!Chat.antiArabe) return conn.sendCart(m.chat, disable, query)
 			Chat.antiArabe = false
 			conn.sendCart(m.chat, inSuccessDisable, success)
 			break
 			case 'welcome':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (!Chat.welcome) return conn.sendCart(m.chat, disable, query)
 			Chat.welcome = false
 			conn.sendCart(m.chat, inSuccessDisable, success)
 			break
 			case 'modoadmin':
-			if (!m.isGroup) return reply(mess.group);  
-            if (!isBotAdmins) return reply(mess.botAdmin);  
-            if (!isGroupAdmins) return reply(mess.admin);
+			if (!m.isGroup) return m.reply(mess.group);  
+            if (!isBotAdmins) return m.reply(mess.botAdmin);  
+            if (!isGroupAdmins) return m.reply(mess.admin);
 			if (!Chat.modeAdmin) return conn.sendCart(m.chat, disable, query)
 			Chat.modeAdmin = false
 			conn.sendCart(m.chat, inSuccessDisable, success)
@@ -1907,6 +1836,8 @@ m.reply(`*No tienes ${count} para apostar en el casino*`)
 }
 break
 
+
+
     
 
 // case?
@@ -1916,31 +1847,31 @@ break
     
           default: 
           
-              if (budy.startsWith('>')) {  
+              if (body.startsWith('>')) {  
                   if (!isCreator) return  
                   try {  
-                      return reply(JSON.stringify(eval(budy.slice(2)), null, '\t'))  
+                      return m.reply(JSON.stringify(eval(body.slice(2)), null, '\t'))  
                   } catch (e) {  
                       e = String(e)  
-                      reply(e)  
+                      m.reply(e)  
                   }  
               }  
-              if (budy.startsWith('=>')) {  
+              if (body.startsWith('=>')) {  
                   if (!isCreator) return  
                   try {  
-                      return  reply(JSON.stringify(eval(`(async () => { ${budy.slice(3)} })()`), null, '\t'))   
+                      return  m.reply(JSON.stringify(eval(`(async () => { ${body.slice(3)} })()`), null, '\t'))   
                   } catch (e) {  
                       e = String(e)  
-                      reply(e)  
+                      m.reply(e)  
                   }  
               }  
-              if (budy.startsWith('$')) {  
+              if (body.startsWith('$')) {  
                   if (!isCreator) return  
                   try {  
-                      return reply(String(execSync(budy.slice(2), { encoding: 'utf-8' })))  
+                      return m.reply(String(execSync(body.slice(2), { encoding: 'utf-8' })))  
                   } catch (e) {  
                       e = String(e)  
-                      reply(e)  
+                      m.reply(e)  
                   }  
               }
          

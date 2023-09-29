@@ -7,34 +7,23 @@ const fs = require('fs')
 const { watchFile, unwatchFile } = require('fs')
 const fetch = require('node-fetch')
 const chalk = require('chalk')
+const fetch = require('node-fetch')
 const path = require('path')
+
+
+
+
 
 async function handler(chatUpdate) {
   this.msgqueque = this.msgqueque || []
   this.uptime = this.uptime || Date.now()
-  if (!chatUpdate) {
-    return
-  }
   this.pushMessage(chatUpdate.messages).catch(console.error)
   let m = chatUpdate.messages[chatUpdate.messages.length - 1]
-  if (!m) {
-    return
-  }
+  if (!chatUpdate) return
+  if (!m) return
+  
   try {
-  m = smsg(this, m) || m
-    if (!m) {
-      return
-    }
-    if (opts['pconly'] && m.chat.endsWith('g.us')) {
-      return
-    }
-    if (opts['gconly'] && !m.chat.endsWith('g.us')) {
-      return
-    }
-    if (opts['swonly'] && m.chat !== 'status@broadcast') {
-      return
-    }
-    
+  m = smsg(this, m) || m    
   var budy = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
   if (m.key.id.startsWith("BAE5")) return  
   var body = (typeof m.text == 'string' ? m.text : '') 
@@ -78,45 +67,42 @@ async function handler(chatUpdate) {
   const who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? this.user.jid : m.sender;
   
   
-  const isAudio = type == 'audioMessage' // Mensaje de Audio  
-  const isSticker = type == 'stickerMessage' // Mensaje de Sticker  
-  const isContact = type == 'contactMessage' // Mensaje de Contacto  
-  const isLocation = type == 'locationMessage' // Mensaje de Localización   
+  const isAudio = type == 'audioMessage'
+  const isSticker = type == 'stickerMessage' 
+  const isContact = type == 'contactMessage'  
+  const isLocation = type == 'locationMessage'   
   const isQuotedImage = type === 'extendedTextMessage' && content.includes('imageMessage')  
   const isQuotedVideo = type === 'extendedTextMessage' && content.includes('videoMessage')  
   const isQuotedAudio = type === 'extendedTextMessage' && content.includes('audioMessage')  
   const isQuotedSticker = type === 'extendedTextMessage' && content.includes('stickerMessage')  
   const isQuotedDocument = type === 'extendedTextMessage' && content.includes('documentMessage')  
-  const isQuotedMsg = type === 'extendedTextMessage' && content.includes('Message') // Mensaje citado de cualquier tipo  
-  const isViewOnce = (type === 'viewOnceMessage') // Verifica si el tipo de mensaje es (mensaje de vista única)
-        
-        
+  const isQuotedMsg = type === 'extendedTextMessage' && content.includes('Message') 
+  const isViewOnce = (type === 'viewOnceMessage') 
   
-    if (!this.public && m.key.fromMe) {
-    return
-    }
-    if (typeof m.text !== 'string') {
-      m.text = ''
-    }
-    if (m.isBaileys) {
-      return
-    }
+  const isROwner = [conn.decodeJid(global.conn.user.id), ...global.owner.map(([number]) => number)].map((v) => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender);
+  const isOwner = isROwner || m.fromMe;
+  const isMods = isOwner || global.mods.map((v) => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender);
+  const isPrems = isROwner || isOwner || isMods || global.db.data.users[m.sender].premiumTime > 0; // || global.db.data.users[m.sender].premium = 'true'
+  const groupMetadata = (m.isGroup ? ((conn.chats[m.chat] || {}).metadata || await this.groupMetadata(m.chat).catch((_) => null)) : {}) || {};
+  const participants = (m.isGroup ? groupMetadata.participants : []) || [];
+  const user = (m.isGroup ? participants.find((u) => conn.decodeJid(u.id) === m.sender) : {}) || {}; // User Data
+  const bot = (m.isGroup ? participants.find((u) => conn.decodeJid(u.id) == this.user.jid) : {}) || {}; // Your Data
+  const isRAdmin = user?.admin == 'superadmin' || false;
+  const isAdmin = isRAdmin || user?.admin == 'admin' || false
+  const isBotAdmin = bot?.admin || false
+  
+  if (!this.public && m.key.fromMe) return
+  if (typeof m.text !== 'string') {
+  m.text = ''
+  }
+  if (m.isBaileys) return
   if (!this.public && !m.key.fromMe && chatUpdate.type === 'notify') return
+  
   try {
   let isNumber = x => typeof x === 'number' && !isNaN(x)  // NaN in number?
   let user = global.db.data.users[m.sender]  
   if (typeof user !== 'object') global.db.data.users[m.sender] = {}  
-  if (user) { 
-  if (!('registered' in user)) 
-     user.registered = false // register
-     if (!user.registered) { 
-     if (!('name' in user)) 
-     user.name = this.user.name
-     if (!isNumber(user.age)) 
-     user.age = -1 
-     if (!isNumber(user.regTime)) 
-     user.regTime = -1 
-  }
+  if (user) {
   if (!isNumber(user.afkTime)) user.afkTime = -1  
   if (!('afkReason' in user)) user.afkReason = ''  
   if (!isNumber(user.limit)) user.limit = 20  
@@ -369,7 +355,21 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
 }
 
 
-  
+  let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
+  for (let jid of mentionUser) {
+  let user = global.db.data.users[jid]
+  if (!user) continue
+  let afkTime = user.afkTime
+  if (!afkTime || afkTime < 0) continue
+  let reason = user.afkReason || ''
+  m.reply(`*❗ No lo etiquetes*\n*El esta afk ${reason ? 'por la razon ' + reason : 'Sin ninguna razon -_-'}*\nDurante ${clockString(new Date - afkTime)}`.trim())
+  }
+  if (global.db.data.users[m.sender].afkTime > -1) {
+  let user = global.db.data.users[m.sender]
+  m.reply(`*❗Dejaste de estar afk ${user.afkReason ? 'Por ' + user.afkReason : ''}*\n*Durante ${clockString(new Date - user.afkTime)} ^_^*`.trim())
+  user.afkTime = -1
+  user.afkReason = ''
+  }
   
   if (global.db.data.chats[m.chat].autoSticker) {  
           if (/image/.test(mime)) {  
@@ -438,13 +438,16 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
    
  if (m.message) { 
  this.logger.info(chalk.bold.white(`\n▣────────────···\n│${botname} ${this.user.id == global.numBot2 ? '' : '(jadibot)'}`),  
- chalk.bold.white('\n│📑TIPO (SMS): ') + chalk.yellowBright(`${type}`),  
+ chalk.bold.white('\n│📑TIPO (SMS): ') + chalk.yellowBright(`${m.mtype}`),  
  chalk.bold.white('\n│📊USUARIO: ') + chalk.cyanBright(pushname) + ' ➜', gradient.rainbow(m.sender),  
  m.isGroup ? chalk.bold.white('\n│📤GRUPO: ') + chalk.greenBright(groupName) + ' ➜ ' + gradient.rainbow(from) : chalk.bold.greenBright('\n│📥PRIVADO'),  
  chalk.bold.white('\n️│🏷️ TAGS: ') + chalk.bold.white(`[${this.public ? 'Publico' : 'Privado'}]`),  
  chalk.bold.white('\n│💬MENSAJE: ') + chalk.bold.white(`${msgs(m.text)}`) + chalk.whiteBright(`\n▣────────────···\n`)) 
  }
  
+    
+    
+
  
  
   require("./main")(this, m, chatUpdate, store)
@@ -591,9 +594,8 @@ for(const { key, update } of chatUpdate) {
 				}
 			}
 		}
-		}
-		
-		
+}
+
 
 
 
