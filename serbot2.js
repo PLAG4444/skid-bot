@@ -97,7 +97,8 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
    if (!args[0]) skmod.sendMessage(m.chat, { text: `${prefix + command } ` + Buffer.from(fs.readFileSync(`./jadibot/${id}/creds.json`), "utf-8").toString("base64") }, { quoted: m })
    }
    const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode 
-   console.log(code) 
+   console.log(code)
+   skmod.logger.warn(lastDisconnect)
    if (connection === 'close') {
    if (code == 405) { 
    fs.unlinkSync("./jadibot/" + id + "/creds.json") 
@@ -167,9 +168,9 @@ setInterval(async () => {
   conn.ev.on('group-participants.update', conn.participantsUpdate) 
   conn.ev.on("groups.update", conn.groupsUpdate) 
   conn.ev.on('message.delete', conn.deleteUpdate) 
+  conn.ev.on('messages.update', conn.pollCmd)
   conn.ev.on('connection.update', conn.connectJadibot) 
   conn.ev.on('creds.update', saveCreds)
-  conn.ev.on('messages.update', conn.pollCmd)  
   }
   jadibots()
   }
