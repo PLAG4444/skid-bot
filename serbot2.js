@@ -100,12 +100,12 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
    console.log(code) 
    if (connection === 'close') {
    if (code == 405) { 
-   fs.unlinkSync("./jadibots/" + id + "/creds.json") 
+   fs.unlinkSync("./jadibot/" + id + "/creds.json") 
    return skmod.sendMessage(m.chat, {text : "*❗ Por favor, reenvia el comando*"}, { quoted: m }) 
    } 
    if (code === DisconnectReason.badSession) { 
    skmod.sendMessage(m.chat, {text : "*❗ La sesión actual es inválida, Tendras que iniciar sesion de nuevo."}, { quoted: m }) 
-   fs.rm("./jadibots/" + id, { recursive: true }) 
+   fs.rm("./jadibot/" + id, { recursive: true }) 
    } else if (code === DisconnectReason.connectionClosed) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se cerró, se intentara reconectar automáticamente...*\n" }, { quoted: m }) 
    await reloadHandler(true).catch(console.error) 
@@ -193,10 +193,10 @@ setInterval(async () => {
   }
   const killJadibot = async (conn, m, command) => {
   try {
-  if (!fs.existsSync(path.join(__dirname, `./jadibots/${id}`))) {
+  if (!fs.existsSync(path.join(__dirname, `./jadibot/${id}`))) {
   return m.reply(`tu sesion no existe`)
   } else {
-  fs.rmdirSync(`./jadibots/` + id, { recursive: true })
+  fs.rmdirSync(`./jadibot/` + id, { recursive: true })
   return m.reply(`*❗ se elimino correctamente tu sesion*`)
   }
   } catch (e) {
