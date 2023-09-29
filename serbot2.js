@@ -124,7 +124,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
    await jadibots().catch(console.error) 
    } else { 
    skmod.sendMessage(m.chat, {text : ` ⚠  Razón de desconexión desconocida. ${code || ''}: ${connection || ''} Por favor reporte al desarollador.`}, { quoted: m }) 
-   } 
+   }
   let i = global.listJadibot.indexOf(conn)  
   if (i < 0) return console.log("No se encontro")  
   delete global.listJadibot[i]  
@@ -148,12 +148,6 @@ setInterval(async () => {
   
   let handler = require('./handler.js') 
 
-  
-
-  
-  
-
-  
   conn.connection = handler.handler.bind(conn) 
   conn.participantsUpdate = handler.participantsUpdate.bind(conn) 
   conn.groupsUpdate = handler.groupsUpdate.bind(conn) 
