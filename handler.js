@@ -52,7 +52,7 @@ async function handler(chatUpdate) {
   const participants = m.isGroup ? await groupMetadata.participants : '' 
   const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : '' 
   
-  const isBotAdmins = m.isGroup ? groupAdmins.includes(_isBot) : false  
+  const isBotAdmins = m.isGroup ? groupAdmins.includes(conn.user.jid) : false  
   const isGroupAdmins = m.isGroup ? groupAdmins.includes(userSender) : false 
   const isBaneed = m.isGroup ? blockList.includes(userSender) : false 
   const isPremium = m.isGroup ? premium.includes(userSender) : false   
