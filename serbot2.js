@@ -82,6 +82,29 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   let conn = makeWaSocket(connectionSettings)
   let isInit = true
   conn.isInit = false
+    
+  const handler = require('./handler.js')
+  conn.handler = handler.handler.bind(conn)
+  conn.welcome = handler.participantsUpdate.bind(conn)
+  conn.groups = handler.groupsUpdate.bind(conn)
+  conn.delete = handler.deleteUpdate.bind(conn)
+  conn.Call = handler.callUpdate.bind(conn)
+  conn.poll = handler.pollCmd.bind(conn)
+  conn.connection = connectionUpdate.bind(conn)
+  conn.creds = saveCreds.bind(conn, true)
+  
+  conn.ev.on('messages.upsert', conn.handler)
+  conn.ev.on('call', conn.Call)
+  conn.ev.on('group-participants.update', conn.welcome)
+  conn.ev.on("groups.update", conn.groups)
+  conn.ev.on('message.delete', conn.delete)
+  conn.ev.on('connection.update', conn.connection)
+  conn.ev.on('creds.update', conn.creds)
+  conn.ev.on('messages.update', conn.poll)
+  
+
+  
+  
   
   async function connectionUpdate(up) {
   const { connection, lastDisconnect, isNewLogin, qr } = up
@@ -150,69 +173,6 @@ setInterval(async () => {
   global.listJadibot.splice(i, 1) 
   }}, 60000) //again aiden -.-
   
-  
-/*let reloadHandler = async function(restatConn) {
-let handler = require('./handler.js')
-  if (restatConn) {
-  try { conn.ws.close() } catch { }
-  conn.ev.removeAllListeners()
-  conn = makeWaSocket(connectionSettings)
-  isInit = true
-  }
-  if (!isInit) {
-  conn.ev.off('messages.upsert', conn.connection)
-  conn.ev.off('call', conn.onCall)
-  conn.ev.off('group-participants.update', conn.participantsUpdate)
-  conn.ev.off("groups.update", conn.groupsUpdate)
-  conn.ev.off('message.delete', conn.deleteUpdate)
-  conn.ev.off('connection.update', conn.connectionUpdate)
-  conn.ev.off('creds.update', conn.credsUpdate)
-  conn.ev.off('messages.update', conn.pollCmd)
-  }
-  
-  
-  
-  conn.connection = handler.handler.bind(conn)
-  conn.participantsUpdate = handler.participantsUpdate.bind(conn)
-  conn.groupsUpdate = handler.groupsUpdate.bind(conn)
-  conn.deleteUpdate = handler.deleteUpdate.bind(conn)
-  conn.onCall = handler.callUpdate.bind(conn)
-  conn.pollCmd = handler.pollCmd.bind(conn)
-  conn.connectionUpdate = connectionUpdate.bind(conn)
-  conn.credsUpdate = saveCreds.bind(conn, true)
-  
-  conn.ev.on('messages.upsert', conn.connection)
-  conn.ev.on('call', conn.onCall)
-  conn.ev.on('group-participants.update', conn.participantsUpdate)
-  conn.ev.on("groups.update", conn.groupsUpdate)
-  conn.ev.on('message.delete', conn.deleteUpdate)
-  conn.ev.on('connection.update', conn.connectionUpdate)
-  conn.ev.on('creds.update', conn.credsUpdate)
-  conn.ev.on('messages.update', conn.pollCmd)
-  
-  
-  isInit = false
-  return true
-  } */
-  
-  const handler = require('./handler.js')
-  conn.handler = handler.handler.bind(conn)
-  conn.welcome = handler.participantsUpdate.bind(conn)
-  conn.groups = handler.groupsUpdate.bind(conn)
-  conn.delete = handler.deleteUpdate.bind(conn)
-  conn.Call = handler.callUpdate.bind(conn)
-  conn.poll = handler.pollCmd.bind(conn)
-  conn.connection = connectionUpdate.bind(conn)
-  conn.creds = saveCreds.bind(conn, true)
-  
-  conn.ev.on('messages.upsert', conn.handler)
-  conn.ev.on('call', conn.Call)
-  conn.ev.on('group-participants.update', conn.welcome)
-  conn.ev.on("groups.update", conn.groups)
-  conn.ev.on('message.delete', conn.delete)
-  conn.ev.on('connection.update', conn.connection)
-  conn.ev.on('creds.update', conn.creds)
-  conn.ev.on('messages.update', conn.poll)
   }
   jadibots()
   }
