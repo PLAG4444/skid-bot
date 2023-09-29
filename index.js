@@ -126,7 +126,7 @@ const connectionSettings = {
     }
 }
 
-global.conn = makeWaSocket(connectionSettings)
+let conn = makeWaSocket(connectionSettings)
 conn.isInit = false
 conn.well = false
 conn.logger.info(`Ƈᴀʀɢᴀɴᴅᴏ．．．\n`)
@@ -170,7 +170,6 @@ return
 
 async function connectionUpdate(update) {
   const {connection, lastDisconnect, isNewLogin, qr} = update
-  global.stopped = connection
   if (isNewLogin) conn.isInit = true
   const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
   if (code && code !== DisconnectReason.loggedOut && conn?.ws?.socket == null) {
@@ -225,7 +224,7 @@ global.reload = async function(restatConn) {
     conn.ws.close()
     } catch { }
     conn.ev.removeAllListeners();
-    global.conn = makeWaSocket(connectionSettings, {chats: oldChats});
+    conn = makeWaSocket(connectionSettings, {chats: oldChats});
     isInit = true;
   }
   if (!isInit) {
@@ -248,14 +247,14 @@ conn.sSubject = '*「 Grupos 」*\n*el nombre del grupo fue cambiado!!*\n*el nue
 conn.sIcon = '*「 Grupos 」*\n*Se cambio la foto del grupo ^w^*'
 conn.sRevoke = '*「 Grupos 」*\n*Hay un nuevo link del grupo nwn*\n*nuevo link:* @revoke'
 
-  conn.connection = handler.handler.bind(global.conn)
-  conn.participantsUpdate = handler.participantsUpdate.bind(global.conn)
-  conn.groupsUpdate = handler.groupsUpdate.bind(global.conn)
-  conn.deleteUpdate = handler.deleteUpdate.bind(global.conn)
-  conn.onCall = handler.callUpdate.bind(global.conn)
-  conn.pollCmd = handler.pollCmd.bind(global.conn)
-  conn.connectionUpdate = connectionUpdate.bind(global.conn);
-  conn.credsUpdate = saveCreds.bind(global.conn, true);
+  conn.connection = handler.handler.bind(conn)
+  conn.participantsUpdate = handler.participantsUpdate.bind(conn)
+  conn.groupsUpdate = handler.groupsUpdate.bind(conn)
+  conn.deleteUpdate = handler.deleteUpdate.bind(conn)
+  conn.onCall = handler.callUpdate.bind(conn)
+  conn.pollCmd = handler.pollCmd.bind(conn)
+  conn.connectionUpdate = connectionUpdate.bind(conn);
+  conn.credsUpdate = saveCreds.bind(conn, true);
 
   const currentDateTime = new Date();
   const messageDateTime = new Date(conn.ev);
