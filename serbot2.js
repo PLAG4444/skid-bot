@@ -103,10 +103,6 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
    fs.unlinkSync("./jadibot/" + id + "/creds.json") 
    return skmod.sendMessage(m.chat, {text : "*❗ Por favor, reenvia el comando*"}, { quoted: m }) 
    } 
-   if (code == 515) {
-   jadibots()
-   return skmod.reply(m.chat, '❗ test..', m)
-   }
    if (code === DisconnectReason.badSession) { 
    skmod.sendMessage(m.chat, {text : "*❗ La sesión actual es inválida, Tendras que iniciar sesion de nuevo."}, { quoted: m }) 
    fs.rm("./jadibot/" + id, { recursive: true }) 
@@ -191,7 +187,7 @@ setInterval(async () => {
    isInit = false 
    return true 
   } 
-  reloadHandler(false)
+  reloadHandler(true)
   }
   jadibots()
   }
