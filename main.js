@@ -821,6 +821,20 @@ conn.sendMessage(m.chat, docAd, { quoted: m })
    let _img = _res[Math.floor(Math.random() * _res.length)]
    conn.sendMessage(m.chat, { image: { url: _img }, caption: `*✨ Aqui tienes tu wallpaper de ${text}*`}, { quoted: fgif })
    break
+   case 'animeplanet': {
+const xn = await fetch(`https://api-diego-ofc.vercel.app/api/animeplanet?q=${text}`)
+    const gPlay = await xn.json();
+
+    let caption = `🔍 titulo: 
+
+${gPlay.data.resultado[0].titulo}
+
+⛓️ Link: ${gPlay.data.resultado[0].link}  
+
+🖼️ Imagen: ${gPlay.data.resultado[0].image}`
+    
+    conn.sendMessage(m.chat, {text: caption}, {quoted: m});}
+   break
    case 'anime': {
    if (/image/.test(mime)) {
    let _miMedia = await conn.downloadAndSaveMediaMessage(quoted)
