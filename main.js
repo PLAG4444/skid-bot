@@ -88,51 +88,8 @@
 
    
   
-  this.confirm = this.confirm ? this.confirm : {}
-  if (this.confirm[m.sender]) {
-  let { timeout, sender, message, to, type, count } = this.confirm[m.sender]
-  let user = global.db.data.users[sender]
-  let _user = global.db.data.users[to]
-  if (/^No|no$/i.test(body)) {
-  clearTimeout(timeout)
-  delete this.confirm[sender]
-  return conn.sendTextWithMentions(m.chat, `@${sender.split("@")[0]} *cancelo la transferencia*`, m)
-  }
+  
 
-   if (/^Si|si$/i.test(m.text)) { 
-   let previous = user[type] * 1
-   let _previous = _user[type] * 1
-   user[type] -= count * 1
-   _user[type] += count * 1
-   if (previous > user[type] * 1 && _previous < _user[type] * 1) {
-   conn.sendMessage(m.chat, {text: `*[❗] Se transfirierón correctamente ${count} ${type} a @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m}); 
-     } else { 
-       user[type] = previous; 
-       _user[type] = _previous; 
-       conn.sendMessage(m.chat, {text: `*[❗] Error al transferir ${count} ${type} a @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m}); 
-     } 
-     clearTimeout(timeout); 
-     delete this.confirm[sender]; 
-   }
-   }
-if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
-let hash = global.db.data.sticker[m.msg.fileSha256.toString('base64')]
-let { text, mentionedJid } = hash
-let messages = await generateWAMessage(m.chat, { text: text, mentions: mentionedJid }, {
-userJid: conn.user.id,
-quoted : m.quoted && m.quoted.fakeObj
-})
-messages.key.fromMe = areJidsSameUser(m.sender, conn.user.id)
-messages.key.id = m.key.id
-messages.pushName = m.pushName
-if (m.isGroup) messages.participant = m.sender
-let msg = {
-...chatUpdate,
-messages: [proto.WebMessageInfo.fromObject(messages)],
-type: 'append'
-}
-conn.ev.emit('messages.upsert', msg)
-}
    
 
 

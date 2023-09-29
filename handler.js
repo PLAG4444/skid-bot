@@ -1,5 +1,5 @@
 // no es literalmente un handler pero maneja los eventos de baileys
-const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins }= require('./lib/fuctions')
+const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins, clockString, sleep }= require('./lib/fuctions')
 const { areJidsSameUser, useMultiFileAuthState, DisconnectReason, proto, jidNormalizedUser, WAMessageStubType, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, getAggregateVotesInPollMessage } = require("@whiskeysockets/baileys")
 const gradient = require('gradient-string')
 const store = require('./lib/store.js')
@@ -23,27 +23,20 @@ async function handler(chatUpdate) {
   
   try {
   m = smsg(this, m) || m    
-  var budy = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
   if (m.key.id.startsWith("BAE5")) return  
-  var body = (typeof m.text == 'string' ? m.text : '') 
+  var body = (typeof m.text == 'string' ? m.text : '')
+  
+  
   const msgs = (message) => { 
   if (message.length >= 10) { 
   return `${message.substr(0, 500)}` 
   } else { 
   return `${message}`}}
   
-  const isCmd = body.startsWith(global.prefix)   
-  const from = m.chat 
-  const msg = JSON.parse(JSON.stringify(m, undefined, 2)) 
-  const content = JSON.stringify(m.message) 
-  const type = m.mtype 
-  const arg = body.substring(body.indexOf(' ') + 1) 
-  const command = isCmd ? body.slice(1).trim().split(/ +/).shift().toLocaleLowerCase() : null
+
+ 
   const args = body.trim().split(/ +/).slice(1) 
-  const q = args.join(" ") 
-  let t = m.messageTimestamp 
   const pushname = m.pushName || "Sin nombre" 
-  const _isBot = this.user.jid
   const userSender = m.key.fromMe ? _isBot : m.isGroup && m.key.participant.includes(":") ? m.key.participant.split(":")[0] + "@s.whatsapp.net" : m.key.remoteJid.includes(":") ? m.key.remoteJid.split(":")[0] + "@s.whatsapp.net" : m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid  
   const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(userSender) 
   const itsMe = m.sender == this.user.id ? true : false 
@@ -54,7 +47,7 @@ async function handler(chatUpdate) {
   const isMedia = /image|video|sticker|audio/.test(mime)
   const mentions = []  
 
-  const groupMetadata = m.isGroup ? await this.groupMetadata(from) : ''
+  const groupMetadata = m.isGroup ? await this.groupMetadata(m.chat) : ''
   const groupName = m.isGroup ? groupMetadata.subject : '' 
   const participants = m.isGroup ? await groupMetadata.participants : '' 
   const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : '' 
@@ -65,18 +58,7 @@ async function handler(chatUpdate) {
   const isPremium = m.isGroup ? premium.includes(userSender) : false   
   const who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? this.user.jid : m.sender;
   
-  
-  const isAudio = type == 'audioMessage'
-  const isSticker = type == 'stickerMessage' 
-  const isContact = type == 'contactMessage'  
-  const isLocation = type == 'locationMessage'   
-  const isQuotedImage = type === 'extendedTextMessage' && content.includes('imageMessage')  
-  const isQuotedVideo = type === 'extendedTextMessage' && content.includes('videoMessage')  
-  const isQuotedAudio = type === 'extendedTextMessage' && content.includes('audioMessage')  
-  const isQuotedSticker = type === 'extendedTextMessage' && content.includes('stickerMessage')  
-  const isQuotedDocument = type === 'extendedTextMessage' && content.includes('documentMessage')  
-  const isQuotedMsg = type === 'extendedTextMessage' && content.includes('Message') 
-  const isViewOnce = (type === 'viewOnceMessage') 
+
   
   
   
@@ -389,8 +371,8 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
     }
   
 
-  if (global.db.data.chats[m.chat].antilink) {  
-  if (budy.match(`chat.whatsapp.com`)) {  
+  if (global.db.data.chats[m.chat].antilink) {
+  if (body.match(`chat.whatsapp.com`)) {  
   let delet = m.key.participant  
   let bang = m.key.id  
   reply(`*「 ANTI LINK 」*\n\n*𝚕𝚒𝚗𝚔 𝚍𝚎𝚝𝚎𝚌𝚝𝚊𝚍𝚘*\n*𝚕𝚘 𝚜𝚒𝚎𝚗𝚝𝚘 𝚙𝚎𝚛𝚘 𝚗𝚘 𝚜𝚎 𝚙𝚎𝚛𝚖𝚒𝚝𝚎𝚗 𝚕𝚒𝚗𝚔𝚜 𝚜𝚎𝚛𝚊𝚜 𝚎𝚕𝚒𝚖𝚒𝚗𝚊𝚍𝚘*`)  
@@ -402,10 +384,57 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
   this.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet }})  
   this.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}}  
   
+  this.confirm = this.confirm ? this.confirm : {}
+  if (this.confirm[m.sender]) {
+  let { timeout, sender, message, to, type, count } = this.confirm[m.sender]
+  let user = global.db.data.users[sender]
+  let _user = global.db.data.users[to]
+  if (/^No|no$/i.test(body)) {
+  clearTimeout(timeout)
+  delete this.confirm[sender]
+  return this.sendTextWithMentions(m.chat, `@${sender.split("@")[0]} *cancelo la transferencia*`, m)
+  }
+
+  if (/^Si|si$/i.test(m.text)) { 
+   let previous = user[type] * 1
+   let _previous = _user[type] * 1
+   user[type] -= count * 1
+   _user[type] += count * 1
+   if (previous > user[type] * 1 && _previous < _user[type] * 1) {
+   this.sendMessage(m.chat, {text: `*[❗] Se transfirierón correctamente ${count} ${type} a @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m}); 
+     } else { 
+       user[type] = previous; 
+       _user[type] = _previous; 
+       this.sendMessage(m.chat, {text: `*[❗] Error al transferir ${count} ${type} a @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m}); 
+     } 
+     clearTimeout(timeout); 
+     delete this.confirm[sender]; 
+   }
+  }
   
   try {
   
-        
+    if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
+    let hash = global.db.data.sticker[m.msg.fileSha256.toString('base64')]
+    let { text, mentionedJid } = hash
+    let messages = await generateWAMessage(m.chat, { text: text, mentions: mentionedJid }, {
+    userJid: this.user.id,
+    quoted : m.quoted && m.quoted.fakeObj
+    })
+    messages.key.fromMe = areJidsSameUser(m.sender, this.user.id)
+    messages.key.id = m.key.id
+    messages.pushName = m.pushName
+    if (m.isGroup) messages.participant = m.sender
+    let msg = {
+    ...chatUpdate,
+    messages: [proto.WebMessageInfo.fromObject(messages)],
+    type: 'append'
+    }
+    this.ev.emit('messages.upsert', msg)
+    }  
+    
+    
+    
    let chats = global.db.data.chats[m.chat]  
    if (chats.antiviewonce) {
    if (/^[.~#/\$,](read)?viewonce/.test(m.text)) return 
@@ -429,7 +458,7 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
  this.logger.info(chalk.bold.white(`\n▣────────────···\n│${botname} ${this.user.id == global.numBot2 ? '' : '(jadibot)'}`),  
  chalk.bold.white('\n│📑TIPO (SMS): ') + chalk.yellowBright(`${m.mtype}`),  
  chalk.bold.white('\n│📊USUARIO: ') + chalk.cyanBright(pushname) + ' ➜', gradient.rainbow(m.sender),  
- m.isGroup ? chalk.bold.white('\n│📤GRUPO: ') + chalk.greenBright(groupName) + ' ➜ ' + gradient.rainbow(from) : chalk.bold.greenBright('\n│📥PRIVADO'),  
+ m.isGroup ? chalk.bold.white('\n│📤GRUPO: ') + chalk.greenBright(groupName) + ' ➜ ' + gradient.rainbow(m.chat) : chalk.bold.greenBright('\n│📥PRIVADO'),  
  chalk.bold.white('\n️│🏷️ TAGS: ') + chalk.bold.white(`[${this.public ? 'Publico' : 'Privado'}]`),  
  chalk.bold.white('\n│💬MENSAJE: ') + chalk.bold.white(`${msgs(m.text)}`) + chalk.whiteBright(`\n▣────────────···\n`)) 
  }
