@@ -189,7 +189,7 @@ let handler = require('./handler.js')
   isInit = false
   return true
   }
-reloadHandler(false)
+  reloadHandler()
   }
   jadibots()
   }
