@@ -90,7 +90,6 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
    conn.isInit = true
    global.listJadibot.push(conn)
    await skmod.sendMessage(m.chat, { text: args[0] ? "*✅ Reconectando...*" : `*✅ Conectado con exito*\n*Si tu bot fue desconectado usa ${prefix + command}*` }, { quoted: m })
-   return console.log(await reloadHandler(true).catch(console.error))
    }
    if (connection === 'open') {
    await skmod.sendMessage(m.chat, { text: args[0] ?  `*✅ Reconexion Exitosa*\n*tus mensajes se estan cargando*` : `*✅ Jadibot Conectado*\n*se te enviara un codigo para volver a conectarte*` }, { quoted: m })
