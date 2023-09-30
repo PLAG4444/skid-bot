@@ -74,7 +74,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   console.info = () => {} 
   const msgRetry = (MessageRetryMap) => { }
   const msgRetryCache = new NodeCache()
-  const {state, saveState, saveCreds} = await useMultiFileAuthState('./jadibot/' + id)
+  const {state, saveState, saveCreds} = await useMultiFileAuthState('./jadibot/' + id, pino({ level: 'silent' }))
   const { version, isLatest } = await fetchLatestBaileysVersion()   
 
   const connectionSettings = {
@@ -84,7 +84,6 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
     msgRetry,
     msgRetryCache,
     version,
-    syncFullHistory: true,
     browser: mcode ? ['Chrome (Linux)','',''] : ['SkidBot', 'Safari', '1.0.0'],
     getMessage: async (key) => { 
     if (store) { 
@@ -92,7 +91,8 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
     return conn.chats[key.remoteJid] && conn.chats[key.remoteJid].messages[key.id] ? conn.chats[key.remoteJid].messages[key.id].message : undefined 
     } 
     return proto.Message.fromObject({})
-    }
+    },
+    defaultQueryTimeoutMs: undefined
   }
   
   /**
