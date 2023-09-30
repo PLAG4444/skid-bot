@@ -113,7 +113,56 @@
      delete this.confirm[sender]; 
    }
   }
-
+  this.bet = this.bet ? this.bet : {}
+  if (m.sender in this.bet) {
+  try {
+     if (m.isBaileys) return 
+     let { timeout, count } = this.bet[m.sender] 
+     let user = global.db.data.users[m.sender] 
+     let beforemoney = user.money * 1 
+     try { 
+         if (/^(Si|si|sí)?$/i.test(m.text)) { 
+             let Bot = (Math.ceil(Math.random() * 91)) * 1 
+             let you = (Math.floor(Math.random() * 71)) * 1 
+             let status = 'perdiste'
+             if (Bot < you) { 
+                 user.money += count * 1 
+                 status = 'ganaste'
+             } else if (Bot > you) { 
+                 user.money -= count * 1 
+             } else { 
+                 status = 'empataste'
+                 user.money += (Math.floor(count / 1.5)) * 1 
+             } 
+             m.reply(` 
+ | *JUGADOR* | *PUNTOS* | 
+ *🤖 BOT:*   ${Bot} 
+ *👤 TU:*    ${you} 
+  
+ *tu ${status}*, tu ${status == 'ganaste' ? `Conseguiste *+${count * 2}*` : status == 'perdiste' ? `Perdido *-${count * 1}*` : `Conseguiste *+${Math.floor(count / 1.5)}*`} dolares`.trim()) //`//`
+             clearTimeout(timeout) 
+             delete this.bet[m.sender] 
+             return !0 
+         } else if (/^(✖️|no)?$/i.test(txt)) { 
+             clearTimeout(timeout) 
+             delete this.bet[m.sender] 
+             m.reply('Rejected') 
+             return !0 
+         } 
+  
+     } catch (e) { 
+         clearTimeout(timeout) 
+         delete this.bet[m.sender] 
+         if (beforemoney > (user.money * 1)) user.money = beforemoney * 1 
+         m.reply('Error saat melakukan judi (Rejected)') 
+         return !0 
+     } finally { 
+         clearTimeout(timeout) 
+         delete this.bet[m.sender] 
+         return !0 
+     } 
+ }
+ 
  
   try {  
   switch (command) {
@@ -1001,6 +1050,7 @@ case 'play2': {
   }
   break
   
+  
   case 'health': {
   let user = global.db.data.users[m.sender]
   if (user.health >= 100) throw '*Tu salud esta llena ♥️*'
@@ -1020,7 +1070,7 @@ case 'play2': {
   
   
   
-   case 'apostar': {
+/*   case 'apostar': {
    let count = args[0]
    if (args.length < 1) throw `*No sabes usar este comando?*\n*no te preocupes estoy aqui para darte este ejemplo ^-^*\n${prefix + command} 100`
    if (global.db.data.users[m.sender].money >= count) {
@@ -1041,7 +1091,45 @@ case 'play2': {
    m.reply(`*❗ NO tienes ${count} dolares unu*\n*tu solo tienes ${global.db.data.users[m.sender].money}*`)
    }
    }
-   break
+   break */
+   case 'apostar': {
+   this.bet = this.bet ? this.bet : {}
+   if (m.sender in this.bet) throw '¡¡Todavía estás apostando, espera hasta que se acabe!!'
+   try { 
+   let user = global.db.data.users[m.sender]
+   let count = (args[0] && number(parseInt(args[0])) ? Math.max(parseInt(args[0]), 1) : /all/i.test(args[0]) ? Math.floor(parseInt(user.money)) : 1) * 1 
+   if ((user.money *1) < count) return m.reply('¡¡No tienes suficiente dinero!!')
+   if (!(m.sender in this.bet)) {
+   this.bet[m.sender] = {
+   sender: m.sender,
+   count,
+   timeout: setTimeout(() => (m.reply('*se acabo el tiempo*'), delete this.bet[m.sender]), 60000)
+   }
+   let txt =`¿Estás seguro de que quieres apostar? (si/nn)\n\n*Apuesta:* ${count} 💹\n*⏰ Tienes 60 segundos para tomar una decisión*`
+   return conn.reply(m.chat, txt, m)
+   }
+   } catch (e) {
+   console.error(e)
+   if (m.sender in this.bet) {
+   let { timeout } = this.bet[m.sender]
+   clearTimeout(timeout)
+   delete this.bet[m.sender]
+   m.reply('*No elegiste nada*\n*apuesta rechazada*')
+   }
+   }
+    /** 
+  * Detect if thats number 
+  * @param {Number} x  
+  * @returns Boolean 
+  */ 
+   function number(x = 0) { 
+     x = parseInt(x) 
+     return !isNaN(x) && typeof x == 'number' 
+ }
+   }
+break
+
+ 
    
    case 'buy':
    let buy = (args[0] || '').toLowerCase()
