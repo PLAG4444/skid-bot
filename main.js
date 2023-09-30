@@ -115,12 +115,11 @@
   }
   this.bet = this.bet ? this.bet : {}
   if (m.sender in this.bet) {
-  try {
      if (m.isBaileys) return 
      let { timeout, count } = this.bet[m.sender] 
      let user = global.db.data.users[m.sender] 
      let beforemoney = user.money * 1 
-     try { 
+     try {
          if (/^(Si|si|sí)?$/i.test(m.text)) { 
              let Bot = (Math.ceil(Math.random() * 91)) * 1 
              let you = (Math.floor(Math.random() * 71)) * 1 
