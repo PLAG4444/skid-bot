@@ -34,7 +34,7 @@ async function handler(chatUpdate) {
   return `${message}`}}
   
 
- 
+  const _isBot = conn.user.jid
   const args = body.trim().split(/ +/).slice(1) 
   const pushname = m.pushName || "Sin nombre" 
   const userSender = m.key.fromMe ? _isBot : m.isGroup && m.key.participant.includes(":") ? m.key.participant.split(":")[0] + "@s.whatsapp.net" : m.key.remoteJid.includes(":") ? m.key.remoteJid.split(":")[0] + "@s.whatsapp.net" : m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid  

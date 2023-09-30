@@ -34,6 +34,26 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
 │
 ╰━━━━━━━━━━━━━╯\n\n`
 
+ const imports = (path) => {
+
+  path = require.resolve(path)
+
+  let modules, retry = 0
+
+  do {
+
+    if (path in require.cache) delete require.cache[path]
+
+    modules = require(path)
+
+    retry++
+
+  } while ((!modules || (Array.isArray(modules) || modules instanceof String) ? !(modules || []).length : typeof modules == 'object' && !Buffer.isBuffer(modules) ? !(Object.keys(modules || {})).length : true) && retry <= 10)
+
+  return modules
+
+}
+
   if (global.listJadibot instanceof Array) console.log()   
   else global.listJadibot = []   
   
@@ -83,24 +103,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   let isInit = true
   conn.isInit = false
     
-  const handler = require('./handler.js')
-  conn.handler = handler.handler.bind(conn)
-  conn.welcome = handler.participantsUpdate.bind(conn)
-  conn.groups = handler.groupsUpdate.bind(conn)
-  conn.delete = handler.deleteUpdate.bind(conn)
-  conn.Call = handler.callUpdate.bind(conn)
-  conn.poll = handler.pollCmd.bind(conn)
-  conn.connection = connectionUpdate.bind(conn)
-  conn.creds = saveCreds.bind(conn, true)
   
-  conn.ev.on('messages.upsert', conn.handler)
-  conn.ev.on('call', conn.Call)
-  conn.ev.on('group-participants.update', conn.welcome)
-  conn.ev.on("groups.update", conn.groups)
-  conn.ev.on('message.delete', conn.delete)
-  conn.ev.on('connection.update', conn.connection)
-  conn.ev.on('creds.update', conn.creds)
-  conn.ev.on('messages.update', conn.poll)
   
 
   
@@ -135,20 +138,20 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
    fs.rm("./jadibot/" + id, { recursive: true }) 
    } else if (code === DisconnectReason.connectionClosed) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se cerró, se intentara reconectar automáticamente...*\n" }, { quoted: m }) 
-   await jadibots()
+   await shouldReconnect(true)
    } else if (code === DisconnectReason.connectionLost) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se perdió, se intentara reconectar automáticamente...*"}, { quoted: m }) 
-   await jadibots()
+   await shouldReconnect(true)
    } else if (code === DisconnectReason.connectionReplaced) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se reemplazó, Su conexion se cerro*"}, { quoted: m }) 
    } else if (code === DisconnectReason.loggedOut) { 
    skmod.sendMessage(m.chat, {text : "*❗ La sesión actual se cerró, Si desea volver a conectarse tendra que iniciar sesion de nuevo*"}, { quoted: m }) 
    } else if (code === DisconnectReason.restartRequired) { 
    skmod.sendMessage(m.chat, {text : "*❗ Reinicio requerido, se intentara reconectar automáticamente...*"}, { quoted: m }) 
-   await jadibots()
+   await shouldReconnect(true)
    } else if (code === DisconnectReason.timedOut) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se agotó, se intentara reconectar automáticamente...*"}, { quoted: m }) 
-   await jadibots()
+   await shouldReconnect(true)
    } else { 
    skmod.sendMessage(m.chat, {text : ` ⚠  Razón de desconexión desconocida. ${code || ''}: ${connection || ''} Por favor reporte al desarollador.`}, { quoted: m }) 
    }
@@ -173,6 +176,52 @@ setInterval(async () => {
   global.listJadibot.splice(i, 1) 
   }}, 60000) //again aiden -.-
   
+
+const shouldReconnect = async function(restatConn) {
+  const handler = imports('./handler.js')
+  if (restatConn) {
+    try {
+    conn.ws.close()
+    } catch { }
+    conn.ev.removeAllListeners()
+    conn = makeWaSocket(connectionSettings)
+    isInit = true
+  }
+  if (!isInit) {
+    conn.ev.off('messages.upsert', conn.connection)
+    conn.ev.off('call', conn.onCall)
+    conn.ev.off('group-participants.update', conn.participantsUpdate)
+    conn.ev.off("groups.update", conn.groupsUpdate)
+    conn.ev.off('connection.update', conn.connectionUpdate)
+    conn.ev.off('creds.update', conn.credsUpdate)
+    conn.ev.off('message.delete', conn.deleteUpdate)
+    conn.ev.off('messages.update', conn.pollCmd)
+  }
+
+
+  conn.connection = handler.handler.bind(conn)
+  conn.participantsUpdate = handler.participantsUpdate.bind(conn)
+  conn.groupsUpdate = handler.groupsUpdate.bind(conn)
+  conn.deleteUpdate = handler.deleteUpdate.bind(conn)
+  conn.onCall = handler.callUpdate.bind(conn)
+  conn.pollCmd = handler.pollCmd.bind(conn)
+  conn.connectionUpdate = connectionUpdate.bind(conn)
+  conn.credsUpdate = saveCreds.bind(conn)
+
+  
+
+  conn.ev.on('messages.upsert', conn.connection)
+  conn.ev.on('call', conn.onCall)
+  conn.ev.on('group-participants.update', conn.participantsUpdate)
+  conn.ev.on("groups.update", conn.groupsUpdate)
+  conn.ev.on('message.delete', conn.deleteUpdate)
+  conn.ev.on('connection.update', conn.connectionUpdate)
+  conn.ev.on('creds.update', conn.credsUpdate)
+  conn.ev.on('messages.update', conn.pollCmd)
+  isInit = false
+  return true
+  }
+  await shouldReconnect()
   }
   jadibots()
   }
