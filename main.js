@@ -548,8 +548,8 @@ wood: 10,
 batu: 9,
 iron: 12
 } 
-let cooldown = 86400000 - user.fox * 30
 let user = global.db.data.users[m.sender]
+let cooldown = 86400000 - user.fox * 30
 if (new Date - user.lastclaim < cooldown) throw `*❗ Ya reclamaste tu cofre diario*\n*espera ${msToTime(cooldown - new Date())} para volver a reclamar este cofre*`
 let txt = ''
 for (let reward of Object.keys(rewards)) {
