@@ -345,7 +345,7 @@ let time = global.db.data.users[m.sender].lastwork + 600000
 if (new Date - global.db.data.users[m.sender].lastwork < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(time - new Date())} para volver a trabajar!!*`)
 let pay = Math.floor(Math.random() * 300)
 user.money += pay + user.dog * 1000
-let work += pickRandom(['los ruidos de lo clientes molestos no te dejan en paz, sin embargo tu paga fue de', 'fue una noche tranquila...\nganaste', 'porque elegiste este trabajo\n*esta pregunta retumba en tu cabeza*, sin embargo ganaste tu miseria de paga de'])
+let work = pickRandom(['los ruidos de lo clientes molestos no te dejan en paz, sin embargo tu paga fue de', 'fue una noche tranquila...\nganaste', 'porque elegiste este trabajo\n*esta pregunta retumba en tu cabeza*, sin embargo ganaste tu miseria de paga de'])
 m.reply(`${work} ${pay} dólares 💵`)
 }
 break
