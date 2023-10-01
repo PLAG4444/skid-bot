@@ -540,6 +540,7 @@ m.reply(txt)
 break
   
 case 'claim': {
+let user = global.db.data.users[m.sender]
 let rewards = {
 exp: 9999 + user.dog * 1000,
 money: 3000 + user.dog * 2000,
@@ -548,7 +549,6 @@ wood: 10,
 batu: 9,
 iron: 12
 } 
-let user = global.db.data.users[m.sender]
 let cooldown = 86400000 - user.fox * 30
 if (new Date - user.lastclaim < cooldown) throw `*❗ Ya reclamaste tu cofre diario*\n*espera ${msToTime(cooldown - new Date())} para volver a reclamar este cofre*`
 let txt = ''
