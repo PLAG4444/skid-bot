@@ -177,13 +177,13 @@
   for (let lost in rewards.lost) if (user[lost]) {
   let total= rewards.lost[lost].getRandom()
   user[lost] -= total * 1
-  if (total) txt += `\n*${global.rpg(lost)}:* ${total}`
+  if (total) txt += `\n*${global.rpg.emoticon(lost)}:* ${total}`
   }
   txt += '\n\nPero consigues'
   for (let rewardItem in rewards.reward) if (rewardItem in user) {
   let total = rewards.reward[rewardItem].getRandom()
   user[rewardItem] += total * 1
-  if (total) text += `\n*${global.rpg(rewardItem)}:* ${total}`
+  if (total) text += `\n*${global.rpg.emoticon(rewardItem)}:* ${total}`
   }
   m.reply(text.trim())
   user.lastadventure = new Date * 1
@@ -244,13 +244,13 @@
   for (let lost in rewards.lost) if (user[lost]) {
   let total= rewards.lost[lost].getRandom()
   user[lost] -= total * 1
-  if (total) txt += `\n*${global.rpg(lost)}:* ${total}`
+  if (total) txt += `\n*${global.rpg.emoticon(lost)}:* ${total}`
   }
   txt += '\n\nPero consigues'
   for (let rewardItem in rewards.reward) if (rewardItem in user) {
   let total = rewards.reward[rewardItem].getRandom()
   user[rewardItem] += total * 1
-  if (total) text += `\n*${global.rpg(rewardItem)}:* ${total}`
+  if (total) text += `\n*${global.rpg.emoticon(rewardItem)}:* ${total}`
   }
   m.reply(text.trim())
   user.lastmining = new Date * 1
