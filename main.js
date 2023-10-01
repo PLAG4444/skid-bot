@@ -166,12 +166,78 @@
   try {  
   switch (command) {
   
+  case 'aventura': {
+  let cooldown = 10000
+  let user = global.db.data.users[m.sender]
+  let timer = (cooldown - (new Date - user.lastadventure))
+  if (new Date - user.lastadventure <= cooldown) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a aventurar*`
+  if (user.health < 80) return conn.reply(m.chat, `*estas herido*\npara poder aventurar necesitas minimo 80 de *salud* ♥️\ncompra pociones con ${prefix}buy potion y curate con ${prefix}health`, m)
+  let rewards = reward(user)
+  let txt = '*fuiste a una aventura peligrosa*\n*donde perdiste*'
+  for (let lost in rewards.lost) if (user[lost]) {
+  let total= rewards.lost[lost].getRandom()
+  user[lost] -= total * 1
+  if (total) txt += `\n*${global.rpg(lost)}:* ${total}`
+  }
+  txt += '\n\nPero consigues'
+  for (let rewardItem in rewards.reward) if (rewardItem in user) {
+  let total = rewards.reward[rewardItem].getRandom()
+  user[rewardItem] += total * 1
+  if (total) text += `\n*${global.rpg(rewardItem)}:* ${total}`
+  }
+  m.reply(text.trim())
+  user.lastadventure = new Date * 1
+  
+  function reward(user = {}) { 
+     let rewards = { 
+         reward: { 
+             money: 201, 
+             exp: 301, 
+             trash: 101, 
+             potion: 2, 
+             rock: 2, 
+             wood: 2, 
+             string: 2, 
+             common: 2 * (user.dog && (user.dog > 2 ? 2 : user.dog) * 1.2 || 1), 
+             uncommon: [0, 0, 0, 1, 0].concat( 
+                 new Array(5 - ( 
+                     (user.dog > 2 && user.dog < 6 && user.dog) || (user.dog > 5 && 5) || 2 
+                 )).fill(0) 
+             ), 
+             mythic: [0, 0, 0, 0, 0, 1, 0, 0, 0].concat( 
+                 new Array(8 - ( 
+                     (user.dog > 5 && user.dog < 8 && user.dog) || (user.dog > 7 && 8) || 3 
+                 )).fill(0) 
+             ), 
+             legendary: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0].concat( 
+                 new Array(10 - ( 
+                     (user.dog > 8 && user.dog) || 4 
+                 )).fill(0) 
+             ), 
+             iron: [0, 0, 0, 1, 0, 0], 
+             gold: [0, 0, 0, 0, 0, 1, 0], 
+             diamond: [0, 0, 0, 0, 0, 0, 1, 0].concat( 
+                 new Array(5 - ( 
+                     (user.fox < 6 && user.fox) || (user.fox > 5 && 5) || 0 
+                 )).fill(0) 
+             ), 
+         }, 
+         lost: { 
+             health: 101 - user.cat * 4 
+         } 
+     } 
+     return rewards 
+ }
+ }
+ break
+  
   case 'minar': case 'minar': {
   let cooldown = 10000
   let user = global.db.data.users[m.sender]
   let timer = (cooldown - (new Date - user.lastmining))
   if (user.health < 80) return conn.reply(m.chat, `*estas herido*\npara poder minar necesitas minimo 80 de *salud* ♥️\ncompra pociones con ${prefix}buy potion y curate con ${prefix}health`, m)
   if (user.pickaxe == 0) return m.reply('*quieres minar sin pico 💀*')
+  if (user.pickaxedurability < 30) throw '*tu pico esta roto*'
   if (new Date - user.lastmining <= cooldown) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a minar*`
   let rewards = reward(user)
   let txt = '*minaste demasiado*\n*pero a costa perdiste'
@@ -295,12 +361,12 @@
   let items = Object.keys(inventory.items).map(v => user[v] && `${global.rpg.emoticon(v)} : ${user[v]}`).filter(v => v).join('\n').trim() //`
   let dura = Object.keys(inventory.durabi).map(v => user[v] && `${global.rpg.emoticon(v)} : ${user[v]}`).filter(v => v).join('\n').trim() 
   let crates = Object.keys(inventory.crates).map(v => user[v] && `${global.rpg.emoticon(v)} : ${user[v]}`).filter(v => v).join('\n').trim() 
-  let pets = Object.keys(inventory.pets).map(v => user[v] && `${global.rpg.emoticon(v)} : ${user[v] >= inventory.pets[v] ? 'Max Levels' : `Level(s) ${user[v]}`}`).filter(v => v).join('\n').trim() //`
+  let pets = Object.keys(inventory.pets).map(v => user[v] && `${global.rpg.emoticon(v)} : ${user[v] >= inventory.pets[v] ? 'nivel maximo' : `nivel: ${user[v]}`}`).filter(v => v).join('\n').trim() //`
   let txt = `
 👤 Nombre: ${await conn.getName(m.sender)}
 🛡️ Rol ${user.role}
 
-${Object.keys(inventory.others).map(v => user[v] && `➔ ${global.rpg.emoticon(v)} ${v}: ${user[v]}`).filter(v => v).join('\n')}${tools ? `
+${Object.keys(inventory.others).map(v => user[v] && `➔ ${global.rpg.emoticon(v)} : ${user[v]}`).filter(v => v).join('\n')}${tools ? `
 * Herramientas ⚔️*
 
 ${tools}` : ''}${dura ?`
