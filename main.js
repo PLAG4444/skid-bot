@@ -170,7 +170,7 @@
   let cooldown = 10000
   let user = global.db.data.users[m.sender]
   let timer = (cooldown - (new Date - user.lastadventure))
-  if (new Date - user.lastadventure <= cooldown) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a aventurar*`
+  if (new Date - user.lastadventure < cooldown) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a aventurar*`
   if (user.health < 80) return conn.reply(m.chat, `*estas herido*\npara poder aventurar necesitas minimo 80 de *salud* ♥️\ncompra pociones con ${prefix}buy potion y curate con ${prefix}health`, m)
   let rewards = reward(user)
   let txt = '*fuiste a una aventura peligrosa*\n*donde perdiste*'
@@ -238,7 +238,7 @@
   if (user.health < 80) return conn.reply(m.chat, `*estas herido*\npara poder minar necesitas minimo 80 de *salud* ♥️\ncompra pociones con ${prefix}buy potion y curate con ${prefix}health`, m)
   if (user.pickaxe == 0) return m.reply('*quieres minar sin pico 💀*')
   if (user.pickaxedurability < 30) throw '*tu pico esta roto*'
-  if (new Date - user.lastmining <= cooldown) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a minar*`
+  if (new Date - user.lastmining < cooldown) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a minar*`
   let rewards = reward(user)
   let txt = '*minaste demasiado*\n*pero a costa perdiste'
   for (let lost in rewards.lost) if (user[lost]) {
