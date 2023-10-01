@@ -174,13 +174,13 @@
   if (user.health < 80) return conn.reply(m.chat, `*estas herido*\npara poder aventurar necesitas minimo 80 de *salud* ♥️\ncompra pociones con ${prefix}buy potion y curate con ${prefix}health`, m)
   let rewards = reward(user)
   let txt = '*fuiste a una aventura peligrosa*\n*donde perdiste*'
-  for (let lost in rewards.lost) if (user[lost]) {
+  for (let lost in rewards.lost) {
   let total= rewards.lost[lost].getRandom()
   user[lost] -= total * 1
   if (total) txt += `\n*${global.rpg.emoticon(lost)}:* ${total}`
   }
   txt += '\n\nPero consigues'
-  for (let rewardItem in rewards.reward) if (rewardItem in user) {
+  for (let rewardItem in rewards.reward) {
   let total = rewards.reward[rewardItem].getRandom()
   user[rewardItem] += total * 1
   if (total) text += `\n*${global.rpg.emoticon(rewardItem)}:* ${total}`
