@@ -278,6 +278,24 @@
   }
   break
   
+  
+  case 'health': {
+  let user = global.db.data.users[m.sender]
+  if (user.health >= 100) throw '*Tu salud esta llena ♥️*'
+  let heal = 40 + user.cat * 4
+  let count = Math.max(1, Math.min(Number.MAX_SAFE_INTEGER, (isNumber(args[0]) && parseInt(args[0])) || Math.round((90 - user.health) / heal))) * 1
+  if (user.potion < count) return m.reply(`*❌ No tienes pociónes*\n*necesitas ${count - user.potion} pocion para curarte*\n*Solo tienes ${user.potion}!!*`)
+  user.potion -= count * 1 //1 potion = count (1) 
+  user.health += heal * count
+  m.reply(`*Tu salud esta completa ✅*\n*usaste ${count} pociones para curarte*\n*Nueva salud: ${user.health} ♥️*`)  
+  function isNumber(number) { 
+   if (!number) return number; 
+   number = parseInt(number); 
+   return typeof number == "number" && !isNaN(number); 
+  }
+  }
+  break
+  
   case 'inventario': case 'inv': {
   let inventory = { 
    others: { 
