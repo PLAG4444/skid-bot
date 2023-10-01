@@ -183,7 +183,7 @@
   for (let rewardItem in rewards.reward) {
   let total = rewards.reward[rewardItem].getRandom()
   user[rewardItem] += total * 1
-  if (total) text += `\n*${global.rpg.emoticon(rewardItem)}:* ${total}`
+  if (total) txt += `\n*${global.rpg.emoticon(rewardItem)}:* ${total}`
   }
   m.reply(text.trim())
   user.lastadventure = new Date() * 1
@@ -250,7 +250,7 @@
   for (let rewardItem in rewards.reward) if (rewardItem in user) {
   let total = rewards.reward[rewardItem].getRandom()
   user[rewardItem] += total * 1
-  if (total) text += `\n*${global.rpg.emoticon(rewardItem)}:* ${total}`
+  if (total) txt += `\n*${global.rpg.emoticon(rewardItem)}:* ${total}`
   }
   m.reply(text.trim())
   user.lastmining = new Date * 1
