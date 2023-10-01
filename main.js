@@ -212,7 +212,7 @@
   }
   break
   
-  case 'inventario': {
+  case 'inventario': case 'inv': {
   let inventory = { 
    others: { 
      health: true, 
@@ -291,11 +291,11 @@
    }
    } 
   let user = global.db.data.users[m.sender] 
-  let tools = Object.keys(inventory.tools).map(v => user[v] && `${global.rpg.emoticon(v)} ${v}: ${typeof inventory.tools[v] === 'object' ? inventory.tools[v][user[v]?.toString()] : `nivel ${user[v]}`}`).filter(v => v).join('\n').trim() 
-  let items = Object.keys(inventory.items).map(v => user[v] && `${global.rpg.emoticon(v)} ${v}: ${user[v]}`).filter(v => v).join('\n').trim() //`
-  let dura = Object.keys(inventory.durabi).map(v => user[v] && `${global.rpg.emoticon(v)} ${v}: ${user[v]}`).filter(v => v).join('\n').trim() 
-  let crates = Object.keys(inventory.crates).map(v => user[v] && `${global.rpg.emoticon(v)} ${v}: ${user[v]}`).filter(v => v).join('\n').trim() 
-  let pets = Object.keys(inventory.pets).map(v => user[v] && `${global.rpg.emoticon(v)} ${v}: ${user[v] >= inventory.pets[v] ? 'Max Levels' : `Level(s) ${user[v]}`}`).filter(v => v).join('\n').trim() //`
+  let tools = Object.keys(inventory.tools).map(v => user[v] && `${global.rpg.emoticon(v)} : ${typeof inventory.tools[v] === 'object' ? inventory.tools[v][user[v]?.toString()] : `nivel ${user[v]}`}`).filter(v => v).join('\n').trim() 
+  let items = Object.keys(inventory.items).map(v => user[v] && `${global.rpg.emoticon(v)} : ${user[v]}`).filter(v => v).join('\n').trim() //`
+  let dura = Object.keys(inventory.durabi).map(v => user[v] && `${global.rpg.emoticon(v)} : ${user[v]}`).filter(v => v).join('\n').trim() 
+  let crates = Object.keys(inventory.crates).map(v => user[v] && `${global.rpg.emoticon(v)} : ${user[v]}`).filter(v => v).join('\n').trim() 
+  let pets = Object.keys(inventory.pets).map(v => user[v] && `${global.rpg.emoticon(v)} : ${user[v] >= inventory.pets[v] ? 'Max Levels' : `Level(s) ${user[v]}`}`).filter(v => v).join('\n').trim() //`
   let txt = `
 👤 Nombre: ${await conn.getName(m.sender)}
 🛡️ Rol ${user.role}
@@ -419,7 +419,7 @@ default:
 m.reply(txt)
 }
 }
-
+break
   
  
   
