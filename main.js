@@ -186,7 +186,7 @@
   if (total) text += `\n*${global.rpg.emoticon(rewardItem)}:* ${total}`
   }
   m.reply(text.trim())
-  user.lastadventure = new Date * 1
+  user.lastadventure = new Date() * 1
   
   function reward(user = {}) { 
      let rewards = { 
@@ -411,6 +411,7 @@ let time = global.db.data.users[m.sender].lastwork + 600000
 if (new Date - global.db.data.users[m.sender].lastwork < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(time - new Date())} para volver a trabajar!!*`)
 let pay = Math.floor(Math.random() * 300)
 user.money += pay + user.dog * 1000
+user.lastwork = new Date() * 1
 let work = pickRandom(['los ruidos de lo clientes molestos no te dejan en paz, sin embargo tu paga fue de', 'fue una noche tranquila...\nganaste', 'porque elegiste este trabajo\n*esta pregunta retumba en tu cabeza*, sin embargo ganaste tu miseria de paga de'])
 m.reply(`${work} ${pay} dólares 💵`)
 }
@@ -426,6 +427,7 @@ let bonus = Math.floor(Math.random() * 3000)
 let lost = Math.floor(Math.random() * 80)
 user.money += pay + user.dog * 1000
 user.exp += bonus + user.dog * 1000
+user.lastwork = new Date() * 1
 user.axedurability -= lost - user.fox * 4
 let work = pickRandom(['este trabajo es demasiado bueno pero agotador, asi que este esfuerzo es recompensado por', '*piensas en cortar 20 troncos mas pero tu trabajo es tan bueno que ganas*'])
 m.reply(`${work} ${pay + user.dog * 1000} dolares 💵\n*a costa de este trabajo ganaste ${bonus + user.dog * 1000} pero tu hacha perdio ${lost - user.fox * 4} de durabilidad`)
