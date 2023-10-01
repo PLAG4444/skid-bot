@@ -532,7 +532,7 @@ let rewards = {
  } 
  let listCrate = Object.fromEntries(Object.entries(rewards).filter(([v]) => v && v in user)) 
  let info = ` 
- Ejemplo: *${usedPrefix}${command} common 10* 
+ Ejemplo: *${prefix}${command} common 10* 
   
  📍 Cajas disponibles
  ${Object.keys(listCrate).map((v) => ` 
@@ -567,7 +567,7 @@ let rewards = {
  conseguiste un item raro!! ${diamond ? `*${diamond}* ${rpg.emoticon('diamond')}` : ''}${diamond && mythic ? 'y ' : ''}${mythic ? `*${mythic}* ${rpg.emoticon('mythic')}` : ''} 
  `.trim()) 
      if ( legendary ) m.reply(` Conseguiste un item legendario!! *${legendary}* ${global.rpg.emoticon('legendary')}`.trim()) // `
- } 
+ 
  function isNumber(number) { 
      if (!number) return number 
      number = parseInt(number) 
