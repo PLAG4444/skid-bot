@@ -141,21 +141,20 @@ const shouldReconnect = async function(restatConn) {
   }
 
 
-  conn.connection = handler.handler.bind(conn)
-  conn.participantsUpdate = handler.participantsUpdate.bind(conn)
-  conn.groupsUpdate = handler.groupsUpdate.bind(conn)
-  conn.deleteUpdate = handler.deleteUpdate.bind(conn)
-  conn.onCall = handler.callUpdate.bind(conn)
-  conn.pollCmd = handler.pollCmd.bind(conn)
-  conn.credsUpdate = saveCreds.bind(conn)
+  conn.handler = handler.handler.bind(conn)
+  conn.welcome = handler.participantsUpdate.bind(conn)
+  conn.groupUpdates = handler.groupsUpdate.bind(conn)
+  conn.deleteEvent = handler.deleteUpdate.bind(conn)
+  conn.calls = handler.callUpdate.bind(conn)
+  conn.cmdWithPoll = handler.pollCmd.bind(conn)
 
   
 
-  conn.ev.on('messages.upsert', conn.connection)
-  conn.ev.on('call', conn.onCall)
-  conn.ev.on('group-participants.update', conn.participantsUpdate)
-  conn.ev.on("groups.update", conn.groupsUpdate)
-  conn.ev.on('message.delete', conn.deleteUpdate)
+  conn.ev.on('messages.upsert', conn.handler)
+  conn.ev.on('call', conn.calls)
+  conn.ev.on('group-participants.update', conn.welcome)
+  conn.ev.on("groups.update", conn.groupUpdates)
+  conn.ev.on('message.delete', conn.deleteEvent)
   conn.ev.on('connection.update', async (up) => {
   const { connection, lastDisconnect, isNewLogin, qr } = up
   if (isNewLogin) conn.isInit = false
@@ -209,9 +208,8 @@ const shouldReconnect = async function(restatConn) {
   global.listJadibot.splice(i, 1) // I stole it from aiden (credits to him)  
   }
   })
-  conn.ev.on('creds.update', saveCreds)    
-  store.bind(conn.ev)
-  conn.ev.on('messages.update', conn.pollCmd)
+  conn.ev.on('creds.update', saveCreds)
+  conn.ev.on('messages.update', conn.cmdWithPoll)
   isInit = false
   return true
   }
