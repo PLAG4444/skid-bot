@@ -296,6 +296,10 @@
   }
   break
   
+  
+  
+  
+  
   case 'inventario': case 'inv': {
   let inventory = { 
    others: { 
@@ -580,7 +584,7 @@ let caption = `
  
  case 'armadura': {
  if (user.armor > 0) throw `*te sientes estupido al intentar crear una espada cuando ya tienes una...*\n(talvez querías mejorarlo con ${prefix}mejorar)`
- if (user.diamond < 30) `*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`
+ if (user.diamond < 30) throw `*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`
  user.diamond -= 30
  user.armor += 1
  user.armordurability = 70
