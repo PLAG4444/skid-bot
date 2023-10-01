@@ -165,6 +165,350 @@
  
   try {  
   switch (command) {
+  
+  case 'minar': case 'minar': {
+  let cooldown = 10000
+  let user = global.db.data.users[m.sender]
+  let timer = (cooldown - (new Date - user.lastmining))
+  if (user.health < 80) return conn.reply(m.chat, `*estas herido*\npara poder minar necesitas minimo 80 de *salud* ♥️\ncompra pociones con ${prefix}buy potion y curate con ${prefix}health`, m)
+  if (user.pickaxe == 0) return m.reply('*quieres minar sin pico 💀*')
+  if (new Date - user.lastmining <= cooldown) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a minar*`
+  let rewards = reward(user)
+  let txt = '*minaste demasiado*\n*pero a costa perdiste'
+  for (let lost in rewards.lost) if (user[lost]) {
+  let total= rewards.lost[lost].getRandom()
+  user[lost] -= total * 1
+  if (total) txt += `\n*${global.rpg(lost)}:* ${total}`
+  }
+  txt += '\n\nPero consigues'
+  for (let rewardItem in rewards.reward) if (rewardItem in user) {
+  let total = rewards.reward[rewardItem].getRandom()
+  user[rewardItem] += total * 1
+  if (total) text += `\n*${global.rpg(rewardItem)}:* ${total}`
+  }
+  m.reply(text.trim())
+  user.lastmining = new Date * 1
+  
+  function reward(user = {}) {
+  let rewards = {
+  reward: {
+  exp: 702 * user.level,
+  trash: 103,
+  string 25,
+  rock: 30,
+  iron: 25,
+  diamond: 5,
+  emerald: 5,
+  common: 2 * (user.dog && (user.dog > 2 ? 2 : user.dog) * 1.2 || 1), 
+  uncommon: [0, 0, 0, 1, 0].concat(new Array(5 - ((user.dog > 2 && user.dog < 6 && user.dog) || (user.dog > 5 && 5) || 2 )).fill(0)), 
+  },
+  lost: {
+  health: 80 - user.cat * 4,
+  pickaxedurability: 30 - user.fox * 3
+  }
+  }
+  return rewards
+  }
+  }
+  break
+  
+  case 'inventario': {
+  let inventory = { 
+   others: { 
+     health: true, 
+     money: true, 
+     exp: true, 
+     limit: true, 
+     level: true, 
+     role: true, 
+   }, 
+   items: { 
+     potion: true, 
+     trash: true, 
+     wood: true, 
+     rock: true, 
+     string: true, 
+     emerald: true, 
+     diamond: true, 
+     gold: true, 
+     iron: true, 
+     upgrader: true, 
+     pet: true, 
+   }, 
+   durabi: { 
+     sworddurability: true, 
+     pickaxedurability: true, 
+     fishingroddurability: true, 
+     armordurability: true, 
+   }, 
+   tools: { 
+     armor: { 
+       '0': 'ropa desgastada', 
+       '1': 'ropa comun', 
+       '2': 'traje policial', 
+       '3': 'traje militar', 
+       '4': 'armadura antidisturbios', 
+       '5': 'traje mecánico', 
+       '6': 'traje legendario', 
+       '7': 'armadura mejorada', 
+       '8': 'armadura reforzada', 
+       '9': 'armadura antimounstros', 
+     }, 
+     sword: { 
+       '0': 'no tiene', 
+       '1': 'espada inservible', 
+       '2': 'espada desgastada',
+       '3': 'espada de hierro',
+       '4': 'doble espada afilada',
+       '5': 'espada de oro', 
+       '6': 'espada de oro reforzado', 
+       '7': 'espada cazadora de mounstros',
+     }, 
+     pickaxe: { 
+       '0': 'no tiene', 
+       '1': 'pico quebradizo', 
+       '2': 'pico desgastado', 
+       '3': 'pico normal', 
+       '4': 'pico de oro', 
+       '5': 'pico de oro reforzado',
+       '6': 'pico de diamante', 
+       '7': 'pico de cristal'
+     }, 
+     fishingrod: true, 
+  
+   }, 
+   crates: { 
+     common: true, 
+     uncommon: true, 
+     mythic: true, 
+     legendary: true, 
+   }, 
+   pets: { 
+     horse: 10, 
+     cat: 10, 
+     fox: 10, 
+     dog: 10, 
+   }
+   } 
+  let user = global.db.data.users[m.sender] 
+  let user = global.db.data.users[m.sender] 
+  let tools = Object.keys(inventory.tools).map(v => user[v] && `${global.rpg.emoticon(v)} ${v}: ${typeof inventory.tools[v] === 'object' ? inventory.tools[v][user[v]?.toString()] : `nivel ${user[v]}`}`).filter(v => v).join('\n').trim() 
+  let items = Object.keys(inventory.items).map(v => user[v] && `${global.rpg.emoticon(v)} ${v}: ${user[v]}`).filter(v => v).join('\n').trim() //`
+  let dura = Object.keys(inventory.durabi).map(v => user[v] && `${global.rpg.emoticon(v)} ${v}: ${user[v]}`).filter(v => v).join('\n').trim() 
+  let crates = Object.keys(inventory.crates).map(v => user[v] && `${global.rpg.emoticon(v)} ${v}: ${user[v]}`).filter(v => v).join('\n').trim() 
+  let pets = Object.keys(inventory.pets).map(v => user[v] && `${global.rpg.emoticon(v)} ${v}: ${user[v] >= inventory.pets[v] ? 'Max Levels' : `Level(s) ${user[v]}`}`).filter(v => v).join('\n').trim() //`
+  let txt = `
+👤 Nombre: ${await conn.getName(m.sender)}
+🛡️ Rol ${user.role}
+
+${Object.keys(inventory.others).map(v => user[v] && `➔ ${global.rpg.emoticon(v)} ${v}: ${user[v]}`).filter(v => v).join('\n')}${tools ? `
+* Herramientas ⚔️*
+
+${tools}` : ''}${dura ?`
+${dura}` : ''}${items ? `
+
+* Items ♦️*
+${items}
+Items totales: ${Object.keys(inventory.items).map(v => user[v]).reduce((a, b) => a + b, 0)} Items` : ''}${crates ? `
+
+* Cajas 📦*
+${crates}
+
+Cajas totales:  ${Object.keys(inventory.crates).map(v => user[v]).reduce((a, b) => a + b, 0)} Cajas` : ''}${pets || user.petFood ? ` 
+
+${pets ? pets + '\n' : ''}${user.petFood ? '🍖 comida para mascotas: ' + user.petFood : ''}` : ''}`.trim() // `
+m.reply(txt)
+ }
+ break
+ 
+ case 'work': case 'chambear': {
+ let works = (args[0] || '').toLowerCase()
+ let txt = `
+*Hola ${await conn.getName(m.sender)}*
+
+*Aqui tienes una lista de trabajos donde puedes ser contratado*
+
+* Cajero 🏧*
+- No necesitas nada para que te contraten el el cajero
+- paga miserable 
+- sin bonus exp
+
+* Leñador 🪵*
+- necesitas un hacha (crafteable)
+- paga buena
+- bonus exp
+
+`
+switch (works) {
+case 'cajero': {
+let user = global.db.data.users[m.sender] 
+let time = global.db.data.users[m.sender].lastwork + 600000  
+if (new Date - global.db.data.users[m.sender].lastwork < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(time - new Date())} para volver a trabajar!!*`)
+let pay = Math.floor(Math.random() * 300)
+user.money += pay + user.dog * 1000
+let work += pickRandom(['los ruidos de lo clientes molestos no te dejan en paz, sin embargo tu paga fue de', 'fue una noche tranquila...\nganaste', 'porque elegiste este trabajo\n*esta pregunta retumba en tu cabeza*, sin embargo ganaste tu miseria de paga de'])
+m.reply(`${work} ${pay} dólares 💵`)
+}
+break
+case 'leñador': { 
+let user = global.db.data.users[m.sender] 
+let time = global.db.data.users[m.sender].lastwork + 600000  
+if (new Date - global.db.data.users[m.sender].lastwork < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(time - new Date())} para volver a trabajar!!*`)
+if (user.axe == 0) throw '*no fuistes contratado por la simple razon de que no tienes un hacha, subnormal*'
+if (user.axedurability < 50) throw `tu hacha puede *romperse* en esas condiciones sin aviso\npuedes reparar tu hacha con *${prefix}repair hacha*`
+let pay = pickRandom([900, 300, 700, 999])
+let bonus = Math.floor(Math.random() * 3000)
+let lost = Math.floor(Math.random() * 80)
+user.money += pay + user.dog * 1000
+user.exp += bonus + user.dog * 1000
+user.axedurability -= lost - user.fox * 4
+let work = pickRandom(['este trabajo es demasiado bueno pero agotador, asi que este esfuerzo es recompensado por', '*piensas en cortar 20 troncos mas pero tu trabajo es tan bueno que ganas*'])
+m.reply(`${work} ${pay + user.dog * 1000} dolares 💵\n*a costa de este trabajo ganaste ${bonus + user.dog * 1000} pero tu hacha perdio ${lost - user.fox * 4} de durabilidad`)
+}
+break
+default:
+
+m.reply(txt)
+
+}
+function pickRandom(list) { 
+   return list[Math.floor(list.length * Math.random())]; 
+}
+}
+break
+
+
+case 'petshop': {
+let shop = (args[0] || '').toLowerCase()
+let user = global.db.data.users[m.sender] 
+let hdog = 5000
+let hcat = 5000
+let hfox = 10000
+let hpetfood = 950
+let txt = `
+*compra una mascota hoy...*
+
+ 🐈 • *Gato:*
+ ➞ ${hcat} dolares
+ ➞ 4% mas salud en cualquier accion
+ 
+ 
+ 🐕 • *Perro:* (próximamente)
+ ➞ ${hdog} dolares
+ ➞ Bonus extra en dolares y xp
+ 
+ 
+ 🦊 • *Zorro:*  (próximamente)
+ ➞ ${hfox} dolares
+ ➞ bonus en ataques 
+ 
+ 🍖 • *Comida para mascotas*: (próximamente)
+  ➞ ${hpetfood}
+`
+
+switch (shop) {
+case 'gato': {
+if (user.cat) throw 'ya tienes esa mascota!!'
+if (user.money < hcat) throw 'te falta dinero!!'
+user.money -= hcat
+user.cat += 1
+m.reply('*gracias por comprar tu lindo gatito*')
+}
+break
+
+default: 
+m.reply(txt)
+}
+}
+
+  
+ 
+  
+   
+  
+         
+ 
+case 'crear': case 'craft': {
+let repairs =  (args[0] || '').toLowerCase()
+let user = global.db.data.users[m.sender] 
+let caption = `
+*Por alguna razon tienes estas recetas*
+*(por un momento piensas crear una...)*
+ 
+ *❏ Recetas*
+
+*talvez un trabajo pida un hacha... nunca se sabe*
+ ▧ Hacha 🪓
+ 〉4 madera
+ 〉3 hierro
+ 
+*una buena decisión para conseguir materiales*
+ ▧ Pico ⛏️ 
+ 〉 10 roca
+ 〉 5 Hierro 
+ 〉 2 madera
+
+*necesitas pelear? esta es tu opcion*
+ ▧ espada ⚔️ 
+ 〉 10 madera
+ 〉 15 hierro
+ 
+*un poco de protección nunca viene mal*
+ ▧ Armadura 🥼 
+ 〉 30 diamantes
+ `
+ switch (repairs) {
+
+ case 'hacha': {
+ if (user.axe > 0) throw `*te sientes estupido al intentar crear un pico cuando ya tienes uno...*\n(talvez querías mejorarlo con ${prefix}mejorar)`
+ if (user.wood < 4 || user.iron < 3) throw `*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`
+ user.wood -= 4
+ user.iron -= 3
+ user.axe += 1
+ user.axedurability = 70
+ m.reply('*solo te cortaste una mano para tenér una fabulosa hacha 🪓*')
+ }
+ break
+ 
+ case 'pico': {
+ if (user.pickaxe > 0) throw `*te sientes estupido al intentar crear un pico cuando ya tienes uno...*\n(talvez querías mejorarlo con ${prefix}mejorar)`
+ if (user.rock < 10 || user.iron < 5 || user.wood < 2) throw `*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`
+ user.rock -= 10
+ user.iron -= 5
+ user.wood -= 2
+ user.pickaxe += 1
+ user.pickaxedurability = 70
+ m.reply('*crafteaste un pico ⚒️*')
+ }
+ break
+ 
+ case 'espada': {
+ if (user.pickaxe > 0) throw `*te sientes estupido al intentar crear una espada cuando ya tienes una...*\n(talvez querías mejorarlo con ${prefix}mejorar)`
+ if (user.wood < 10 || user.iron < 15) throw `*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`
+ user.wood -= 10
+ user.iron -= 15
+ user.sword += 1
+ user.sworddurability = 70
+ m.reply('*con unas cuantas lesiones y cortaduras creaste una espada ⚔️*')
+ }
+ break
+ 
+ case 'armadura': {
+ if (user.armor > 0) throw `*te sientes estupido al intentar crear una espada cuando ya tienes una...*\n(talvez querías mejorarlo con ${prefix}mejorar)`
+ if (user.diamond < 30) `*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`
+ user.diamond -= 30
+ user.armor += 1
+ user.armordurability = 70
+ m.reply('*como diablos hiciste una armadura con diaman.. da igual, lo bueno es que tienes ahora una armadura*')
+ }
+ break
+ 
+ default: 
+ m.reply(caption)
+ }
+ break
+ 
+ 
     
   case 'acortar': {
   if (!text) return m.reply(`*[❗] INFO [❗]*\n*Ingresa un link para acortar!!*`)
@@ -275,21 +619,7 @@
     }
     break
     
-   case 'claim': case 'reclamar': {
-    let time = global.db.data.users[m.sender].lastClaim + 86400000
-    if (new Date() - global.db.data.users[m.sender].lastClaim < 86400000) throw `*❗Ya reclamaste tu cofre*\n_*vuelve en ${msToTime(time - new Date())} para volver a reclamar*_`
-    let expp = Math.floor(Math.random() * 5000)
-    let _money = Math.floor(Math.random() * 500)
-    let _limit = Math.floor(Math.random() * 10)
-    global.db.data.users[m.sender].money += _money
-    global.db.data.users[m.sender].exp += expp
-    global.db.data.users[m.sender].limit += _limit
-    var ttext = `*🌀 Obtienes un cofre 🌀*\n_*este cofre contiene*_\n*Dinero: ${_money}*\n*diamantes: ${_limit}*\n_*Exp: ${expp}*_`
-
-    m.reply(ttext)
-    global.db.data.users[m.sender].lastClaim = new Date() * 1   
-    }
-   break
+   
    
   
    
@@ -1020,91 +1350,24 @@ case 'play2': {
    }
    break
 
-  case 'robar': {
-  let user = global.db.data.users[m.sender]
-  if (user.health < 90) throw `*💔 Tu salud es baja*\n*compra y bebe una pocion con ${prefix}health*`
-  let idk = ['fracaso', 'robo', 'disparo']
-  let status = idk[Math.floor(Math.random() * idk.length)]
-  if (status == 'fracaso') {
-  let health = Math.floor(Math.random() * 40)
-  let idk = ['un brazo', 'una pierna']
-  let status = idk[Math.floor(Math.random() * idk.length)]
-  user.health -= health
-  m.reply(`*los policías te encontraron y te dispararon en ${status}!!*\n*perdiste ${health} salud ❤️‍🩹*`)
-  }
-  if (status == 'disparo') {
-  let health = Math.floor(Math.random() * 90)
-  let idk = ['el pecho', 'la cabeza']
-  let status = idk[Math.floor(Math.random() * idk.length)]
-  user.health -= health
-  m.reply(`*los policías te encontraron y te dispararon en ${status} donde por poco te desangras!!*\n*perdiste ${health} salud 💔*`)
-  }
-  if (status == 'robo') {
-  let money = Math.floor(Math.random() * 3500)
-  let exp = Math.floor(Math.random() * 50000)
-  user.money += money
-  user.exp += exp
-  m.reply(`*lograste escapar por poco*\n*Ganaste:* \n*${money} dólares*\n*${exp} xp*`)
-  }
-  }
-  break
-  
-  
-  case 'health': {
-  let user = global.db.data.users[m.sender]
-  if (user.health >= 100) throw '*Tu salud esta llena ♥️*'
-  let heal = 40 + user.cat * 4
-  let count = Math.max(1, Math.min(Number.MAX_SAFE_INTEGER, (isNumber(args[0]) && parseInt(args[0])) || Math.round((90 - user.health) / heal))) * 1
-  if (user.potion < count) return m.reply(`*❌ No tienes pociónes*\n*necesitas ${count - user.potion} pocion para curarte*\n*Solo tienes ${user.potion}!!*`)
-  user.potion -= count * 1 //1 potion = count (1) 
-  user.health += heal * count
-  m.reply(`*Tu salud esta completa ✅*\n*usaste ${count} pociones para curarte*\n*Nueva salud: ${user.health} ♥️*`)  
-  function isNumber(number) { 
-   if (!number) return number; 
-   number = parseInt(number); 
-   return typeof number == "number" && !isNaN(number); 
-  }
-  }
-  break
   
   
   
-/*   case 'apostar': {
-   let count = args[0]
-   if (args.length < 1) throw `*No sabes usar este comando?*\n*no te preocupes estoy aqui para darte este ejemplo ^-^*\n${prefix + command} 100`
-   if (global.db.data.users[m.sender].money >= count) {
-   let apost = ['ganar', 'perder', 'ganar', 'perder', 'perder', 'ganar', 'perder', 'perder']
-   let idk = apost[Math.floor(Math.random() * apost.length)]
-   
-   if (idk == 'perder') {
-   global.db.data.users[m.sender].money -= count
-   m.reply(`_*Apostaste ${count} dolares...*_\n\n*La suerte nunca estuvo de tu lado 😑*\n*-${count} dolares*`)
-   }
-   if (idk == 'ganar') {
-   let bonus = Math.floor(Math.random() * 5000)
-   global.db.data.users[m.sender].money += Math.ceil(count * 2)
-   global.db.data.users[m.sender].exp += bonus
-   m.reply(`_*Apostaste ${count} dolares...*_\n*Eres un suertudo ☘️*\n*+${Math.ceil(count * 2)} dolares*\n*(Bonus) +${bonus} Xp*`)
-   }
-   } else { 
-   m.reply(`*❗ NO tienes ${count} dolares unu*\n*tu solo tienes ${global.db.data.users[m.sender].money}*`)
-   }
-   }
-   break */
+
    case 'apostar': {
    this.bet = this.bet ? this.bet : {}
    if (m.sender in this.bet) throw '¡¡Todavía estás apostando, espera hasta que se acabe!!'
    try { 
    let user = global.db.data.users[m.sender]
    let count = (args[0] && number(parseInt(args[0])) ? Math.max(parseInt(args[0]), 1) : /all/i.test(args[0]) ? Math.floor(parseInt(user.money)) : 1) * 1 
-   if ((user.money *1) < count) return m.reply('¡¡No tienes suficiente dinero!!')
+   if ((user.money * 1) < count) return m.reply('¡¡No tienes suficiente dinero!!')
    if (!(m.sender in this.bet)) {
    this.bet[m.sender] = {
    sender: m.sender,
    count,
    timeout: setTimeout(() => (m.reply('*se acabo el tiempo*'), delete this.bet[m.sender]), 60000)
    }
-   let txt =`¿Estás seguro de que quieres apostar? (si/nn)\n\n*Apuesta:* ${count} 💹\n*⏰ Tienes 60 segundos para tomar una decisión*`
+   let txt =`¿Estás seguro de que quieres apostar? (si/no)\n\n*Apuesta:* ${count} 💵\n*⏰ Tienes 60 segundos para tomar una decisión*`
    return conn.reply(m.chat, txt, m)
    }
    } catch (e) {
@@ -1130,59 +1393,6 @@ break
 
  
    
-   case 'buy':
-   let buy = (args[0] || '').toLowerCase()
-   let cost = 300
-   switch (buy) {
-   case 'pocion': case 'potion': {
-   let cost = 100
-   let user = global.db.data.users[m.sender]
-   if (user.limit > cost) {
-   user.potion += 10
-   user.limit -= cost
-   m.reply(`*Compraste 10 pociones por 100 diamantes 💎*`)
-   } else {
-   m.reply(`*te faltan ${cost - user.limit} diamantes para comprar pociones!!*`)
-   }
-   }
-   break
-   case 'xp': {
-     if (global.db.data.users[m.sender].money >= cost) {
-     __exp = Math.floor(Math.random() * 10000)
-     global.db.data.users[m.sender].exp += __exp
-     global.db.data.users[m.sender].money -= cost
-     m.reply(`*✅ Comprastes ${newXp} Xp*`)
-     } else { 
-     m.reply(`*❗ no tienes dinero para comprar ${buy}*`)
-     }}
-     break
-    
-   case 'cofre': {
-   let common = 1000
-   if (global.db.data.users[m.sender].money > common) {
-   __exp = Math.floor(Math.random() * 5000)
-   __limit = Math.floor(Math.random() * 100)
-   _trash = Math.floor(Math.random() * 200)
-   _potion = Math.floor(Math.random() * 5)
-   global.db.data.users[m.sender].exp += __exp
-   global.db.data.users[m.sender].limit += __limit
-   global.db.data.users[m.sender].trash += _trash
-   global.db.data.users[m.sender].potion += _potion
-   global.db.data.users[m.sender].money -= common
-   m.reply(`*✅ compraste un ${buy}*\n*Este cofre contenia*\n_*✨ ${__exp} exp*_\n*💎 ${__limit} diamantes*\n*🗑️ ${_trash} basura*\n*🥤 ${_potion} pociones*`)
-   } else {
-   m.reply(`*este objeto cuesta $1000 dolares*\n*tu solo tienes ${global.db.data.users[m.sender].money}!!*`)
-   }
-   }
-   break
-   
-   
-   
-   
-   default:
-   m.reply(`*❎ No puedes comprar eso*`)
-   }
-   break
    
    
    case 'setwelcome': case 'bienvenida': {
@@ -1205,35 +1415,7 @@ break
    conn.reply(m.chat, '*❗ tu bienvenida fue configurada correctamente*', m)
    }
    break
-   case 'minar': {
-   let date = global.db.data.users[m.sender].lastmiming + 600000
-   if (new Date - global.db.data.users[m.sender].lastmiming < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(date - new Date())} para volver a trabajar!!*`)  
-   let exp = Math.floor(Math.random() * 10000) 
-   let money = Math.floor(Math.random() * 1000) 
-   global.db.data.users[m.sender].money += money
-   global.db.data.users[m.sender].exp += exp; 
-   m.reply(`*Minaste demasiado*\n*tu jefe te dio ${money} dolares y ganaste ${exp} exp!!*\ntu jefe fue claro en decirte que *no lo gastes en apuestas!!*`) 
-   global.db.data.users[m.sender].lastmiming = new Date * 1;
-   }
-   break
-   case 'work': {
-     let hasil = Math.floor(Math.random() * 2000) 
-     let time = global.db.data.users[m.sender].lastwork + 600000 
-     if (new Date - global.db.data.users[m.sender].lastwork < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(time - new Date())} para volver a trabajar!!*`)  
-     let anu = (await axios.get('https://raw.githubusercontent.com/fgmods/fg-team/main/games/work.json')).data 
-     let res = pickRandom(anu) 
-     let bills = Math.floor(hasil * 1)
-     let xpFinal = hasil + bills
-     let money = Math.floor(Math.random() * 500)
-     global.db.data.users[m.sender].exp += xpFinal 
-     global.db.data.users[m.sender].money += money
-     m.reply(`*${res.fgwork} ${money} Dolares!!*\n*como trabajaste demasiado ganas ${xpFinal} Exp*🥳`) 
-     global.db.data.users[m.sender].lastwork = new Date * 1
-     function pickRandom(list) { 
-     return list[Math.floor(list.length * Math.random())] 
-     }
-     }
-  break
+   
    
  case 'lyrics':
  if (!text) throw `*⚠️ que música quieres ${conn.getName(m.sender)}?*\n*ejempo: ${prefix + command} say with me*`
