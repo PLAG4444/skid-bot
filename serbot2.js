@@ -147,7 +147,6 @@ const shouldReconnect = async function(restatConn) {
   conn.deleteUpdate = handler.deleteUpdate.bind(conn)
   conn.onCall = handler.callUpdate.bind(conn)
   conn.pollCmd = handler.pollCmd.bind(conn)
-  conn.connectionUpdate = connectionUpdate.bind(conn)
   conn.credsUpdate = saveCreds.bind(conn)
 
   
