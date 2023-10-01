@@ -185,7 +185,7 @@
   user[rewardItem] += total * 1
   if (total) txt += `\n*${global.rpg.emoticon(rewardItem)}:* ${total}`
   }
-  m.reply(text.trim())
+  m.reply(txt.trim())
   user.lastadventure = new Date() * 1
   
   function reward(user = {}) { 
@@ -252,7 +252,7 @@
   user[rewardItem] += total * 1
   if (total) txt += `\n*${global.rpg.emoticon(rewardItem)}:* ${total}`
   }
-  m.reply(text.trim())
+  m.reply(txt.trim())
   user.lastmining = new Date * 1
   
   function reward(user = {}) {
