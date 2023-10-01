@@ -170,7 +170,7 @@
   let cooldown = 10000
   let user = global.db.data.users[m.sender]
   let timer = (cooldown - (new Date - user.lastadventure))
-  if (new Date - user.lastadventure < cooldown) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a aventurar*`
+  if (new Date() - user.lastadventure < cooldown) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a aventurar*`
   if (user.health < 80) return conn.reply(m.chat, `*estas herido*\npara poder aventurar necesitas minimo 80 de *salud* ♥️\ncompra pociones con ${prefix}buy potion y curate con ${prefix}health`, m)
   let rewards = reward(user)
   let txt = '*fuiste a una aventura peligrosa*\n*donde perdiste*'
@@ -238,7 +238,7 @@
   if (user.health < 80) return conn.reply(m.chat, `*estas herido*\npara poder minar necesitas minimo 80 de *salud* ♥️\ncompra pociones con ${prefix}buy potion y curate con ${prefix}health`, m)
   if (user.pickaxe == 0) return m.reply('*quieres minar sin pico 💀*')
   if (user.pickaxedurability < 30) throw '*tu pico esta roto*'
-  if (new Date - user.lastmining < cooldown) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a minar*`
+  if (new Date() - user.lastmining < cooldown) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a minar*`
   let rewards = reward(user)
   let txt = '*minaste demasiado*\n*pero a costa perdiste'
   for (let lost in rewards.lost) if (user[lost]) {
@@ -420,16 +420,20 @@ m.reply(txt)
 
 *Aqui tienes una lista de trabajos donde puedes ser contratado*
 
-* Cajero 🏧*
+ *Cajero 🏧*
 - No necesitas nada para que te contraten el el cajero
 - paga miserable 
 - sin bonus exp
 
-* Leñador 🪵*
+ *Leñador 🪵*
 - necesitas un hacha (crafteable)
 - paga buena
 - bonus exp
 
+ *Repartidor 🚚* (próximamente)
+- Nivel 45 requerido
+- Cada pedido 500 dolares
+- Bonus xp 
 `
 switch (works) {
 case 'cajero': {
@@ -471,109 +475,7 @@ function pickRandom(list) {
 }
 break
 
-case 'abrir': case 'open': {
-let user = global.db.data.users[m.sender]
-let rewards = { 
-     common: { 
-         money: 101 + user.dog * 900,
-         exp: 500 + user.dog * 4000,
-         trash: 11, 
-         potion: [0, 1, 0, 1, 0, 0, 0, 0, 0], 
-         common: [0, 1, 0, 1, 0, 0, 0, 0, 0, 0], 
-         uncommon: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] 
-     }, 
-     uncommon: { 
-         money: 201 + user.dog * 900,
-         exp: 7001 + user.dog * 4000,
-         trash: 31, 
-         potion: [0, 1, 0, 0, 0, 0, 0], 
-         diamond: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-         common: [0, 1, 0, 0, 0, 0, 0, 0], 
-         uncommon: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0], 
-         mythic: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-         wood: [0, 1, 0, 0, 0, 0], 
-         rock: [0, 1, 0, 0, 0, 0], 
-         string: [0, 1, 0, 0, 0, 0] 
-     }, 
-     mythic: { 
-         money: 301 + user.dog * 5627, 
-         exp: 2001 + user.dog * 7000,
-         trash: 61, 
-         potion: [0, 1, 0, 0, 0, 0], 
-         emerald: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-         diamond: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0], 
-         gold: [0, 1, 0, 0, 0, 0, 0, 0, 0], 
-         iron: [0, 1, 0, 0, 0, 0, 0, 0], 
-         common: [0, 1, 0, 0, 0, 0], 
-         uncommon: [0, 1, 0, 0, 0, 0, 0, 0], 
-         mythic: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0], 
-         legendary: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         wood: [0, 1, 0, 0, 0], 
-         rock: [0, 1, 0, 0, 0], 
-         string: [0, 1, 0, 0, 0] 
-     }, 
-     legendary: { 
-         money: 1001 + user.dog * 5627,
-         exp: 6001 + user.dog * 10000,
-         trash: 101, 
-         potion: [0, 1, 0, 0, 0], 
-         emerald: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0], 
-         diamond: [0, 1, 0, 0, 0, 0, 0, 0, 0], 
-         gold: [0, 1, 0, 0, 0, 0, 0, 0], 
-         iron: [0, 1, 0, 0, 0, 0, 0], 
-         common: [0, 1, 0, 0], 
-         uncommon: [0, 1, 0, 0, 0, 0], 
-         mythic: [0, 1, 0, 0, 0, 0, 0, 0, 0], 
-         legendary: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0], 
-         wood: [0, 1, 0, 0], 
-         rock: [0, 1, 0, 0], 
-         string: [0, 1, 0, 0] 
-     }, 
- } 
- let listCrate = Object.fromEntries(Object.entries(rewards).filter(([v]) => v && v in user)) 
- let info = ` 
- Ejemplo: *${prefix}${command} common 10* 
-  
- 📍 Cajas disponibles
- ${Object.keys(listCrate).map((v) => ` 
- ${rpg.emoticon(v)}${v} 
- `.trim()).join('\n')}
- `.trim() 
- let type = (args[0] || '').toLowerCase() 
-     let count = Math.floor(isNumber(args[0]) ? Math.min(Math.max(parseInt(args[0]), 1), Number.MAX_SAFE_INTEGER) : 10) * 1 
-     if (!(type in listCrate)) return m.reply(info) 
-     if (user[type] < count) return m.reply(` 
- no tienes cajas de *${rpg.emoticon(type)}${type} solo tienes ${user[type]}  *${rpg.emoticon(type)}${type}
- `.trim())   
-     let crateReward = {} 
-     for (let i = 0; i < count; i++) 
-         for (let [reward, value] of Object.entries(listCrate[type])) 
-             if (reward in user) { 
-                 const total = value.getRandom() 
-                 if (total) { 
-                     user[reward] += total * 1 
-                     crateReward[reward] = (crateReward[reward] || 0) + (total * 1) 
-                 } 
-             } 
-     user[type] -= count * 1 
-     m.reply(` 
- Abriste *${count}* cajas de ${global.rpg.emoticon(type)}${type} y consigues:
- ${Object.keys(crateReward).filter(v => v && crateReward[v] && !/legendary|pet|mythic|diamond|emerald/i.test(v)).map(reward => ` 
- *${global.rpg.emoticon(reward)}${reward}:* ${crateReward[reward]} 
- `.trim()).join('\n')} 
- `.trim()) 
-     let diamond = crateReward.diamond, mythic = crateReward.mythic, pet = crateReward.pet, legendary = crateReward.legendary, emerald = crateReward.emerald 
-     if (mythic || diamond) m.reply(` 
- conseguiste un item raro!! ${diamond ? `*${diamond}* ${rpg.emoticon('diamond')}` : ''}${diamond && mythic ? 'y ' : ''}${mythic ? `*${mythic}* ${rpg.emoticon('mythic')}` : ''} 
- `.trim()) 
-     if ( legendary ) m.reply(` Conseguiste un item legendario!! *${legendary}* ${global.rpg.emoticon('legendary')}`.trim()) // `
- 
- function isNumber(number) { 
-     if (!number) return number 
-     number = parseInt(number) 
-     return typeof number == 'number' && !isNaN(number) 
- }}
- break
+
   
  
 case 'petshop': {
@@ -581,8 +483,8 @@ let shop = (args[0] || '').toLowerCase()
 let user = global.db.data.users[m.sender] 
 let hdog = 5000
 let hcat = 5000
-let hfox = 10000
-let hpetfood = 950
+let hfox = 20000
+let hpetfood = 1
 let txt = `
 *compra una mascota hoy...*
 
@@ -599,9 +501,11 @@ let txt = `
  🦊 • *Zorro:*  (próximamente)
  ➞ ${hfox} dolares
  ➞ bonus en ataques 
+ ➞ Los cooldown se rebajan 30 segundos
  
- 🍖 • *Comida para mascotas*: (próximamente)
-  ➞ ${hpetfood}
+ 🍖 • *Comida para mascotas*:
+  ➞ ${hpetfood} Pet token
+  ➞ Sube de nivel tus mascotas
 `
 
 switch (shop) {
@@ -610,7 +514,7 @@ if (user.cat) throw 'ya tienes esa mascota!!'
 if (user.money < hdog) throw 'te falta dinero!!'
 user.money -= hdog
 user.cat += 1
-m.reply('*gracias por comprar tu lindo gatito*')
+m.reply('*gracias por comprar a este lindo gatito*\n*(la curacion de vida sube un %4)*')
 }
 break
 case 'perro': {
@@ -618,7 +522,15 @@ if (user.dog) throw 'ya tienes esa mascota!!'
 if (user.money < hdog) throw 'te falta dinero!!'
 user.money -= hdog
 user.dog += 1
-m.reply('*gracias por comprar tu lindo perro*')
+m.reply('*gracias por adoptar a un lindo perro*\n*(desde ahora las ganancias se duplicaran)*')
+}
+break
+case 'zorro': {
+if (user.fox) throw 'ya tienes esa mascota!!'
+if (user.money < hfox) throw 'te falta dinero!!'
+user.money -= hfox
+user.fox += 1
+m.reply('*gracias por adoptar a un zorro*\n*(bonus de ataque, cooldowns reducidos)*')
 }
 break
 default: 
@@ -627,11 +539,31 @@ m.reply(txt)
 }
 break
   
- 
-  
+case 'claim': {
+let rewards = {
+exp: 9999 + user.dog * 1000,
+money: 3000 + user.dog * 2000,
+potion: 5 + user.cat * 4,
+wood: 10,
+batu: 9,
+iron: 12
+} 
+let cooldown = 86400000 - user.fox * 30
+let user = global.db.data.users[m.sender]
+if (new Date - user.lastclaim < cooldown) throw `*❗ Ya reclamaste tu cofre diario*\n*espera ${msToTime(cooldown - new Date())} para volver a reclamar este cofre*`
+let txt = ''
+for (let reward of Object.keys(rewards)) {
+if (!(reward in user)) continue
+user[reward] += rewards[reward]
+txt += `*+${rewards[reward]}* ${global.rpg.emoticon(reward)}\n`
+}
+conn.reply(m.chat, '*HAS CONSEGUIDO 🥳*' + txt, fkontak)
+user.lastclaim = new Date() * 1
+}
+break
    
   
-         
+        
  
 case 'crear': case 'craft': {
 let repairs =  (args[0] || '').toLowerCase()
