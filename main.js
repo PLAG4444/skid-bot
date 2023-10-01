@@ -361,7 +361,12 @@
        '5': 'pico de oro reforzado',
        '6': 'pico de diamante', 
        '7': 'pico de cristal'
-     }, 
+     },
+     axe: {
+     '0': 'hacha normal',
+     '1': 'hacha reforzada'
+     },
+     
      fishingrod: true, 
   
    }, 
@@ -482,9 +487,9 @@ let txt = `
  ➞ 4% mas salud en cualquier accion
  
  
- 🐕 • *Perro:* (próximamente)
+ 🐕 • *Perro:* 
  ➞ ${hdog} dolares
- ➞ Bonus extra en dolares y xp
+ ➞ Bonus extra en dolares y xp (%400)
  
  
  🦊 • *Zorro:*  (próximamente)
@@ -498,13 +503,20 @@ let txt = `
 switch (shop) {
 case 'gato': {
 if (user.cat) throw 'ya tienes esa mascota!!'
-if (user.money < hcat) throw 'te falta dinero!!'
-user.money -= hcat
+if (user.money < hdog) throw 'te falta dinero!!'
+user.money -= hdog
 user.cat += 1
 m.reply('*gracias por comprar tu lindo gatito*')
 }
 break
-
+case 'perro': {
+if (user.dog) throw 'ya tienes esa mascota!!'
+if (user.money < hdog) throw 'te falta dinero!!'
+user.money -= hdog
+user.dog += 1
+m.reply('*gracias por comprar tu lindo perro*')
+}
+break
 default: 
 m.reply(txt)
 }
