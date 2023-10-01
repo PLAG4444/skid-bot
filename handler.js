@@ -507,7 +507,7 @@ async function handler(chatUpdate) {
          if (!user.premium) user.premiumTime = 0; 
          if (!user.wait) user.wait = 0; 
          if (!user.rtrofi) user.rtrofi = 'Bronce'; 
-       } else { 
+       } else {
          global.db.data.users[m.sender] = { 
            afkTime: -1, 
            wait: 0, 
@@ -910,7 +910,7 @@ async function handler(chatUpdate) {
            wolflastfeed: 0, 
            wood: 0, 
            wortel: 0, 
-         }
+         }}
   
   let chats = global.db.data.chats[m.chat]  
   if (typeof chats !== 'object') global.db.data.chats[m.chat] = {}  
