@@ -194,7 +194,7 @@
   reward: {
   exp: 702 * user.level,
   trash: 103,
-  string 25,
+  string: 25,
   rock: 30,
   iron: 25,
   diamond: 5,
