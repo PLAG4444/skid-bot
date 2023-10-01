@@ -549,7 +549,7 @@ let caption = `
  switch (repairs) {
 
  case 'hacha': {
- if (user.axe > 0) throw `*te sientes estupido al intentar crear un pico cuando ya tienes uno...*\n(talvez querías mejorarlo con ${prefix}mejorar)`
+ if (user.axe > 0) throw `*te sientes estupido al intentar crear una hacha cuando ya tienes una...*\n(talvez querías mejorarlo con ${prefix}mejorar)`
  if (user.wood < 4 || user.iron < 3) throw `*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`
  user.wood -= 4
  user.iron -= 3
@@ -583,7 +583,7 @@ let caption = `
  break
  
  case 'armadura': {
- if (user.armor > 0) throw `*te sientes estupido al intentar crear una espada cuando ya tienes una...*\n(talvez querías mejorarlo con ${prefix}mejorar)`
+ if (user.armor > 0) throw `*te sientes estupido al intentar crear una armadura cuando ya tienes una...*\n(talvez querías mejorarlo con ${prefix}mejorar)`
  if (user.diamond < 30) throw `*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`
  user.diamond -= 30
  user.armor += 1
