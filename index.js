@@ -1,30 +1,23 @@
 (async () => {
 require("./settings")
-const { spawn } = require('child_process')
-const { makeInMemoryStore, useMultiFileAuthState, DisconnectReason, proto , jidNormalizedUser,WAMessageStubType, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, getAggregateVotesInPollMessage, MessageRetryMap } = require("@whiskeysockets/baileys")
-const chalk = require('chalk')
-const moment = require('moment')
-const ws = require('ws')
-const { Boom } = require('@hapi/boom')   
-const fs = require('fs')
-const yargs = require('yargs/yargs')
+const { DisconnectReason, useMultiFileAuthState, MessageRetryMap, fetchLatestBaileysVersion, makeCacheableSignalKeyStore } = require("@whiskeysockets/baileys")
 const { smsg, sleep, makeWaSocket, protoType, serialize }= require('./lib/fuctions')
-const _ = require('lodash')
-const NodeCache = require('node-cache')
-const os = require('os')
-const { execSync } = require('child_process')
-const util = require('util')
-const pino = require('pino')
-const store = require('./lib/store.js')
+const { spawn, execSync } = require('child_process')
+const { MongoClient } = require("mongodb")
 const { tmpdir } = require('os')
 const { join, basename } = require('path')
 const { readdirSync, statSync, unlinkSync } = require('fs')
-const color = (text, color) => {
-return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(text) : chalk.keyword(color)(text)
-}
-protoType()
-serialize()
-//base de datos
+const { Boom } = require('@hapi/boom')
+const useMongoDBAuthState = require("./lib/authcreds.js")
+const fs = require('fs')
+const yargs = require('yargs/yargs')
+const chalk = require('chalk')
+const ws = require('ws')
+const _ = require('lodash')
+const NodeCache = require('node-cache')
+const pino = require('pino')
+const store = require('./lib/store.js')
+const mongo = "mongodb+srv://tutorialesyg310:<password>@cluster0.pvcgsyt.mongodb.net/?retryWrites=true&w=majority"
 var low
 try {
   low = require('lowdb')
@@ -33,7 +26,6 @@ try {
 }
 
 const { Low, JSONFile } = low
-const mongoDB = require('./database/mongoDB')
 
 global.opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())
 global.db = new Low(/https?:\/\//.test(opts['db'] || '') ? new cloudDBAdapter(opts['db']) : new JSONFile(`${opts._[0] ? opts._[0] + '_' : ''}database.json`))
@@ -88,23 +80,33 @@ if (!opts['test']) {
    if (global.db) { 
      setInterval(async () => { 
        if (global.db.data) await global.db.write() 
-       if (opts['autocleartmp'] && (global.support || {}).find) (tmp = [os.tmpdir(), 'temp'], tmp.forEach((filename) => cp.spawn('find', [filename, '-amin', '3', '-type', 'f', '-delete']))) 
+       if (opts['autocleartmp'] && (global.support || {}).find) (tmp = [tmpdir(), 'temp'], tmp.forEach((filename) => cp.spawn('find', [filename, '-amin', '3', '-type', 'f', '-delete']))) 
      }, 30 * 1000) 
    } 
  }
 setInterval(async () => {
 await clearTmp()
-await this.logger?.info(
-            color(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ ✅ Eliminando archivos temporales\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`, '#00FFFF')
-        )
+await this.logger?.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ ✅ Eliminando archivos temporales\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
 }, 180000)
+
+protoType()
+serialize()
 
 console.info = () => {}
 const msgRetry = (MessageRetryMap) => { }
 const msgRetryCache = new NodeCache()
-global.authFile = 'authFolder'
-const {state, saveState, saveCreds} = await useMultiFileAuthState(global.authFile)
-let { version, isLatest } = await fetchLatestBaileysVersion()   
+const mongoClient = new MongoClient(mongoURL, { 
+     useNewUrlParser: true, 
+     useUnifiedTopology: true, 
+})
+await mongoClient.connect()
+const collection = mongoClient 
+.db("whatsapp_api")
+.collection("auth")
+
+// const {state, saveState, saveCreds} = await useMultiFileAuthState(global.authFile)
+let { version, isLatest } = await fetchLatestBaileysVersion()  
+const { state, saveCreds } = await useMongoDBAuthState(collection) 
 
 const connectionSettings = {
     printQRInTerminal: true,
@@ -128,43 +130,6 @@ global.conn = makeWaSocket(connectionSettings)
 conn.isInit = false
 conn.well = false
 conn.logger.info(`Ƈᴀʀɢᴀɴᴅᴏ．．．\n`)
-
-
-/*async function connection(chatUpdate) {
-try {
-if (!chatUpdate) {
-return
-}
-  this.pushMessage(chatUpdate.messages).catch(console.error);
-  let m = chatUpdate.messages[chatUpdate.messages.length - 1];
-  if (!m) {
-    return
-  }
-    try {
-        mek = chatUpdate.messages[0]
-        if (!mek.message) return
-        mek.message = (Object.keys(mek.message)[0] === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
-        if (mek.key && mek.key.remoteJid === 'status@broadcast') return
-        if (!conn.public && !mek.key.fromMe && chatUpdate.type === 'notify') return
-        if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
-        if (mek.key.id.startsWith('FatihArridho_')) return        
-        global.numBot = conn.user.id.split(":")[0] + "@s.whatsapp.net"
-        global.numBot2 = conn.user.id
-        m = smsg(conn, mek) || m
-        if (!m) {
-        return
-        }
-        
-        } catch (e) {
-        console.log(e)
-        }
-       
-    } catch (err) {
-        console.log(err)
-    }
-}*/
-    
-
 
 async function connectionUpdate(update) {
   const {connection, lastDisconnect, isNewLogin, qr} = update
