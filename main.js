@@ -170,7 +170,7 @@
   let cooldown = 10000
   let user = global.db.data.users[m.sender]
   let timer = (cooldown - (new Date - user.lastadventure))
-  if (new Date() - user.lastadventure < cooldown) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a aventurar*`
+  if (new Date() - user.lastadventure < 10000) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a aventurar*`
   if (user.health < 80) return conn.reply(m.chat, `*estas herido*\npara poder aventurar necesitas minimo 80 de *salud* ♥️\ncompra pociones con ${prefix}buy potion y curate con ${prefix}health`, m)
   let rewards = reward(user)
   let txt = '*fuiste a una aventura peligrosa*\n*donde perdiste*'
@@ -238,7 +238,7 @@
   if (user.health < 80) return conn.reply(m.chat, `*estas herido*\npara poder minar necesitas minimo 80 de *salud* ♥️\ncompra pociones con ${prefix}buy potion y curate con ${prefix}health`, m)
   if (user.pickaxe == 0) return m.reply('*quieres minar sin pico 💀*')
   if (user.pickaxedurability < 30) throw '*tu pico esta roto*'
-  if (new Date() - user.lastmining < cooldown) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a minar*`
+  if (new Date() - user.lastmining < 10000) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a minar*`
   let rewards = reward(user)
   let txt = '*minaste demasiado*\n*pero a costa perdiste'
   for (let lost in rewards.lost) if (user[lost]) {
@@ -549,8 +549,8 @@ wood: 10,
 diamond: 9,
 iron: 12
 } 
-let cooldown = 86400000 - user.fox * 30
-if (new Date - user.lastclaim < cooldown) throw `*❗ Ya reclamaste tu cofre diario*\n*espera ${msToTime(cooldown - new Date())} para volver a reclamar este cofre*`
+let cooldown = user.lastclaim + 86400000 - user.fox * 30
+if (new Date - user.lastclaim < 86400000) throw `*❗ Ya reclamaste tu cofre diario*\n*espera ${msToTime(cooldown - new Date())} para volver a reclamar este cofre*`
 let txt = ''
 for (let reward of Object.keys(rewards)) {
 if (!(reward in user)) continue
@@ -940,6 +940,7 @@ let caption = `
      }
      break
     case 'levelup': {
+    let { levelup } = require('./lib/canvas.js')
     let name = await conn.getName(m.sender); 
     let user = global.db.data.users[m.sender]; 
    if (!canLevelUp(user.level, user.exp, global.multiplier)) { 
@@ -960,6 +961,7 @@ let caption = `
    if (before !== user.level) {
    let bonus = Math.ceil(50 * user.level)
    user.money += bonus
+   let strt = `.             ${user.role}`
    let str = ` 
  ┌─⊷ *LEVEL UP* 
  ▢ Nivel anterior : *${before}* 
@@ -969,7 +971,8 @@ let caption = `
   
  *_Cuanto más interactúes con los bots, mayor será tu nivel_* 
  `.trim()
- throw str
+ let image = await levelup(strt, user.level)
+ conn.sendMessage(m.chat, { image: image, caption: str }, {quoted: m})
  }    
  }
  break
