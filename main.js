@@ -546,7 +546,7 @@ exp: 9999 + user.dog * 1000,
 money: 3000 + user.dog * 2000,
 potion: 5 + user.cat * 4,
 wood: 10,
-batu: 9,
+diamond: 9,
 iron: 12
 } 
 let cooldown = 86400000 - user.fox * 30
@@ -557,7 +557,7 @@ if (!(reward in user)) continue
 user[reward] += rewards[reward]
 txt += `*+${rewards[reward]}* ${global.rpg.emoticon(reward)}\n`
 }
-conn.reply(m.chat, '*HAS CONSEGUIDO 🥳*' + txt, fkontak)
+conn.reply(m.chat, '*HAS CONSEGUIDO 🥳*\n' + txt, fkontak)
 user.lastclaim = new Date() * 1
 }
 break
