@@ -17,7 +17,7 @@ const _ = require('lodash')
 const NodeCache = require('node-cache')
 const pino = require('pino')
 const store = require('./lib/store.js')
-const mongoURL = "mongodb+srv://tutorialesyg310:skid@cluster0.pvcgsyt.mongodb.net/?retryWrites=true&w=majority"
+const mongoURL = "mongodb+srv://Saif:Arhaan123@cluster0.mj6hd.mongodb.net"
 var low
 try {
   low = require('lowdb')
