@@ -1,5 +1,6 @@
 (async () => {
 require("./settings")
+const { spawn } = require('child_process')
 const { makeInMemoryStore, useMultiFileAuthState, DisconnectReason, proto , jidNormalizedUser,WAMessageStubType, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, getAggregateVotesInPollMessage, MessageRetryMap } = require("@whiskeysockets/baileys")
 const chalk = require('chalk')
 const moment = require('moment')
