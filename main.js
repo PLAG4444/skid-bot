@@ -971,8 +971,9 @@ let caption = `
   
  *_Cuanto más interactúes con los bots, mayor será tu nivel_* 
  `.trim()
- let image = await levelup(strt, user.level)
- conn.sendMessage(m.chat, { image: image, caption: str }, {quoted: m})
+ throw str
+ //let image = await levelup(strt, user.level)
+ //conn.sendMessage(m.chat, { image: image, caption: str }, {quoted: m})
  }    
  }
  break
