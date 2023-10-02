@@ -98,9 +98,6 @@ await this.logger?.info(
             color(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ ✅ Eliminando archivos temporales\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`, '#00FFFF')
         )
 }, 180000)
-//_________________
-    
-async function startBot() {
 
 console.info = () => {}
 const msgRetry = (MessageRetryMap) => { }
@@ -127,7 +124,7 @@ const connectionSettings = {
     }
 }
 
-const conn = makeWaSocket(connectionSettings)
+global.conn = makeWaSocket(connectionSettings)
 conn.isInit = false
 conn.well = false
 conn.logger.info(`Ƈᴀʀɢᴀɴᴅᴏ．．．\n`)
@@ -288,9 +285,7 @@ process.on('unhandledRejection', console.log)
 process.on('RefenceError', console.log)
 
 
-}
 
-startBot()
 
 async function _quickTest() {
   let test = await Promise.all([
