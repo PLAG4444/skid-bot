@@ -100,9 +100,7 @@ const mongoClient = new MongoClient(mongoURL, {
      useUnifiedTopology: true, 
 })
 await mongoClient.connect()
-const collection = mongoClient 
-.db("admin")
-.collection("auth")
+const collection = mongoClient.db("Whatsapp_bot").collection("Skid_auth")
 
 // const {state, saveState, saveCreds} = await useMultiFileAuthState(global.authFile)
 let { version, isLatest } = await fetchLatestBaileysVersion()  
