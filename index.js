@@ -17,7 +17,7 @@ const _ = require('lodash')
 const NodeCache = require('node-cache')
 const pino = require('pino')
 const store = require('./lib/store.js')
-const mongoURL = "mongodb+srv://tutorialesyg310:skidyuuu@cluster0.pvcgsyt.mongodb.net"
+const mongoURL = "mongodb+srv://Skid:skidyuuu@cluster0.pvcgsyt.mongodb.net/?retryWrites=true&w=majority"
 var low
 try {
   low = require('lowdb')
@@ -101,7 +101,7 @@ const mongoClient = new MongoClient(mongoURL, {
 })
 await mongoClient.connect()
 const collection = mongoClient 
-.db("whatsapp_api")
+.db("admin")
 .collection("auth")
 
 // const {state, saveState, saveCreds} = await useMultiFileAuthState(global.authFile)
