@@ -17,7 +17,7 @@ const _ = require('lodash')
 const NodeCache = require('node-cache')
 const pino = require('pino')
 const store = require('./lib/store.js')
-const mongoURL = "mongodb+srv://Saif:Arhaan123@cluster0.mj6hd.mongodb.net"
+
 var low
 try {
   low = require('lowdb')
@@ -95,18 +95,11 @@ serialize()
 console.info = () => {}
 const msgRetry = (MessageRetryMap) => { }
 const msgRetryCache = new NodeCache()
-const mongoClient = new MongoClient(mongoURL, { 
-     useNewUrlParser: true, 
-     useUnifiedTopology: true, 
-})
-await mongoClient.connect()
-const collection = mongoClient 
-.db("whatsapp_api")
-.collection("auth")
 
-// const {state, saveState, saveCreds} = await useMultiFileAuthState(global.authFile)
+
+const {state, saveState, saveCreds} = await useMultiFileAuthState(global.authFile)
 let { version, isLatest } = await fetchLatestBaileysVersion()  
-const { state, saveCreds } = await useMongoDBAuthState(collection) 
+//const { state, saveCreds } = await useMongoDBAuthState(collection) 
 
 const connectionSettings = {
     printQRInTerminal: true,
