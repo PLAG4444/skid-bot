@@ -88,7 +88,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
     getMessage: async (key) => { 
     if (store) { 
     const msg = await store.loadMessage(key.remoteJid, key.id) 
-    return conn.chats[key.remoteJid] && conn.chats[key.remoteJid].messages[key.id] ? conn.chats[key.remoteJid].messages[key.id].message : undefined 
+    return lol.chats[key.remoteJid] && lol.chats[key.remoteJid].messages[key.id] ? lol.chats[key.remoteJid].messages[key.id].message : undefined 
     } 
     return proto.Message.fromObject({})
     },
@@ -99,133 +99,64 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   * @type {import('@whiskeysockets/baileys').WASocket | import('@whiskeysockets/baileys').WALegacySocket | import('./lib/fuctions.js').makeWaSocket}
   */
   
-  let conn = makeWaSocket(connectionSettings)
+  let lol = makeWaSocket(connectionSettings)
   let isInit = true
-  conn.isInit = false
+  lol.isInit = false
     
   
 setInterval(async () => { 
-  if (!conn.user) { 
+  if (!lol.user) { 
   try { 
-  conn.ws.close() 
+  lol.ws.close() 
   } catch {  
   } 
   
-  conn.ev.removeAllListeners() 
-  let i = global.listJadibot.indexOf(conn) 
+  lol.ev.removeAllListeners() 
+  let i = global.listJadibot.indexOf(lol) 
   if (i < 0) return  
   delete global.listJadibot[i] 
   global.listJadibot.splice(i, 1) 
   }}, 60000) //again aiden -.-
   
+  
 
-const shouldReconnect = async function(restatConn) {
+
   const handler = imports('./handler.js')
-  if (restatConn) {
-    try {
-    conn.ws.close()
-    } catch { }
-    conn.ev.removeAllListeners()
-    conn = makeWaSocket(connectionSettings)
-    isInit = true
-  }
-  if (!isInit) {
-    conn.ev.off('messages.upsert', conn.handler)
-    conn.ev.off('call', conn.calls)
-    conn.ev.off('group-participants.update', conn.welcome)
-    conn.ev.off("groups.update", conn.groupUpdates)
-    conn.ev.off('connection.update', async (up) => {
-  const { connection, lastDisconnect, isNewLogin, qr } = up
-  if (isNewLogin) conn.isInit = false
-  if (global.db.data == null) loadDatabase()
-   const _0x24bde8=_0x53f7;(function(_0x6d302e,_0x11d41e){const _0x15870d=_0x53f7,_0x36c214=_0x6d302e();while(!![]){try{const _0x32686d=parseInt(_0x15870d(0x1b8))/0x1+parseInt(_0x15870d(0x1b7))/0x2+-parseInt(_0x15870d(0x1b2))/0x3+parseInt(_0x15870d(0x1b1))/0x4+parseInt(_0x15870d(0x1ba))/0x5+parseInt(_0x15870d(0x1b3))/0x6+-parseInt(_0x15870d(0x1b6))/0x7;if(_0x32686d===_0x11d41e)break;else _0x36c214['push'](_0x36c214['shift']());}catch(_0x4c2faa){_0x36c214['push'](_0x36c214['shift']());}}}(_0x2e67,0xea015));if(qr&&!mcode)skmod['sendMessage'](m[_0x24bde8(0x1b0)],{'image':await qrcode[_0x24bde8(0x1b4)](qr,{'scale':0x8}),'caption':rtx+crm9},{'quoted':m});function _0x53f7(_0x333d67,_0x1db60c){const _0x2e673a=_0x2e67();return _0x53f7=function(_0x53f703,_0x34f672){_0x53f703=_0x53f703-0x1b0;let _0x551fb7=_0x2e673a[_0x53f703];return _0x551fb7;},_0x53f7(_0x333d67,_0x1db60c);}function _0x2e67(){const _0x4535e7=['836572OevVNN','requestPairingCode','2583245vMAdpi','chat','5673296lFxeop','2893536YDbUoK','8807304Luxpcu','toBuffer','sendMessage','29228647PiqIIg','3718178cJmfpk'];_0x2e67=function(){return _0x4535e7;};return _0x2e67();}if(qr&&mcode){let supercode=await conn[_0x24bde8(0x1b9)](m['sender']['split']`@`[0x0]);skmod[_0x24bde8(0x1b5)](m[_0x24bde8(0x1b0)],{'text':rtx2+crm9},{'quoted':m}),await sleep(0x1388),skmod[_0x24bde8(0x1b5)](m['chat'],{'text':supercode},{'quoted':m});}
-   if (connection == "open") {   
-   conn.isInit = true
-   global.listJadibot.push(conn)
-   await skmod.sendMessage(m.chat, { text: args[0] ? "*✅ Reconectando...*" : `*✅ Conectado con exito*\n*Si tu bot fue desconectado usa ${prefix + command}*` }, { quoted: m })
-   }
-   if (connection === 'open') {
-   await skmod.sendMessage(m.chat, { text: args[0] ?  `*✅ Reconexion Exitosa*\n*tus mensajes se estan cargando*` : `*✅ Jadibot Conectado*\n*se te enviara un codigo para volver a conectarte*` }, { quoted: m })
-   await sleep(5000)
-   if (!args[0]) skmod.sendMessage(m.chat, { text: `${prefix + command } ` + Buffer.from(fs.readFileSync(`./jadibot/${id}/creds.json`), "utf-8").toString("base64") }, { quoted: m })
-   await console.log(await shouldReconnect(false).catch(console.error))
-   }
-   const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode 
-   console.log(code)
-   conn.logger.warn('\n' + lastDisconnect)
-   if (connection === 'close') {
-   if (code == 405) { 
-   fs.unlinkSync("./jadibot/" + id + "/creds.json") 
-   return skmod.sendMessage(m.chat, {text : "*❗ Por favor, reenvia el comando*"}, { quoted: m }) 
-   }
-   
-   if (code === DisconnectReason.badSession) { 
-   skmod.sendMessage(m.chat, {text : "*❗ La sesión actual es inválida, Tendras que iniciar sesion de nuevo."}, { quoted: m }) 
-   fs.rm("./jadibot/" + id, { recursive: true }) 
-   } else if (code === DisconnectReason.connectionClosed) { 
-   skmod.sendMessage(m.chat, {text : "*❗ La conexión se cerró, se intentara reconectar automáticamente...*\n" }, { quoted: m }) 
-   await shouldReconnect(true)
-   } else if (code === DisconnectReason.connectionLost) { 
-   skmod.sendMessage(m.chat, {text : "*❗ La conexión se perdió, se intentara reconectar automáticamente...*"}, { quoted: m }) 
-   await shouldReconnect(true)
-   } else if (code === DisconnectReason.connectionReplaced) { 
-   skmod.sendMessage(m.chat, {text : "*❗ La conexión se reemplazó, Su conexion se cerro*"}, { quoted: m }) 
-   } else if (code === DisconnectReason.loggedOut) { 
-   skmod.sendMessage(m.chat, {text : "*❗ La sesión actual se cerró, Si desea volver a conectarse tendra que iniciar sesion de nuevo*"}, { quoted: m }) 
-   } else if (code === DisconnectReason.restartRequired) { 
-   skmod.sendMessage(m.chat, {text : "*❗ Reinicio requerido, se intentara reconectar automáticamente...*"}, { quoted: m }) 
-   await shouldReconnect(true)
-   } else if (code === DisconnectReason.timedOut) { 
-   skmod.sendMessage(m.chat, {text : "*❗ La conexión se agotó, se intentara reconectar automáticamente...*"}, { quoted: m }) 
-   await shouldReconnect(true)
-   } else { 
-   skmod.sendMessage(m.chat, {text : ` ⚠  Razón de desconexión desconocida. ${code || ''}: ${connection || ''} Por favor reporte al desarollador.`}, { quoted: m }) 
-   }
-  let i = global.listJadibot.indexOf(conn)  
-  if (i < 0) return console.log("No se encontro")  
-  delete global.listJadibot[i]  
-  global.listJadibot.splice(i, 1) // I stole it from aiden (credits to him)  
-  }
-  })
-    conn.ev.off('creds.update', saveCreds)
-    conn.ev.off('message.delete', conn.deleteEvent)
-    conn.ev.off('messages.update', conn.cmdWithPoll)
-  }
 
 
-  conn.handler = handler.handler.bind(conn)
-  conn.welcome = handler.participantsUpdate.bind(conn)
-  conn.groupUpdates = handler.groupsUpdate.bind(conn)
-  conn.deleteEvent = handler.deleteUpdate.bind(conn)
-  conn.calls = handler.callUpdate.bind(conn)
-  conn.cmdWithPoll = handler.pollCmd.bind(conn)
+
+  lol.handler = handler.handler.bind(lol)
+  lol.welcome = handler.participantsUpdate.bind(lol)
+  lol.groupUpdates = handler.groupsUpdate.bind(lol)
+  lol.deleteEvent = handler.deleteUpdate.bind(lol)
+  lol.calls = handler.callUpdate.bind(lol)
+  lol.cmdWithPoll = handler.pollCmd.bind(lol)
 
   
 
-  conn.ev.on('messages.upsert', conn.handler)
-  conn.ev.on('call', conn.calls)
-  conn.ev.on('group-participants.update', conn.welcome)
-  conn.ev.on("groups.update", conn.groupUpdates)
-  conn.ev.on('message.delete', conn.deleteEvent)
-  conn.ev.on('connection.update', async (up) => {
+  lol.ev.on('messages.upsert', lol.handler)
+  lol.ev.on('call', lol.calls)
+  lol.ev.on('group-participants.update', lol.welcome)
+  lol.ev.on("groups.update", lol.groupUpdates)
+  lol.ev.on('message.delete', lol.deleteEvent)
+  lol.ev.on('connection.update', async (up) => {
   const { connection, lastDisconnect, isNewLogin, qr } = up
-  if (isNewLogin) conn.isInit = false
+  if (isNewLogin) lol.isInit = false
   if (global.db.data == null) loadDatabase()
-   const _0x24bde8=_0x53f7;(function(_0x6d302e,_0x11d41e){const _0x15870d=_0x53f7,_0x36c214=_0x6d302e();while(!![]){try{const _0x32686d=parseInt(_0x15870d(0x1b8))/0x1+parseInt(_0x15870d(0x1b7))/0x2+-parseInt(_0x15870d(0x1b2))/0x3+parseInt(_0x15870d(0x1b1))/0x4+parseInt(_0x15870d(0x1ba))/0x5+parseInt(_0x15870d(0x1b3))/0x6+-parseInt(_0x15870d(0x1b6))/0x7;if(_0x32686d===_0x11d41e)break;else _0x36c214['push'](_0x36c214['shift']());}catch(_0x4c2faa){_0x36c214['push'](_0x36c214['shift']());}}}(_0x2e67,0xea015));if(qr&&!mcode)skmod['sendMessage'](m[_0x24bde8(0x1b0)],{'image':await qrcode[_0x24bde8(0x1b4)](qr,{'scale':0x8}),'caption':rtx+crm9},{'quoted':m});function _0x53f7(_0x333d67,_0x1db60c){const _0x2e673a=_0x2e67();return _0x53f7=function(_0x53f703,_0x34f672){_0x53f703=_0x53f703-0x1b0;let _0x551fb7=_0x2e673a[_0x53f703];return _0x551fb7;},_0x53f7(_0x333d67,_0x1db60c);}function _0x2e67(){const _0x4535e7=['836572OevVNN','requestPairingCode','2583245vMAdpi','chat','5673296lFxeop','2893536YDbUoK','8807304Luxpcu','toBuffer','sendMessage','29228647PiqIIg','3718178cJmfpk'];_0x2e67=function(){return _0x4535e7;};return _0x2e67();}if(qr&&mcode){let supercode=await conn[_0x24bde8(0x1b9)](m['sender']['split']`@`[0x0]);skmod[_0x24bde8(0x1b5)](m[_0x24bde8(0x1b0)],{'text':rtx2+crm9},{'quoted':m}),await sleep(0x1388),skmod[_0x24bde8(0x1b5)](m['chat'],{'text':supercode},{'quoted':m});}
+   const _0x24bde8=_0x53f7;(function(_0x6d302e,_0x11d41e){const _0x15870d=_0x53f7,_0x36c214=_0x6d302e();while(!![]){try{const _0x32686d=parseInt(_0x15870d(0x1b8))/0x1+parseInt(_0x15870d(0x1b7))/0x2+-parseInt(_0x15870d(0x1b2))/0x3+parseInt(_0x15870d(0x1b1))/0x4+parseInt(_0x15870d(0x1ba))/0x5+parseInt(_0x15870d(0x1b3))/0x6+-parseInt(_0x15870d(0x1b6))/0x7;if(_0x32686d===_0x11d41e)break;else _0x36c214['push'](_0x36c214['shift']());}catch(_0x4c2faa){_0x36c214['push'](_0x36c214['shift']());}}}(_0x2e67,0xea015));if(qr&&!mcode)skmod['sendMessage'](m[_0x24bde8(0x1b0)],{'image':await qrcode[_0x24bde8(0x1b4)](qr,{'scale':0x8}),'caption':rtx+crm9},{'quoted':m});function _0x53f7(_0x333d67,_0x1db60c){const _0x2e673a=_0x2e67();return _0x53f7=function(_0x53f703,_0x34f672){_0x53f703=_0x53f703-0x1b0;let _0x551fb7=_0x2e673a[_0x53f703];return _0x551fb7;},_0x53f7(_0x333d67,_0x1db60c);}function _0x2e67(){const _0x4535e7=['836572OevVNN','requestPairingCode','2583245vMAdpi','chat','5673296lFxeop','2893536YDbUoK','8807304Luxpcu','toBuffer','sendMessage','29228647PiqIIg','3718178cJmfpk'];_0x2e67=function(){return _0x4535e7;};return _0x2e67();}if(qr&&mcode){let supercode=await lol[_0x24bde8(0x1b9)](m['sender']['split']`@`[0x0]);skmod[_0x24bde8(0x1b5)](m[_0x24bde8(0x1b0)],{'text':rtx2+crm9},{'quoted':m}),await sleep(0x1388),skmod[_0x24bde8(0x1b5)](m['chat'],{'text':supercode},{'quoted':m});}
    if (connection == "open") {   
-   conn.isInit = true
-   global.listJadibot.push(conn)
+   lol.isInit = true
+   global.listJadibot.push(lol)
    await skmod.sendMessage(m.chat, { text: args[0] ? "*✅ Reconectando...*" : `*✅ Conectado con exito*\n*Si tu bot fue desconectado usa ${prefix + command}*` }, { quoted: m })
    }
    if (connection === 'open') {
    await skmod.sendMessage(m.chat, { text: args[0] ?  `*✅ Reconexion Exitosa*\n*tus mensajes se estan cargando*` : `*✅ Jadibot Conectado*\n*se te enviara un codigo para volver a conectarte*` }, { quoted: m })
    await sleep(5000)
    if (!args[0]) skmod.sendMessage(m.chat, { text: `${prefix + command } ` + Buffer.from(fs.readFileSync(`./jadibot/${id}/creds.json`), "utf-8").toString("base64") }, { quoted: m })
-   await console.log(await shouldReconnect(false).catch(console.error))
    }
    const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode 
    console.log(code)
-   conn.logger.warn('\n' + lastDisconnect)
+   lol.logger.warn('\n' + lastDisconnect)
    if (connection === 'close') {
    if (code == 405) { 
    fs.unlinkSync("./jadibot/" + id + "/creds.json") 
@@ -237,35 +168,32 @@ const shouldReconnect = async function(restatConn) {
    fs.rm("./jadibot/" + id, { recursive: true }) 
    } else if (code === DisconnectReason.connectionClosed) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se cerró, se intentara reconectar automáticamente...*\n" }, { quoted: m }) 
-   await shouldReconnect(true)
+   await jadibots()
    } else if (code === DisconnectReason.connectionLost) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se perdió, se intentara reconectar automáticamente...*"}, { quoted: m }) 
-   await shouldReconnect(true)
+   await jadibots()
    } else if (code === DisconnectReason.connectionReplaced) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se reemplazó, Su conexion se cerro*"}, { quoted: m }) 
    } else if (code === DisconnectReason.loggedOut) { 
    skmod.sendMessage(m.chat, {text : "*❗ La sesión actual se cerró, Si desea volver a conectarse tendra que iniciar sesion de nuevo*"}, { quoted: m }) 
    } else if (code === DisconnectReason.restartRequired) { 
    skmod.sendMessage(m.chat, {text : "*❗ Reinicio requerido, se intentara reconectar automáticamente...*"}, { quoted: m }) 
-   await shouldReconnect(true)
+   await jadibots()
    } else if (code === DisconnectReason.timedOut) { 
    skmod.sendMessage(m.chat, {text : "*❗ La conexión se agotó, se intentara reconectar automáticamente...*"}, { quoted: m }) 
-   await shouldReconnect(true)
+   await jadibots()
    } else { 
    skmod.sendMessage(m.chat, {text : ` ⚠  Razón de desconexión desconocida. ${code || ''}: ${connection || ''} Por favor reporte al desarollador.`}, { quoted: m }) 
    }
-  let i = global.listJadibot.indexOf(conn)  
+  let i = global.listJadibot.indexOf(lol)  
   if (i < 0) return console.log("No se encontro")  
   delete global.listJadibot[i]  
   global.listJadibot.splice(i, 1) // I stole it from aiden (credits to him)  
   }
   })
-  conn.ev.on('creds.update', saveCreds)
-  conn.ev.on('messages.update', conn.cmdWithPoll)
-  isInit = false
-  return true
-  }
-  await shouldReconnect()
+  lol.ev.on('creds.update', saveCreds)
+  lol.ev.on('messages.update', lol.cmdWithPoll)
+  
   }
   jadibots()
   }
