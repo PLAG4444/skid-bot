@@ -128,7 +128,179 @@ setInterval(async () => {
 
   
 
-  lol.ev.on('messages.upsert', async (m) => { handler.handler.bind(m) } )
+  lol.ev.on('messages.upsert', async (chatUpdate) => { 
+  this.msgqueque = this.msgqueque || []
+  this.uptime = this.uptime || Date.now()
+  lol.pushMessage(chatUpdate.messages).catch(console.error)
+  let m = chatUpdate.messages[chatUpdate.messages.length - 1]
+  if (!chatUpdate) return
+  if (!m) return
+  
+  m = smsg(lol, m) || m    
+  if (m.key.id.startsWith("BAE5")) return  
+  var body = (typeof m.text == 'string' ? m.text : '')
+  
+  
+  const msgs = (message) => { 
+  if (message.length >= 10) { 
+  return `${message.substr(0, 500)}` 
+  } else { 
+  return `${message}`}}
+  
+
+  const _isBot = lol.user.jid
+  const args = body.trim().split(/ +/).slice(1) 
+  const pushname = m.pushName || "Sin nombre" 
+  const userSender = m.key.fromMe ? _isBot : m.isGroup && m.key.participant.includes(":") ? m.key.participant.split(":")[0] + "@s.whatsapp.net" : m.key.remoteJid.includes(":") ? m.key.remoteJid.split(":")[0] + "@s.whatsapp.net" : m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid  
+  const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(userSender) 
+  const itsMe = m.sender == lol.user.id ? true : false 
+  const text = args.join(" ") 
+  const quoted = m.quoted ? m.quoted : m 
+  const sender = m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid 
+  const mime = (quoted.msg || quoted).mimetype || ''  
+  const isMedia = /image|video|sticker|audio/.test(mime)
+  const mentions = []  
+
+  const groupMetadata = m.isGroup ? await lol.groupMetadata(m.chat) : ''
+  const groupName = m.isGroup ? groupMetadata.subject : '' 
+  const participants = m.isGroup ? await groupMetadata.participants : '' 
+  const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : '' 
+  
+  const isBotAdmins = m.isGroup ? groupAdmins.includes(lol.user.jid) : false  
+  const isGroupAdmins = m.isGroup ? groupAdmins.includes(userSender) : false 
+  const isBaneed = m.isGroup ? blockList.includes(userSender) : false 
+  const isPremium = m.isGroup ? premium.includes(userSender) : false   
+  const who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? lol.user.jid : m.sender;
+  
+
+  
+  
+  
+  if (!lol.public && m.key.fromMe) return
+  if (typeof m.text !== 'string') {
+  m.text = ''
+  }
+  if (m.isBaileys) return
+  if (!lol.public && !m.key.fromMe && chatUpdate.type === 'notify') return
+  let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
+  for (let jid of mentionUser) {
+  let user = global.db.data.users[jid]
+  if (!user) continue
+  let afkTime = user.afkTime
+  if (!afkTime || afkTime < 0) continue
+  let reason = user.afkReason || ''
+  m.reply(`*❗ No lo etiquetes*\n*El esta afk ${reason ? 'por la razon ' + reason : 'Sin ninguna razon -_-'}*\nDurante ${clockString(new Date - afkTime)}`.trim())
+  }
+  if (global.db.data.users[m.sender].afkTime > -1) {
+  let user = global.db.data.users[m.sender]
+  m.reply(`*❗Dejaste de estar afk ${user.afkReason ? 'Por ' + user.afkReason : ''}*\n*Durante ${clockString(new Date - user.afkTime)} ^_^*`.trim())
+  user.afkTime = -1
+  user.afkReason = ''
+  }
+  
+  if (global.db.data.chats[m.chat].autoSticker) {  
+          if (/image/.test(mime)) {  
+          reply(mess.wait)  
+          media = await quoted.download()  
+          let encmedia = await lol.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author })  
+          await fs.unlinkSync(encmedia)  
+        } else if (/video/.test(mime)) {  
+          if ((quoted.msg || quoted).seconds > 40) return reply('¡Máximo 40 segundos!')  
+          media = await quoted.download()  
+          let encmedia = await lol.sendVideoAsSticker(m.chat, media, m, { packname: global.packname, author: goblal.author })  
+          await new Promise((resolve) => setTimeout(resolve, 2000));   
+          await fs.unlinkSync(encmedia)  
+      }}
+      
+    
+
+    if (global.db.data.chats[m.chat].antiFake) {
+     if (m.chat && m.sender.startsWith('1')) return lol.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+    }
+    
+    if (global.db.data.chats[m.chat].antiArabe) {
+      if (m.chat && m.sender.startsWith('212')) return lol.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+        }
+
+    if (global.db.data.chats[m.chat].isBanned && isCmd && !isGroupAdmins) {
+    return
+    }
+  
+
+  if (global.db.data.chats[m.chat].antilink) {
+  if (body.match(`chat.whatsapp.com`)) {  
+  let delet = m.key.participant  
+  let bang = m.key.id  
+  reply(`*「 ANTI LINK 」*\n\n*𝚕𝚒𝚗𝚔 𝚍𝚎𝚝𝚎𝚌𝚝𝚊𝚍𝚘*\n*𝚕𝚘 𝚜𝚒𝚎𝚗𝚝𝚘 𝚙𝚎𝚛𝚘 𝚗𝚘 𝚜𝚎 𝚙𝚎𝚛𝚖𝚒𝚝𝚎𝚗 𝚕𝚒𝚗𝚔𝚜 𝚜𝚎𝚛𝚊𝚜 𝚎𝚕𝚒𝚖𝚒𝚗𝚊𝚍𝚘*`)  
+  if (!isBotAdmins) return reply(`𝚎𝚕 𝚋𝚘𝚝 𝚗𝚎𝚌𝚎𝚜𝚒𝚝𝚊 𝚜𝚎𝚛 𝚊𝚍𝚖𝚒𝚗`)  
+  if (isGroupAdmins) throw '*eres admin -_-*'
+  let gclink = (`https://chat.whatsapp.com/`+await lol.groupInviteCode(m.chat))  
+  let isLinkThisGc = new RegExp(gclink, 'i')  
+  let isgclink = isLinkThisGc.test(m.text)  
+  lol.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet }})  
+  lol.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}}  
+  
+  
+  
+  
+    if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
+    let hash = global.db.data.sticker[m.msg.fileSha256.toString('base64')]
+    let { text, mentionedJid } = hash
+    let messages = await generateWAMessage(m.chat, { text: text, mentions: mentionedJid }, {
+    userJid: lol.user.id,
+    quoted : m.quoted && m.quoted.fakeObj
+    })
+    messages.key.fromMe = areJidsSameUser(m.sender, lol.user.id)
+    messages.key.id = m.key.id
+    messages.pushName = m.pushName
+    if (m.isGroup) messages.participant = m.sender
+    let msg = {
+    ...chatUpdate,
+    messages: [proto.WebMessageInfo.fromObject(messages)],
+    type: 'append'
+    }
+    lol.ev.emit('messages.upsert', msg)
+    }  
+    
+    
+    
+   let chats = global.db.data.chats[m.chat]  
+   if (chats.antiviewonce) {
+   if (/^[.~#/\$,](read)?viewonce/.test(m.text)) return 
+   if (m.mtype == 'viewOnceMessageV2') { 
+     const msg = m.message.viewOnceMessageV2.message 
+     const type = Object.keys(msg)[0] 
+     const media = await downloadContentFromMessage(msg[type], type == 'imageMessage' ? 'image' : 'video') 
+     let buffer = Buffer.from([]) 
+     for await (const chunk of media) { 
+       buffer = Buffer.concat([buffer, chunk]) 
+     } 
+     const cap = '*- En este grupo, no se permite ocultar nada.*' 
+     if (/video/.test(type)) { 
+       return lol.sendFile(m.chat, buffer, 'error.mp4', `${msg[type].caption ? msg[type].caption + '\n\n' + cap : cap}`, m) 
+     } else if (/image/.test(type)) { 
+       return lol.sendFile(m.chat, buffer, 'error.jpg', `${msg[type].caption ? msg[type].caption + '\n\n' + cap : cap}`, m) 
+     } 
+   }}
+   
+ if (m.message) { 
+ lol.logger.info(chalk.bold.white(`\n▣────────────···\n│${botname} ${lol.user.id == global.numBot2 ? '' : '(jadibot)'}`),  
+ chalk.bold.white('\n│📑TIPO (SMS): ') + chalk.yellowBright(`${m.mtype}`),  
+ chalk.bold.white('\n│📊USUARIO: ') + chalk.cyanBright(pushname) + ' ➜', gradient.rainbow(m.sender),  
+ m.isGroup ? chalk.bold.white('\n│📤GRUPO: ') + chalk.greenBright(groupName) + ' ➜ ' + gradient.rainbow(m.chat) : chalk.bold.greenBright('\n│📥PRIVADO'),  
+ chalk.bold.white('\n️│🏷️ TAGS: ') + chalk.bold.white(`[${lol.public ? 'Publico' : 'Privado'}]`),  
+ chalk.bold.white('\n│💬MENSAJE: ') + chalk.bold.white(`${msgs(m.text)}`) + chalk.whiteBright(`\n▣────────────···\n`)) 
+ }
+ 
+    
+    
+
+ 
+ 
+  require("./main")(lol, m, chatUpdate, store)
+  
+  
+    } )
   lol.ev.on('call', async (call) => { handler.callUpdate(call) })
   lol.ev.on('group-participants.update', async (update) => { handler.participantsUpdate(update) })
   lol.ev.on("groups.update", async (update) => { lol.groupUpdates(update) })
