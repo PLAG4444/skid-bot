@@ -97,7 +97,7 @@ const msgRetry = (MessageRetryMap) => { }
 const msgRetryCache = new NodeCache()
 
 
-const {state, saveState, saveCreds} = await useMultiFileAuthState(global.authFile)
+const {state, saveState, saveCreds} = await useMultiFileAuthState('./authFolder/')
 let { version, isLatest } = await fetchLatestBaileysVersion()  
 //const { state, saveCreds } = await useMongoDBAuthState(collection) 
 
