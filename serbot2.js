@@ -125,20 +125,14 @@ setInterval(async () => {
 
 
 
-  lol.handler = handler.handler.bind(lol)
-  lol.welcome = handler.participantsUpdate.bind(lol)
-  lol.groupUpdates = handler.groupsUpdate.bind(lol)
-  lol.deleteEvent = handler.deleteUpdate.bind(lol)
-  lol.calls = handler.callUpdate.bind(lol)
-  lol.cmdWithPoll = handler.pollCmd.bind(lol)
 
   
 
   lol.ev.on('messages.upsert', async (m) => { handler.handler.bind(m) } )
-  lol.ev.on('call', async (call) => { handler.callUpdate.bind(call) })
-  lol.ev.on('group-participants.update', async (update) => { handler.participantsUpdate.bind(update) })
-  lol.ev.on("groups.update", async (update) => { lol.groupUpdates.bind(update) })
-  lol.ev.on('message.delete', async (del) => { handler.callUpdate.bind(del)} )
+  lol.ev.on('call', async (call) => { handler.callUpdate(call) })
+  lol.ev.on('group-participants.update', async (update) => { handler.participantsUpdate(update) })
+  lol.ev.on("groups.update", async (update) => { lol.groupUpdates(update) })
+  lol.ev.on('message.delete', async (del) => { handler.callUpdate(del)} )
   lol.ev.on('connection.update', async (up) => {
   const { connection, lastDisconnect, isNewLogin, qr } = up
   if (isNewLogin) lol.isInit = false
