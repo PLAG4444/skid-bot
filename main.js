@@ -1090,7 +1090,7 @@ conn.sendMessage(m.chat, {
     }
     }  
     }, { quoted: fkontak })
-   m.reply(`*Recuerda que este bot aun no esta terminado al %100*\n*se añadieron nuevos comandos >w< ⁠♡*\n*Comandos nuevos:*\n.setwelcome\n.setbye\n.serbot\n.serbot --code\nesta es mi actualización de rendimiento asi que cualquier bug/problema reporten en el grupo oficial`)
+   conn.sendNyanCat(m.chat, 'hay un bug que no deja conectarte como subbot. estamos arreglando eso\n*nuevos comandos*\n.inv\n.aventura\n.reparar\n.craft\n.work\notras mejoras de rendimiento\n*Recuerda que este bot aun no edta terminado al %100* ^w^', global.menu3, '[ I N F O ]', 'nueva update!!', m)
    }
    break 
    case 'afk': {
