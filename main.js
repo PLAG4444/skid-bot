@@ -1,6 +1,8 @@
 // Código desde cero y comentarios hecho por:   
 // @gata_dios  
 // @Skidy89  
+// Ladron de codigo
+// @elrebelde21
   
   // Importaciones   
   require("./settings")
@@ -1089,7 +1091,7 @@ await conn.sendMessage(m.chat, {
     }
     }  
     }, { quoted: fkontak })
-   await conn.sendNyanCat(m.chat, 'hay un bug que no deja conectarte como subbot. estamos arreglando eso\n*nuevos comandos*\n.inv\n.aventura\n.reparar\n.craft\n.work\notras mejoras de rendimiento\n*Recuerda que este bot aun no edta terminado al %100* ^w^', global.menu3, '[ I N F O ]', 'nueva update!!', m)
+   await conn.sendNyanCat(m.chat, 'hay un bug que no deja conectarte como subbot. estamos arreglando eso\n*nuevos comandos*\n.inv\n.aventura\n.reparar\n.craft\n.work\notras mejoras de rendimiento\n*Recuerda que este bot aun no esta terminado al %100* ^w^', global.menu3, '[ I N F O ]', 'nueva update!!', m)
    }
    break 
    case 'afk': {
@@ -2205,7 +2207,7 @@ break
                   break    
                   case 'toaudio': case 'tomp3': {
                   if (!/video/.test(mime) && !/audio/.test(mime)) throw `*❗ Etiqueta un audio con ${prefix + command}*`
-                  if (!quoted) throw `*❗ Etiqueta un audio con ${prefix + command}*`
+                  if (!quoted) throw `*❗ Etiqueta un video con ${prefix + command}*`
                   let { toAudio } = require('./lib/converter.js')
                   let media  = await conn.downloadMediaMessage(quoted)
                   let audio = await toAudio(media, 'mp4')
@@ -2258,7 +2260,7 @@ break
 		    case 'rule34':
 		    if (!text) throw 'ingresa algo a buscar'
 		    if (!m.isGroup) throw '_*este comando solo puede ser utilizado en grupos*_'
-		    if (!global.db.data.chats[m.chat].antiNsfw) return conn.sendCart(m.chat, `*el comando ${command} no esta activado en este grupo*\n*usa ${prefix}enable antinsfw*`, global.query, botname)
+		    if (!global.db.data.chats[m.chat].antiNsfw) return conn.sendCart(m.chat, `*el comando ${command} no esta activado en este grupo*\n*usa ${prefix}enable antinsfw*`, global.menu2, botname)
 		    url = await `https://delirius-nsfw.onrender.com/h/image/search?q=${text}`
 		    _url = await url[Math.floor(Math.random() * url.length)]
 		    searching = _url
@@ -2277,7 +2279,7 @@ break
 	        if (!m.isGroup) return m.reply(mess.group);  
             if (!isBotAdmins) return m.reply(mess.botAdmin);  
             if (!isGroupAdmins) return m.reply(mess.admin);
-            if (inChat.antidelete) return conn.sendCart(m.chat, actived, global.query, botname)
+            if (inChat.antidelete) return conn.sendCart(m.chat, actived, global.menu2, botname)
             inChat.antidelete = true
             conn.sendCart(m.chat, inSuccess, success)
             break
@@ -2285,7 +2287,7 @@ break
 	        if (!m.isGroup) return m.reply(mess.group);  
             if (!isBotAdmins) return m.reply(mess.botAdmin);  
             if (!isGroupAdmins) return m.reply(mess.admin);
-            if (inChat.antiviewonce) return conn.sendCart(m.chat, actived, global.query, botname)
+            if (inChat.antiviewonce) return conn.sendCart(m.chat, actived, global.menu2, botname)
             inChat.antiviewonce = true
             conn.sendCart(m.chat, inSuccess, success)
             break
@@ -2293,7 +2295,7 @@ break
 			if (!m.isGroup) return m.reply(mess.group);  
             if (!isBotAdmins) return m.reply(mess.botAdmin);  
             if (!isGroupAdmins) return m.reply(mess.admin);
-			if (inChat.antilink) return conn.sendCart(m.chat, `*el ${inEnable} ya esta activado!!*\n*puedes desactivarlo con ${prefix}disable ${inEnable}*`, global.query, botname)
+			if (inChat.antilink) return conn.sendCart(m.chat, `*el ${inEnable} ya esta activado!!*\n*puedes desactivarlo con ${prefix}disable ${inEnable}*`, global.menu2, botname)
 			inChat.antilink = true
 			conn.sendCart(m.chat, inSuccess, success)
 			break
@@ -2301,7 +2303,7 @@ break
 			if (!m.isGroup) return m.reply(mess.group);  
             if (!isBotAdmins) return m.reply(mess.botAdmin);  
             if (!isGroupAdmins) return m.reply(mess.admin);
-			if (inChat.antiNsfw) return conn.sendCart(m.chat, `*el ${inEnable} ya esta activado!!*\n*puedes desactivarlo con ${prefix}disable ${inEnable}*`, global.query, botname)
+			if (inChat.antiNsfw) return conn.sendCart(m.chat, `*el ${inEnable} ya esta activado!!*\n*puedes desactivarlo con ${prefix}disable ${inEnable}*`, global.menu2, botname)
 			inChat.antiNsfw = true
 			conn.sendCart(m.chat, inSuccess, success)
 			break
@@ -2385,7 +2387,7 @@ break
 			if (!m.isGroup) return m.reply(mess.group);  
             if (!isBotAdmins) return m.reply(mess.botAdmin);  
             if (!isGroupAdmins) return m.reply(mess.admin);  
-			if (!Chat.antilink) return conn.sendCart(m.chat, disable, global.query, botname)
+			if (!Chat.antilink) return conn.sendCart(m.chat, disable, global.menu2, botname)
 			Chat.antilink = false
 			conn.sendCart(m.chat, inSuccessDisable, success)
 			break
@@ -2393,7 +2395,7 @@ break
 			if (!m.isGroup) return m.reply(mess.group);  
             if (!isBotAdmins) return m.reply(mess.botAdmin);  
             if (!isGroupAdmins) return m.reply(mess.admin);  
-			if (!Chat.antiviewonce) return conn.sendCart(m.chat, disable, global.query, botname)
+			if (!Chat.antiviewonce) return conn.sendCart(m.chat, disable, global.menu2, botname)
 			Chat.antiviewonce = false
 			conn.sendCart(m.chat, inSuccessDisable, success)
 			break
@@ -2401,7 +2403,7 @@ break
 			if (!m.isGroup) return m.reply(mess.group);  
             if (!isBotAdmins) return m.reply(mess.botAdmin);  
             if (!isGroupAdmins) return m.reply(mess.admin);  
-			if (!Chat.antiNsfw) return conn.sendCart(m.chat, disable, global.query, botname)
+			if (!Chat.antiNsfw) return conn.sendCart(m.chat, disable, global.menu2, botname)
 			Chat.antiNsfw = false
 			conn.sendCart(m.chat, inSuccessDisable, success)
 			break
@@ -2417,7 +2419,7 @@ break
 	        if (!m.isGroup) return m.reply(mess.group);  
             if (!isBotAdmins) return m.reply(mess.botAdmin);  
             if (!isGroupAdmins) return m.reply(mess.admin);
-            if (chat.antidelete) return conn.sendCart(m.chat, disable, global.query, botname)
+            if (chat.antidelete) return conn.sendCart(m.chat, disable, global.menu2, botname)
             Chat.antidelete = false
             conn.sendCart(m.chat, inSuccessDisable, success)
             break
