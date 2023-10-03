@@ -564,7 +564,7 @@ user.lastclaim = new Date() * 1
 }
 break
    
-case 'repair': 'reparar': {
+case 'repair': case 'reparar': {
 let repairs =  (args[0] || '').toLowerCase()
 let user = global.db.data.users[m.sender] 
 let caption = `
