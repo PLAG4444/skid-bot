@@ -463,7 +463,7 @@ user.exp += bonus + user.dog * 1000
 user.lastwork = new Date() * 1
 user.axedurability -= lost - user.fox * 4
 let work = pickRandom(['este trabajo es demasiado bueno pero agotador, asi que este esfuerzo es recompensado por', '*piensas en cortar 20 troncos mas pero tu trabajo es tan bueno que ganas*'])
-m.reply(`${work} ${pay + user.dog * 1000} dolares 💵\n*a costa de este trabajo ganaste ${bonus + user.dog * 1000} pero tu hacha perdio ${lost - user.fox * 4} de durabilidad`)
+m.reply(`${work} ${pay + user.dog * 1000} dolares 💵\n*a costa de este trabajo ganaste ${bonus + user.dog * 1000} XP*\n*pero tu hacha perdio ${lost - user.fox * 4} de durabilidad*`)
 }
 break
 default:
