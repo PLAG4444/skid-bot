@@ -58,7 +58,7 @@
   const userSender = m.key.fromMe ? _isBot : m.isGroup && m.key.participant.includes(":") ? m.key.participant.split(":")[0] + "@s.whatsapp.net" : m.key.remoteJid.includes(":") ? m.key.remoteJid.split(":")[0] + "@s.whatsapp.net" : m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid  
   const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(userSender) 
   const itsMe = m.sender == conn.user.id ? true : false 
-  const text = args.join(" ") || m.text
+  const text = args.join(" ")
   const quoted = m.quoted ? m.quoted : m 
   const sender = m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid 
   const mime = (quoted.msg || quoted).mimetype || ''  
@@ -588,6 +588,7 @@ switch (repairs) {
 case 'hacha': {
  if (user.axe < 0) throw '*primero crea un hacha, genio*'
  if (user.rock < 2|| user.iron < 2)  {
+ let user = global.db.data.users[m.sender] 
  let loser = 10 - user.cat * 2
  user.health -= loser
  m.reply(`*haces la estupida decision de reparar tu hacha sin los materiales de la receta*\n*Pierdes ${loser} ${global.rpg.emoticon(health)}`)
@@ -602,6 +603,7 @@ case 'hacha': {
  case 'pico': {
  if (user.pickaxe < 0) throw '*primero crea un pico, genio*'
  if (user.iron < 5 || user.wood < 2) {
+ let user = global.db.data.users[m.sender] 
  let loser = 10 - user.cat * 2
  user.health -= loser
  m.reply(`*haces la estupida decision de reparar tu pico sin los materiales de la receta*\n*Pierdes ${loser} ${global.rpg.emoticon(health)}`)
@@ -833,7 +835,9 @@ let caption = `
 ┃   ⪩ ${prefix}grupo abrir       
 ┃   ⪩ ${prefix}grupo cerrar      
 ┃   ⪩ ${prefix}tagall            
-┃   ⪩ ${prefix}hidetag           
+┃   ⪩ ${prefix}hidetag     
+┃   ⪩ ${prefix}setwelcome
+┃   ⪩ ${prefix}setbye      
 ┠─╼━━━━━━━━⊱❖⊰━━━━━━━─┨
 ┃   📷 *STIKERS* 📷              
 ┠─╼━━━━━━━━⊱❖⊰━━━━━━━─┨
@@ -909,7 +913,7 @@ let caption = `
 ┠─╼━━━━━━━━⊱❖⊰━━━━━━━─┨
 ┃   ⪩ ${prefix}play2 + [nombre
 ┃   ⪩ ${prefix}play + [nombre]
-┃   ⪩ ${prefix}tiktok + [link]
+┃   ⪩ ${prefix}tiktokmp3 + [link]
 ┃   ⪩ ${prefix}tiktok + [link]
 ┃   ⪩ ${prefix}apk + [nombre]
 ┃   ⪩ ${prefix}mediafire + [link]
