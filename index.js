@@ -249,8 +249,13 @@ process.on('uncaughtException', console.log)
 process.on('unhandledRejection', console.log)
 process.on('RefenceError', console.log)
 
-
-
+setInterval(async () => {
+await clearTmp()
+await this.logger?.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ ✅ Eliminando archivos temporales\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
+}, 180000)
+setInterval(async () => {
+global.reload()
+}, 2 * 60 * 60 * 1000)
 
 async function _quickTest() {
   let test = await Promise.all([
