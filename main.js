@@ -126,7 +126,8 @@
              let you = (Math.floor(Math.random() * 71)) * 1 
              let status = 'perdiste'
              if (Bot < you) { 
-                 user.money += count * 1 
+                 user.money += count * 1 + user.dog * 2000
+                 user.exp += count * 100 + user.dog * 5000
                  status = 'ganaste'
              } else if (Bot > you) { 
                  user.money -= count * 1 
@@ -139,7 +140,7 @@
  *🤖 BOT:*   ${Bot} 
  *👤 TU:*    ${you} 
   
- *tu ${status}*, tu ${status == 'ganaste' ? `Conseguiste *+${count * 2}*` : status == 'perdiste' ? `Perdido *-${count * 1}*` : `Conseguiste *+${Math.floor(count / 1.5)}*`} dolares`.trim()) //`//`
+ *tu ${status}*, tu ${status == 'ganaste' ? `Conseguiste *+${count * 2}*` : status == 'perdiste' ? `Perdiste *-${count * 1}*` : `Conseguiste *+${Math.floor(count / 1.5)}*`} dolares`.trim()) //`//`
              clearTimeout(timeout) 
              delete this.bet[m.sender] 
              return !0 
@@ -563,7 +564,57 @@ user.lastclaim = new Date() * 1
 }
 break
    
-  
+case 'repair': 'reparar': {
+let repairs =  (args[0] || '').toLowerCase()
+let user = global.db.data.users[m.sender] 
+let caption = `
+*una hoja arrugada con recetas para reparar*
+
+ *❏ Recetas*
+ 
+*estas simples dos piedras y un poco de hierro*
+*afilara tu hacha*
+ ▧ Hacha 🪓
+ 〉2 roca
+ 〉2 hierro
+ 
+ *un poco de hierro y madera hacen la diferencia*
+ ▧ Pico ⛏️ 
+ 〉2 madera
+ 〉2 hierro
+`
+
+switch (repairs) {
+case 'hacha': {
+ if (user.axe < 0) throw '*primero crea un hacha, genio*'
+ if (user.rock < 2|| user.iron < 2)  {
+ let loser = 10 - user.cat * 2
+ user.health -= loser
+ m.reply(`*haces la estupida decision de reparar tu hacha sin los materiales de la receta*\n*Pierdes ${loser} ${global.rpg.emoticon(health)}`)
+ } 
+ user.rock -= 2
+ user.iron -= 2
+ user.axedurability = 100
+ m.reply('*porque puedes reparar esto...*\n*la logica vale verga porque acabas de reparar tu hacha!!*')
+ }
+ break
+ 
+ case 'pico': {
+ if (user.pickaxe < 0) throw '*primero crea un pico, genio*'
+ if (user.iron < 5 || user.wood < 2) {
+ let loser = 10 - user.cat * 2
+ user.health -= loser
+ m.reply(`*haces la estupida decision de reparar tu pico sin los materiales de la receta*\n*Pierdes ${loser} ${global.rpg.emoticon(health)}`)
+ }
+ user.pickaxedurability = 100
+ m.reply('*Bien, te acabas de reparar tu pico a madrazos. dejandolo como nuevo ⚒️*')
+ }
+ break
+default:
+conn.reply(m.sender, caption, fkontak)
+}
+}
+break
         
  
 case 'crear': case 'craft': {
@@ -2237,7 +2288,7 @@ break
               if (body.startsWith('>')) {  
                   if (!isCreator) return  
                   try {  
-                      return m.reply(JSON.stringify(eval(body.slice(2)), null, '\t'))  
+                      return m.reply(util.format(eval(body.slice(2))))  
                   } catch (e) {  
                       e = String(e)  
                       m.reply(e)  
