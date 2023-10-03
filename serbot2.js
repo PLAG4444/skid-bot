@@ -1,5 +1,5 @@
 const { proto, DisconnectReason, useMultiFileAuthState, MessageRetryMap, fetchLatestBaileysVersion, makeCacheableSignalKeyStore } = require('@whiskeysockets/baileys')
-const { makeWaSocket, sleep } = require('./lib/fuctions.js')
+const { makeWaSocket, sleep, smgs } = require('./lib/fuctions.js')
 const qrcode = require('qrcode')   
 const NodeCache = require('node-cache')
 const pino = require('pino')
