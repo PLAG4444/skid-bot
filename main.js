@@ -1071,7 +1071,7 @@ let caption = `
 ┃ ⪩ => 
 ┃
 ╰══════════════⪨`
-conn.sendMessage(m.chat, {   
+await conn.sendMessage(m.chat, {   
     text: caption,  
     contextInfo:{  
     forwardingScore: 9999999,  
@@ -1080,10 +1080,10 @@ conn.sendMessage(m.chat, {
     "externalAdReply": {  
     "showAdAttribution": true,  
     "containsAutoReply": true,
-    "renderLargerThumbnail": false,  
+    "renderLargerThumbnail": true,  
     "title": botname,   
     "body": 'made with ♥️',
-    "containsAutoReply": false,  
+    "containsAutoReply": true,  
     "mediaType": 1,   
     "thumbnail": global.menu,  
     "mediaUrl": `https://chat.whatsapp.com/JPJ0n2V0uujCRvmJRNM7ZU`,  
@@ -1091,7 +1091,7 @@ conn.sendMessage(m.chat, {
     }
     }  
     }, { quoted: fkontak })
-   conn.sendNyanCat(m.chat, 'hay un bug que no deja conectarte como subbot. estamos arreglando eso\n*nuevos comandos*\n.inv\n.aventura\n.reparar\n.craft\n.work\notras mejoras de rendimiento\n*Recuerda que este bot aun no edta terminado al %100* ^w^', global.menu3, '[ I N F O ]', 'nueva update!!', m)
+   await conn.sendNyanCat(m.chat, 'hay un bug que no deja conectarte como subbot. estamos arreglando eso\n*nuevos comandos*\n.inv\n.aventura\n.reparar\n.craft\n.work\notras mejoras de rendimiento\n*Recuerda que este bot aun no edta terminado al %100* ^w^', global.menu3, '[ I N F O ]', 'nueva update!!', m)
    }
    break 
    case 'afk': {
