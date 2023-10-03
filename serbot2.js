@@ -134,11 +134,11 @@ setInterval(async () => {
 
   
 
-  lol.ev.on('messages.upsert', lol.handler)
-  lol.ev.on('call', lol.calls)
-  lol.ev.on('group-participants.update', lol.welcome)
-  lol.ev.on("groups.update", lol.groupUpdates)
-  lol.ev.on('message.delete', lol.deleteEvent)
+  lol.ev.on('messages.upsert', async (m) => { handler.handler.bind(m) } )
+  lol.ev.on('call', async (call) => { handler.callUpdate.bind(call) })
+  lol.ev.on('group-participants.update', async (update) => { handler.participantsUpdate.bind(update) })
+  lol.ev.on("groups.update", async (update) => { lol.groupUpdates.bind(update) })
+  lol.ev.on('message.delete', async (delete) => { handler.callUpdate.bind(delete)} )
   lol.ev.on('connection.update', async (up) => {
   const { connection, lastDisconnect, isNewLogin, qr } = up
   if (isNewLogin) lol.isInit = false
