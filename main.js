@@ -587,12 +587,7 @@ let caption = `
 switch (repairs) {
 case 'hacha': {
  if (user.axe < 0) throw '*primero crea un hacha, genio*'
- if (user.rock < 2|| user.iron < 2)  {
- let user = global.db.data.users[m.sender] 
- let loser = 10 - user.cat * 2
- user.health -= loser
- m.reply(`*haces la estupida decision de reparar tu hacha sin los materiales de la receta*\n*Pierdes ${loser} ${global.rpg.emoticon(health)}`)
- } 
+ if (user.rock < 2|| user.iron < 2)  return conn.sendNyanCat(m.chat, '*te faltan materiales para craftear esto*', global.menu2, '[ I N F O ]', 'SIN MATERIALES', m)
  user.rock -= 2
  user.iron -= 2
  user.axedurability = 100
@@ -602,12 +597,7 @@ case 'hacha': {
  
  case 'pico': {
  if (user.pickaxe < 0) throw '*primero crea un pico, genio*'
- if (user.iron < 5 || user.wood < 2) {
- let user = global.db.data.users[m.sender] 
- let loser = 10 - user.cat * 2
- user.health -= loser
- m.reply(`*haces la estupida decision de reparar tu pico sin los materiales de la receta*\n*Pierdes ${loser} ${global.rpg.emoticon(health)}`)
- }
+ if (user.iron < 5 || user.wood < 2) return conn.sendNyanCat(m.chat, '*te faltan materiales para craftear esto*', global.menu2, '[ I N F O ]', 'SIN MATERIALES', m)
  user.pickaxedurability = 100
  m.reply('*Bien, te acabas de reparar tu pico a madrazos. dejandolo como nuevo ⚒️*')
  }
