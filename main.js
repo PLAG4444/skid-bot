@@ -761,6 +761,7 @@ let caption = `
  
  
    case 'menu': {
+   let user = global.db.data.users[m.sender]
    let caption = `
 ╭════════════════════⪩
 ┃           女⃟⃟女MENU❈⃟き       
