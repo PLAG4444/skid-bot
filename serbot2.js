@@ -1,12 +1,17 @@
-const { proto, DisconnectReason, useMultiFileAuthState, MessageRetryMap, fetchLatestBaileysVersion, makeCacheableSignalKeyStore } = require('@whiskeysockets/baileys')
-const { makeWaSocket, sleep, smsg } = require('./lib/fuctions.js')
+const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins, clockString }= require('./lib/fuctions')
+const { areJidsSameUser, useMultiFileAuthState, DisconnectReason, proto, jidNormalizedUser, WAMessageStubType, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, getAggregateVotesInPollMessage } = require("@whiskeysockets/baileys")
+const gradient = require('gradient-string')
+const store = require('./lib/store.js')
+const fs = require('fs')
+const { watchFile, unwatchFile } = require('fs')
+const chalk = require('chalk')
+const fetch = require('node-fetch')
+const path = require('path')
 const qrcode = require('qrcode')   
 const NodeCache = require('node-cache')
 const pino = require('pino')
 const ws = require('ws')
-const store = require('./lib/store.js')
-const fs = require('fs')
-const path = require('path')
+
 
 const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','from','5208024nVQcjr','30535wvjicc','724460VqafAm','240348zJpOEy','11QDSPQW','3927546psdvOD','23790wPpgit','7AwNkQE','toString','236tLYryB','utf-8','1944AjaYat','156691TOIYPc','amFkaWJvdCBoZWNobyBwb3IgU2tpZHk4OSA6cA==','6vmFxFp'];_0x22f3=function(){return _0x6ac192;};return _0x22f3();}function _0x23d5(_0x537282,_0x581a5f){const _0x22f3c5=_0x22f3();return _0x23d5=function(_0x23d57b,_0x4a690f){_0x23d57b=_0x23d57b-0x192;let _0x352566=_0x22f3c5[_0x23d57b];return _0x352566;},_0x23d5(_0x537282,_0x581a5f);}(function(_0x2a7f29,_0xb6ba40){const _0x3be318=_0x23d5,_0x175ab1=_0x2a7f29();while(!![]){try{const _0x3eab67=-parseInt(_0x3be318(0x19f))/0x1*(parseInt(_0x3be318(0x1a1))/0x2)+parseInt(_0x3be318(0x196))/0x3+parseInt(_0x3be318(0x19c))/0x4*(parseInt(_0x3be318(0x194))/0x5)+parseInt(_0x3be318(0x198))/0x6*(-parseInt(_0x3be318(0x19a))/0x7)+-parseInt(_0x3be318(0x193))/0x8*(-parseInt(_0x3be318(0x1a2))/0x9)+-parseInt(_0x3be318(0x195))/0xa*(-parseInt(_0x3be318(0x197))/0xb)+parseInt(_0x3be318(0x19e))/0xc*(parseInt(_0x3be318(0x199))/0xd);if(_0x3eab67===_0xb6ba40)break;else _0x175ab1['push'](_0x175ab1['shift']());}catch(_0x52ccae){_0x175ab1['push'](_0x175ab1['shift']());}}}(_0x22f3,0x51f3a));const crm1=_0x450013(0x1a0),crm2=Buffer[_0x450013(0x192)](crm1,_0x450013(0x1a3)),crm9=crm2[_0x450013(0x19b)](_0x450013(0x19d));
    let rtx = `
@@ -122,11 +127,6 @@ setInterval(async () => {
 
 
   const handler = imports('./handler.js')
-
-
-
-
-  
 
   lol.ev.on('messages.upsert', async (chatUpdate) => { 
   this.msgqueque = this.msgqueque || []
@@ -300,11 +300,106 @@ setInterval(async () => {
   require("./main")(lol, m, chatUpdate, store)
   
   
-    } )
-  lol.ev.on('call', async (call) => { handler.callUpdate(call) })
-  lol.ev.on('group-participants.update', async (update) => { handler.participantsUpdate(update) })
-  lol.ev.on("groups.update", async (update) => { lol.groupUpdates(update) })
-  lol.ev.on('message.delete', async (del) => { handler.callUpdate(del)} )
+    })
+  lol.ev.on('call', async (fuckedcall) => { 
+  const anticall = global.db.data.settings[lol.user.jid].antiCall
+  if (!anticall) return
+  for (let fucker of fuckedcall) {
+    if (fucker.isGroup == false) {
+        const callmsg = await lol.reply(fucker.from, `*${lol.user.name} no recibe ${fucker.isVideo ? `videollamadas` : `llamadas` }*\n*@${fucker.from.split('@')[0]} serás bloqueado.*\n*Si accidentalmente llamaste, comunícate con el propietario para que lo desbloquee.*`, false, {mentions: [fucker.from]})
+        const vcard = `BEGIN:VCARD\nVERSION:3.0\nN:SKID CREADOR ✨\nSKID CREADOR ✨\nORG:GITHUB\nTITLE:\nitem1.TELwaid=5218442114446:+521 844 211 4446\nitem1.X-ABLabel:SKID CREADOR ✨\nX-WA-BIZ-DESCRIPTION:[❗] ᴄᴏɴᴛᴀᴄᴛᴀ ᴀ ᴇsᴛᴇ ɴᴜᴍ ᴘᴀʀᴀ ᴄᴏsᴀs ɪᴍᴘᴏʀᴛᴀɴᴛᴇs.\nX-WA-BIZ-NAME:SKID CREADOR ✨nEND:VCARD`
+        await lol.sendMessage(fucker.from, {contacts: {displayName: 'SKID CREADOR ✨', contacts: [{vcard}]}}, {quoted: callmsg})
+        await lol.updateBlockStatus(fucker.from, 'block')
+      }
+    }})
+  lol.ev.on('group-participants.update', async ({id, participants, action}) => { 
+  if (lol.init) return
+if (global.db.data == null) await loadDatabase()
+const chat = global.db.data.chats[id] || {}
+const botTt = global.db.data.settings[lol?.user?.jid] || {}
+let text = ''
+switch (action) {
+    case 'add':
+    case 'remove':
+    if(chat.welcome) {
+    const groupMetadata = await lol.groupMetadata(id) || (conn.chats[id] || {}).metadata
+    for (const user of participants) {
+    let pp = global.noperfil
+    try {
+    pp = await lol.profilePictureUrl(user, 'image')
+    } catch (e) {
+    } finally {
+    const api = await lol.getFile(pp)
+    const bot = groupMetadata.participants.find((u) => lol.decodeJid(u.id) == lol.user.jid) || {}
+    const isBotAdmin = bot?.admin === 'admin' || false
+    text = (action === 'add' ? (chat.sWelcome || lol.welcome || conn.welcome || 'Welcome, @user!').replace('@subject', await lol.getName(id)).replace('@desc', groupMetadata.desc?.toString() || '*sin descripción :(*') :
+    (chat.sBye || lol.bye || conn.bye || 'Bye, @user!')).replace('@user', '@' + user.split('@')[0])
+    lol.sendFile(id, api.data, 'pp.jpg', text, null, false, { mentions: [user] })
+    }
+    }
+    }
+    break
+    case 'promote':
+    case 'daradmin':
+    case 'darpoder':
+      text = (chat.sPromote || lol.spromote || conn.spromote || '@user ```is now Admin```')
+    case 'demote':
+    case 'quitarpoder':
+    case 'quitaradmin':
+      if (!text) {
+        text = (chat.sDemote || lol.sdemote || conn.sdemote || '@user ```is no longer Admin```')
+      }
+      text = text.replace('@user', '@' + participants[0].split('@')[0])
+      if (chat.detect) {
+        lol.sendMessage(id, { text, mentions: lol.parseMention(text) })
+      }
+      break
+    }})
+  lol.ev.on("groups.update", async (groupsUpdate) => { 
+  for (const groupUpdate of groupsUpdate) {
+    const id = groupUpdate.id
+    if (!id) continue
+    if (groupUpdate.size == NaN) continue
+    if (groupUpdate.subjectTime) continue
+    const chats = global.db.data.chats[id]
+    let text = ''
+    if (!chats?.autoDetect) continue
+    if (groupUpdate.desc) text = (chats.sDesc || lol.sDesc || conn.sDesc || '```Description has been changed to```\n@desc').replace('@desc', groupUpdate.desc)
+    if (groupUpdate.subject) text = (chats.sSubject || lol.sSubject || conn.sSubject || '```Subject has been changed to```\n@subject').replace('@subject', groupUpdate.subject)
+    if (groupUpdate.icon) text = (chats.sIcon || lol.sIcon || conn.sIcon || '```Icon has been changed to```').replace('@icon', groupUpdate.icon)
+    if (groupUpdate.revoke) text = (chats.sRevoke || lol.sRevoke || conn.sRevoke || '```Group link has been changed to```\n@revoke').replace('@revoke', groupUpdate.revoke)
+    if (!text) continue
+    await lol.sendMessage(id, {text, mentions: lol.parseMention(text)})
+  } })
+  lol.ev.on('message.delete', async (message) => { 
+  let d = new Date(new Date + 3600000)
+let date = d.toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' })
+ let time = d.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true })
+    try {
+        const { fromMe, id, participant } = message
+        if (fromMe) return 
+        let msg = lol.serializeM(lol.loadMessage(id))
+	let chat = global.db.data.chats[msg?.chat] || {}
+	if (!chat?.antidelete) return 
+        if (!msg) return 
+	if (!msg?.isGroup) return 
+	const antideleteMessage = `
+┏━━━━━━━━━⬣  𝘼𝙉𝙏𝙄 𝘿𝙀𝙇𝙀𝙏𝙀  ⬣━━━━━━━━━
+*■ Usuario:* @${participant.split`@`[0]}
+*■ Hora:* ${time}
+*■ Fecha:* ${date}
+*■ Enviando el mensaje eliminado...*
+    
+*■ Para desactivar esta función, escribe el comando:*
+*#disable antidelete
+┗━━━━━━━━━⬣  𝘼𝙉𝙏𝙄 𝘿𝙀𝙇𝙀𝙏𝙀  ⬣━━━━━━━━━`.trim()
+        await lol.sendMessage(msg.chat, {text: antideleteMessage, mentions: [participant]}, {quoted: msg})
+        lol.copyNForward(msg.chat, msg).catch(e => console.log(e, msg))
+    } catch (e) {
+        console.error(e)
+    }
+   
+  } )
   lol.ev.on('connection.update', async (up) => {
   const { connection, lastDisconnect, isNewLogin, qr } = up
   if (isNewLogin) lol.isInit = false
@@ -358,7 +453,6 @@ setInterval(async () => {
   }
   })
   lol.ev.on('creds.update', saveCreds)
-  lol.ev.on('messages.update', lol.cmdWithPoll)
   
   }
   jadibots()
