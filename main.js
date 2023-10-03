@@ -765,7 +765,7 @@ let caption = `
 ╭════════════════════⪩
 ┃           女⃟⃟女MENU❈⃟き       
 ┠─╼━━━━━━━━⊱❖⊰━━━━━━━─┨
-┃  👋 *Hola, soy skid bot!!!* ${skid.user.id == global.numBot2 ? '' : ' *(Subbot)*'}
+┃  👋 *Hola, soy skid bot!!!* ${conn.user.id == global.numBot2 ? '' : ' *(Subbot)*'}
 ┠─╼━━━━━━━━⊱❖⊰━━━━━━━─┨
 ┃   👤 Nombre: ${pushname}       
 ┃   🌍 Modo: ${conn.public ? 'publico' : 'privado'}
