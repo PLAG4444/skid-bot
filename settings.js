@@ -18,6 +18,8 @@ global.menu = fs.readFileSync('./media/menu.jpg')
 global.hentai = fs.readFileSync('./media/hentai.jpg')
 global.simi = fs.readFileSync('./media/simi.jpeg')
 global.success = fs.readFileSync('./media/unused.jpg')
+global.menu2 = fs.readFileSync('./media/help.jpg')
+global.menu3 = fs.readFileSync('./media/love.jpg')
 global.wagrupo = 'https://chat.whatsapp.com/Ebbo3i9xxiZFErul4gyApJ'
 global.script = 'https://www.github.com/Skidy89/skid-bot'
 global.ownername = `skid`
@@ -116,14 +118,19 @@ global.APIs = {
        potion: '🥤 Poción', 
        superior: '💼 Superior', 
        robo: '🚔 Robo', 
-       upgrader: '🧰 Aumentar Mejora', 
+       upgrader: '🧰 Mejora', 
        wood: '🪵 Madera', 
        strength: '💪 Fuerza', 
        arc: '🏹 Arco', 
        armor: '🥼 Armadura', 
+       armordurability: '🥼 durabilidad',
        bow: '🏹 Super Arco', 
        pickaxe: '⛏️ Pico', 
+       pickaxe: '⛏️ Durabilidad',
        sword: '⚔️ Espada', 
+       sworddurability: '⚔️ Durabilidad',
+       axe: '🪓 Hecha',
+       axedurability: '🪓 durabilidad',
        common: '📦 Caja Común', 
        uncoommon: '🥡 Caja Poco Común', 
        mythic: '🗳️ Caja Mítico', 
