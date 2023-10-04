@@ -189,7 +189,7 @@ setInterval(async () => {
   lol.deleteUpdate = handler.deleteUpdate.bind(lol)
   lol.onCall = handler.callUpdate.bind(lol)
   lol.pollCmd = handler.pollCmd.bind(lol)
-  lol.connectionUpdate = connectionUpdate.bind(lol)
+  lol.connectionUpdate = update.bind(lol)
   lol.credsUpdate = saveCreds.bind(lol, true)
 
   lol.ev.on('messages.upsert', lol.connection)
