@@ -144,10 +144,8 @@ async function connectionUpdate(update) {
 let reason = new Boom(lastDisconnect?.error)?.output?.statusCode
 if (connection === 'close') { 
  conn.logger.warn('\n⚠️ Error de conexión...\nReconectando...')
- lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut 
- ? startbot() 
- : conn.logger.error('\nWa Web logged out')
- );
+ lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut ? startbot() : conn.logger.error('\nWa Web logged out')
+ 
 
 }
 }
