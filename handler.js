@@ -1155,20 +1155,7 @@ wait: `*Por favor espera...*\n*tengo ${Object.keys(global.db.data.users).length}
     if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
     let hash = global.db.data.sticker[m.msg.fileSha256.toString('base64')]
     let { text, mentionedJid } = hash
-    let messages = await generateWAMessage(m.chat, { text: text, mentions: mentionedJid }, {
-    userJid: this.user.id,
-    quoted : m.quoted && m.quoted.fakeObj
-    })
-    messages.key.fromMe = areJidsSameUser(m.sender, this.user.id)
-    messages.key.id = m.key.id
-    messages.pushName = m.pushName
-    if (m.isGroup) messages.participant = m.sender
-    let msg = {
-    ...chatUpdate,
-    messages: [proto.WebMessageInfo.fromObject(messages)],
-    type: 'append'
-    }
-    this.ev.emit('messages.upsert', msg)
+    this.appenTextMessage(m, text, chatUpdate)
     }  
     
     
