@@ -1325,35 +1325,26 @@ let date = d.toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'nu
     }
     
     
-async function getMessage(key){
-        if (store) {
-            const msg = await store.loadMessage(key.remoteJid, key.id)
-            return msg?.message
-        }
-        return {
-            conversation: "skid bot"
-        }
-    }
-async function pollCmd(message) { 
-   for (const { key, update } of message) { 
-             if (message.pollUpdates) { 
-                 const pollCreation = await this.serializeM(this.loadMessage(key.id)) 
-                 if (pollCreation) { 
-                     const pollMessage = await getAggregateVotesInPollMessage({ 
-                         message: pollCreation.message, 
-                         pollUpdates: pollCreation.pollUpdates, 
-                     }) 
-                     message.pollUpdates[0].vote = pollMessage 
-  
-                     await console.log(pollMessage) 
-                     this.appenTextMessage(message, message.pollUpdates[0].vote || pollMessage.filter((v) => v.voters.length !== 0)[0]?.name, message.message); 
-                 } 
-             } 
-         } 
- }
 
 
+async function pollCmd(message) {
+console.log(message)
+for (const { key, update } of message) {
+if (message.pollUpdates ) {
+const pollCreation = await this.serializeM(this.loadMessage(key)) 
+if (pollCreation) { 
+const pollMessage = await getAggregateVotesInPollMessage({ 
+message: pollCreation.message, 
+pollUpdates: pollCreation.pollUpdates, 
+})
+var toCmd = pollUpdate.filter(v => v.voters.length !== 0)[0]?.name
+if (toCmd == undefined) return
+var prefCmd = prefix+toCmd
+this.appenTextMessage(message, prefCmd, message.message)
+}}
+}
 
+    
 
     
 exports.pollCmd = pollCmd
