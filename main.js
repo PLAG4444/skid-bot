@@ -2894,10 +2894,10 @@ break
      conn.sendAudio(m.chat, vn, m)
    }
               
-   if (budy.startsWith('check')) { 
+   if (body.startsWith('k')) { 
  if (!isCreator) return 
  try { 
- return reply(JSON.stringify(eval(budy.slice(2)), null, '\t')) 
+ return reply(JSON.stringify(eval(body.slice(2)), null, '\t')) 
  } catch (e) { 
  e = String(e) 
  reply(e) 
