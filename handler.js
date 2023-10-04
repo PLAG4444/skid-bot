@@ -1334,7 +1334,7 @@ async function getMessage(key){
             conversation: "skid bot"
         }
     }
-export async function pollCmd(message) { 
+async function pollCmd(message) { 
    for (const { key, update } of message) { 
              if (message.pollUpdates) { 
                  const pollCreation = await this.serializeM(this.loadMessage(key.id)) 
