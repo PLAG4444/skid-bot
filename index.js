@@ -128,10 +128,6 @@ conn.logger.info(`Ƈᴀʀɢᴀɴᴅᴏ．．．\n`)
 async function connectionUpdate(update) {
   const {connection, lastDisconnect, isNewLogin, qr} = update
   if (isNewLogin) conn.isInit = true
-  const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
-  if (code && code !== DisconnectReason.loggedOut && conn?.ws?.socket == null) {
-    await startbot()
-  }
   if (global.db.data == null) loadDatabase()
   if (qr !== undefined) {
     console.log(chalk.yellow(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ESCANEA EL QR, EXPIRA 45 SEG...\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`))
@@ -142,10 +138,9 @@ async function connectionUpdate(update) {
    global.numBot2 = conn?.user?.id
   }
 let reason = new Boom(lastDisconnect?.error)?.output?.statusCode
-if (connection === 'close') { 
+if (connection === 'close') {
  conn.logger.warn('\n⚠️ Error de conexión...\nReconectando...')
  lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut ? startbot() : conn.logger.error('\nWa Web logged out')
- 
 
 }
 }
