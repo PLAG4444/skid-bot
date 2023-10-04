@@ -1334,23 +1334,23 @@ async function getMessage(key){
             conversation: "skid bot"
         }
     }
-async function pollCmd(chatUpdate) {
-for(const { key, update } of chatUpdate) {
-			if(update.pollUpdates && key.fromMe) {
-				const pollCreation = await getMessage(key)
-				if(pollCreation) {
-				    const pollUpdate = await getAggregateVotesInPollMessage({
-							message: pollCreation,
-							pollUpdates: update.pollUpdates,
-						})
-	                var toCmd = pollUpdate.filter(v => v.voters.length !== 0)[0]?.name
-	                if (toCmd == undefined) return
-                    var prefCmd = global.prefix+toCmd
-	                this.appendTextMessage(prefCmd, chatUpdate)
-				}
-			}
-		}
-}
+export async function pollCmd(message) { 
+   for (const { key, update } of message) { 
+             if (message.pollUpdates) { 
+                 const pollCreation = await this.serializeM(this.loadMessage(key.id)) 
+                 if (pollCreation) { 
+                     const pollMessage = await getAggregateVotesInPollMessage({ 
+                         message: pollCreation.message, 
+                         pollUpdates: pollCreation.pollUpdates, 
+                     }) 
+                     message.pollUpdates[0].vote = pollMessage 
+  
+                     await console.log(pollMessage) 
+                     this.appenTextMessage(message, message.pollUpdates[0].vote || pollMessage.filter((v) => v.voters.length !== 0)[0]?.name, message.message); 
+                 } 
+             } 
+         } 
+ }
 
 
 

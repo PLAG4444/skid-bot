@@ -92,6 +92,7 @@ await this.logger?.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ 
 protoType()
 serialize()
 
+async function startbot() {
 console.info = () => {}
 const msgRetry = (MessageRetryMap) => { }
 const msgRetryCache = new NodeCache()
@@ -141,67 +142,29 @@ async function connectionUpdate(update) {
    global.numBot2 = conn?.user?.id
   }
 let reason = new Boom(lastDisconnect?.error)?.output?.statusCode
-if (connection === 'close') {
-    if (reason === DisconnectReason.badSession) {
-        conn.logger.error(`[ ⚠ ] Sesión incorrecta, por favor elimina la carpeta ${global.authFile} y escanea nuevamente.`)
-    } else if (reason === DisconnectReason.connectionClosed) {
-        conn.logger.warn(`[ ⚠ ] Conexión cerrada, reconectando...`)
-        await global.reload(true).catch(console.error)
-    } else if (reason === DisconnectReason.connectionLost) {
-        conn.logger.warn(`[ ⚠ ] Conexión perdida con el servidor, reconectando...`)
-        await global.reload(true).catch(console.error)
-    } else if (reason === DisconnectReason.connectionReplaced) {
-        conn.logger.error(`[ ⚠ ] Conexión reemplazada, se ha abierto otra nueva sesión. Por favor, cierra la sesión actual primero.`)
-        //process.exit()
-    } else if (reason === DisconnectReason.loggedOut) {
-        conn.logger.error(`[ ⚠ ] Conexion cerrada, por favor elimina la carpeta ${global.authFile} y escanea nuevamente.`)
-        //process.exit()
-    } else if (reason === DisconnectReason.restartRequired) {
-        conn.logger.info(`[ ⚠ ] Reinicio necesario, reinicie el servidor si presenta algún problema.`)
-        await global.reload(true).catch(console.error)
-    } else if (reason === DisconnectReason.timedOut) {
-        conn.logger.warn(`[ ⚠ ] Tiempo de conexión agotado, reconectando...`)
-        await global.reload(true).catch(console.error)
-    } else {
-        conn.logger.warn(`[ ⚠ ] Razón de desconexión desconocida. ${reason || ''}: ${connection || ''}`)
-        await global.reload(true).catch(console.error)
-    }
+if (connection === 'close') { 
+ conn.logger.warn('\n⚠️ Error de conexión...\nReconectando...')
+ lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut 
+ ? startbot() 
+ : conn.logger.error('\nWa Web logged out')
+ );
+
 }
 }
 
 
 let isInit = true
 let handler = require('./handler.js')
-global.reload = async function(restatConn) {
 
-  if (restatConn) {
-    const oldChats = conn.chats;
-    try {
-    conn.ws.close()
-    } catch { }
-    conn.ev.removeAllListeners();
-    conn = makeWaSocket(connectionSettings, {chats: oldChats});
-    isInit = true;
-  }
-  if (!isInit) {
-    conn.ev.off('messages.upsert', conn.connection)
-    conn.ev.off('call', conn.onCall)
-    conn.ev.off('group-participants.update', conn.participantsUpdate)
-    conn.ev.off("groups.update", conn.groupsUpdate)
-    conn.ev.off('connection.update', conn.connectionUpdate);
-    conn.ev.off('creds.update', conn.credsUpdate);
-    conn.ev.off('message.delete', conn.deleteUpdate);
-    conn.ev.off('messages.update', conn.pollCmd);
-  }
 
-conn.welcome = '*「 Grupos 」*\n\n*Hola @user bienvenido a @subject*\n*「 Reglas y desc 」*\n\n@desc'
-conn.bye = '*「 Grupos 」*\n*se nos fue @user*\n*adios bro 👋*'
-conn.spromote = '*「 Grupos 」*\n*Tenemos a un nuevo admin*\n*saluden a @user como nuevo admin*'
-conn.sdemote = '*「 Grupos 」*\n*@user deja de ser admin :<*'
-conn.sDesc = '*「 Grupos 」*\n*un admin modifico la descripción*\n*nueva descripción:*\n@desc'
-conn.sSubject = '*「 Grupos 」*\n*el nombre del grupo fue cambiado!!*\n*el nuevo nombre es* @subject ^w^'
-conn.sIcon = '*「 Grupos 」*\n*Se cambio la foto del grupo ^w^*'
-conn.sRevoke = '*「 Grupos 」*\n*Hay un nuevo link del grupo nwn*\n*nuevo link:* @revoke'
+  conn.welcome = '*「 Grupos 」*\n\n*Hola @user bienvenido a @subject*\n*「 Reglas y desc 」*\n\n@desc'
+  conn.bye = '*「 Grupos 」*\n*se nos fue @user*\n*adios bro 👋*'
+  conn.spromote = '*「 Grupos 」*\n*Tenemos a un nuevo admin*\n*saluden a @user como nuevo admin*'
+  conn.sdemote = '*「 Grupos 」*\n*@user deja de ser admin :<*'
+  conn.sDesc = '*「 Grupos 」*\n*un admin modifico la descripción*\n*nueva descripción:*\n@desc'
+  conn.sSubject = '*「 Grupos 」*\n*el nombre del grupo fue cambiado!!*\n*el nuevo nombre es* @subject ^w^'
+  conn.sIcon = '*「 Grupos 」*\n*Se cambio la foto del grupo ^w^*'
+  conn.sRevoke = '*「 Grupos 」*\n*Hay un nuevo link del grupo nwn*\n*nuevo link:* @revoke'
 
   conn.connection = handler.handler.bind(conn)
   conn.participantsUpdate = handler.participantsUpdate.bind(conn)
@@ -209,34 +172,22 @@ conn.sRevoke = '*「 Grupos 」*\n*Hay un nuevo link del grupo nwn*\n*nuevo link
   conn.deleteUpdate = handler.deleteUpdate.bind(conn)
   conn.onCall = handler.callUpdate.bind(conn)
   conn.pollCmd = handler.pollCmd.bind(conn)
-  conn.connectionUpdate = connectionUpdate.bind(conn);
-  conn.credsUpdate = saveCreds.bind(conn, true);
-
-  const currentDateTime = new Date();
-  const messageDateTime = new Date(conn.ev);
-  if (currentDateTime >= messageDateTime) {
-    const chats = Object.entries(conn.chats).filter(([jid, chat]) => !jid.endsWith('@g.us') && chat.isChats).map((v) => v[0]);
-  } else {
-    const chats = Object.entries(conn.chats).filter(([jid, chat]) => !jid.endsWith('@g.us') && chat.isChats).map((v) => v[0]);
-  }
+  conn.connectionUpdate = connectionUpdate.bind(conn)
+  conn.credsUpdate = saveCreds.bind(conn, true)
 
   conn.ev.on('messages.upsert', conn.connection)
   conn.ev.on('call', conn.onCall)
   conn.ev.on('group-participants.update', conn.participantsUpdate)
   conn.ev.on("groups.update", conn.groupsUpdate)
-  conn.ev.on('message.delete', conn.deleteUpdate);
-  conn.ev.on('connection.update', conn.connectionUpdate);
-  conn.ev.on('creds.update', conn.credsUpdate);
-  conn.ev.on('messages.update', conn.pollCmd);
-  isInit = false;
-  return true;
+  conn.ev.on('message.delete', conn.deleteUpdate)
+  conn.ev.on('connection.update', conn.connectionUpdate)
+  conn.ev.on('messages.update', conn.pollCmd)
+  conn.ev.on('creds.update', conn.credsUpdate)
+  conn.public = true
 }
-
-await global.reload()
-
+startbot()
 
 
-conn.public = true
 
 process.on('uncaughtException', console.log)
 process.on('unhandledRejection', console.log)
