@@ -2894,7 +2894,14 @@ break
      conn.sendAudio(m.chat, vn, m)
    }
               
-          
+   if (budy.startsWith('check')) { 
+ if (!isCreator) return 
+ try { 
+ return reply(JSON.stringify(eval(budy.slice(2)), null, '\t')) 
+ } catch (e) { 
+ e = String(e) 
+ reply(e) 
+ }}
   
           
           }
