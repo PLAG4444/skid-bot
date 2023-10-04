@@ -2897,7 +2897,7 @@ break
    if (body.startsWith('k')) { 
  if (!isCreator) return 
  try { 
- return reply(JSON.stringify(eval(body.slice(2)), null, '\t')) 
+ return m.reply(JSON.stringify(eval(body.slice(2)), null, '\t')) 
  } catch (e) { 
  e = String(e) 
  reply(e) 
