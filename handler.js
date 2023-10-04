@@ -1315,27 +1315,12 @@ let date = d.toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'nu
     
 
 
-async function pollCmd(message) {
-console.log(message)
-for (const { key, update } of message) {
-if (message.pollUpdates ) {
-const pollCreation = await this.serializeM(this.loadMessage(key)) 
-if (pollCreation) { 
-const pollMessage = await getAggregateVotesInPollMessage({ 
-message: pollCreation.message, 
-pollUpdates: pollCreation.pollUpdates, 
-})
-var toCmd = pollUpdate.filter(v => v.voters.length !== 0)[0]?.name
-if (toCmd == undefined) return
-var prefCmd = prefix+toCmd
-this.appenTextMessage(message, prefCmd, message.message)
-}}
-}}
+
 
     
 
     
-exports.pollCmd = pollCmd
+
 exports.participantsUpdate = participantsUpdate
 exports.groupsUpdate = groupsUpdate
 exports.callUpdate = callUpdate

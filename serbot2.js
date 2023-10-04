@@ -115,7 +115,6 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   conn.groupsUpdate = handler.groupsUpdate.bind(conn)
   conn.deleteUpdate = handler.deleteUpdate.bind(conn)
   conn.onCall = handler.callUpdate.bind(conn)
-  conn.pollCmd = handler.pollCmd.bind(conn)
   conn.credsUpdate = saveCreds.bind(conn, true)
 
   conn.ev.on('messages.upsert', conn.connection)
@@ -181,7 +180,6 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   delete global.listJadibot[i]  
   global.listJadibot.splice(i, 1) // I stole it from aiden (credits to him)  
   }})
-  conn.ev.on('messages.update', conn.pollCmd)
   conn.ev.on('creds.update', conn.credsUpdate)
   
   }

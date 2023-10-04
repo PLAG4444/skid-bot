@@ -169,7 +169,6 @@ let handler = require('./handler.js')
   conn.groupsUpdate = handler.groupsUpdate.bind(conn)
   conn.deleteUpdate = handler.deleteUpdate.bind(conn)
   conn.onCall = handler.callUpdate.bind(conn)
-  conn.pollCmd = handler.pollCmd.bind(conn)
   conn.connectionUpdate = connectionUpdate.bind(conn)
   conn.credsUpdate = saveCreds.bind(conn, true)
 
@@ -179,7 +178,6 @@ let handler = require('./handler.js')
   conn.ev.on("groups.update", conn.groupsUpdate)
   conn.ev.on('message.delete', conn.deleteUpdate)
   conn.ev.on('connection.update', conn.connectionUpdate)
-  conn.ev.on('messages.update', conn.pollCmd)
   conn.ev.on('creds.update', conn.credsUpdate)
   conn.public = true
 }
