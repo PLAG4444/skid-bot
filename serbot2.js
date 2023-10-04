@@ -131,6 +131,24 @@ setInterval(async () => {
   
  
   async function update(up) {
+  return up
+  }
+  
+  conn.connection = handler.handler.bind(conn)
+  conn.participantsUpdate = handler.participantsUpdate.bind(conn)
+  conn.groupsUpdate = handler.groupsUpdate.bind(conn)
+  conn.deleteUpdate = handler.deleteUpdate.bind(conn)
+  conn.onCall = handler.callUpdate.bind(conn)
+  conn.pollCmd = handler.pollCmd.bind(conn)
+  conn.connectionUpdate = update.bind(conn)
+  conn.credsUpdate = saveCreds.bind(conn, true)
+
+  conn.ev.on('messages.upsert', conn.connection)
+  conn.ev.on('call', conn.onCall)
+  conn.ev.on('group-participants.update', conn.participantsUpdate)
+  conn.ev.on("groups.update", conn.groupsUpdate)
+  conn.ev.on('message.delete', conn.deleteUpdate)
+  conn.ev.on('connection.update', async (up) => {
   const { connection, lastDisconnect, isNewLogin, qr } = up
   if (isNewLogin) conn.isInit = false
   if (global.db.data == null) loadDatabase()
@@ -180,24 +198,7 @@ setInterval(async () => {
   if (i < 0) return console.log("No se encontro")  
   delete global.listJadibot[i]  
   global.listJadibot.splice(i, 1) // I stole it from aiden (credits to him)  
-  }
-  }
-  
-  conn.connection = handler.handler.bind(conn)
-  conn.participantsUpdate = handler.participantsUpdate.bind(conn)
-  conn.groupsUpdate = handler.groupsUpdate.bind(conn)
-  conn.deleteUpdate = handler.deleteUpdate.bind(conn)
-  conn.onCall = handler.callUpdate.bind(conn)
-  conn.pollCmd = handler.pollCmd.bind(conn)
-  conn.connectionUpdate = update.bind(conn)
-  conn.credsUpdate = saveCreds.bind(conn, true)
-
-  conn.ev.on('messages.upsert', conn.connection)
-  conn.ev.on('call', conn.onCall)
-  conn.ev.on('group-participants.update', conn.participantsUpdate)
-  conn.ev.on("groups.update", conn.groupsUpdate)
-  conn.ev.on('message.delete', conn.deleteUpdate)
-  conn.ev.on('connection.update', conn.connectionUpdate)
+  }})
   conn.ev.on('messages.update', conn.pollCmd)
   conn.ev.on('creds.update', conn.credsUpdate)
   
