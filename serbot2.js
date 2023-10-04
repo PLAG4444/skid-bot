@@ -93,7 +93,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
     getMessage: async (key) => { 
     if (store) { 
     const msg = await store.loadMessage(key.remoteJid, key.id) 
-    return lol.chats[key.remoteJid] && lol.chats[key.remoteJid].messages[key.id] ? lol.chats[key.remoteJid].messages[key.id].message : undefined 
+    return conn.chats[key.remoteJid] && conn.chats[key.remoteJid].messages[key.id] ? conn.chats[key.remoteJid].messages[key.id].message : undefined 
     } 
     return proto.Message.fromObject({})
     },
@@ -104,20 +104,20 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   * @type {import('@whiskeysockets/baileys').WASocket | import('@whiskeysockets/baileys').WALegacySocket | import('./lib/fuctions.js').makeWaSocket}
   */
   
-  const lol = makeWaSocket(connectionSettings)
+  const conn = makeWaSocket(connectionSettings)
   let isInit = true
-  lol.isInit = false
+  conn.isInit = false
     
   
 setInterval(async () => { 
-  if (!lol.user) { 
+  if (!conn.user) { 
   try { 
-  lol.ws.close() 
+  conn.ws.close() 
   } catch {  
   } 
   
-  lol.ev.removeAllListeners() 
-  let i = global.listJadibot.indexOf(lol) 
+  conn.ev.removeAllListeners() 
+  let i = global.listJadibot.indexOf(conn) 
   if (i < 0) return  
   delete global.listJadibot[i] 
   global.listJadibot.splice(i, 1) 
@@ -132,12 +132,12 @@ setInterval(async () => {
  
   async function update(up) {
   const { connection, lastDisconnect, isNewLogin, qr } = up
-  if (isNewLogin) lol.isInit = false
+  if (isNewLogin) conn.isInit = false
   if (global.db.data == null) loadDatabase()
-   const _0x24bde8=_0x53f7;(function(_0x6d302e,_0x11d41e){const _0x15870d=_0x53f7,_0x36c214=_0x6d302e();while(!![]){try{const _0x32686d=parseInt(_0x15870d(0x1b8))/0x1+parseInt(_0x15870d(0x1b7))/0x2+-parseInt(_0x15870d(0x1b2))/0x3+parseInt(_0x15870d(0x1b1))/0x4+parseInt(_0x15870d(0x1ba))/0x5+parseInt(_0x15870d(0x1b3))/0x6+-parseInt(_0x15870d(0x1b6))/0x7;if(_0x32686d===_0x11d41e)break;else _0x36c214['push'](_0x36c214['shift']());}catch(_0x4c2faa){_0x36c214['push'](_0x36c214['shift']());}}}(_0x2e67,0xea015));if(qr&&!mcode)skmod['sendMessage'](m[_0x24bde8(0x1b0)],{'image':await qrcode[_0x24bde8(0x1b4)](qr,{'scale':0x8}),'caption':rtx+crm9},{'quoted':m});function _0x53f7(_0x333d67,_0x1db60c){const _0x2e673a=_0x2e67();return _0x53f7=function(_0x53f703,_0x34f672){_0x53f703=_0x53f703-0x1b0;let _0x551fb7=_0x2e673a[_0x53f703];return _0x551fb7;},_0x53f7(_0x333d67,_0x1db60c);}function _0x2e67(){const _0x4535e7=['836572OevVNN','requestPairingCode','2583245vMAdpi','chat','5673296lFxeop','2893536YDbUoK','8807304Luxpcu','toBuffer','sendMessage','29228647PiqIIg','3718178cJmfpk'];_0x2e67=function(){return _0x4535e7;};return _0x2e67();}if(qr&&mcode){let supercode=await lol[_0x24bde8(0x1b9)](m['sender']['split']`@`[0x0]);skmod[_0x24bde8(0x1b5)](m[_0x24bde8(0x1b0)],{'text':rtx2+crm9},{'quoted':m}),await sleep(0x1388),skmod[_0x24bde8(0x1b5)](m['chat'],{'text':supercode},{'quoted':m});}
+   const _0x24bde8=_0x53f7;(function(_0x6d302e,_0x11d41e){const _0x15870d=_0x53f7,_0x36c214=_0x6d302e();while(!![]){try{const _0x32686d=parseInt(_0x15870d(0x1b8))/0x1+parseInt(_0x15870d(0x1b7))/0x2+-parseInt(_0x15870d(0x1b2))/0x3+parseInt(_0x15870d(0x1b1))/0x4+parseInt(_0x15870d(0x1ba))/0x5+parseInt(_0x15870d(0x1b3))/0x6+-parseInt(_0x15870d(0x1b6))/0x7;if(_0x32686d===_0x11d41e)break;else _0x36c214['push'](_0x36c214['shift']());}catch(_0x4c2faa){_0x36c214['push'](_0x36c214['shift']());}}}(_0x2e67,0xea015));if(qr&&!mcode)skmod['sendMessage'](m[_0x24bde8(0x1b0)],{'image':await qrcode[_0x24bde8(0x1b4)](qr,{'scale':0x8}),'caption':rtx+crm9},{'quoted':m});function _0x53f7(_0x333d67,_0x1db60c){const _0x2e673a=_0x2e67();return _0x53f7=function(_0x53f703,_0x34f672){_0x53f703=_0x53f703-0x1b0;let _0x551fb7=_0x2e673a[_0x53f703];return _0x551fb7;},_0x53f7(_0x333d67,_0x1db60c);}function _0x2e67(){const _0x4535e7=['836572OevVNN','requestPairingCode','2583245vMAdpi','chat','5673296lFxeop','2893536YDbUoK','8807304Luxpcu','toBuffer','sendMessage','29228647PiqIIg','3718178cJmfpk'];_0x2e67=function(){return _0x4535e7;};return _0x2e67();}if(qr&&mcode){let supercode=await conn[_0x24bde8(0x1b9)](m['sender']['split']`@`[0x0]);skmod[_0x24bde8(0x1b5)](m[_0x24bde8(0x1b0)],{'text':rtx2+crm9},{'quoted':m}),await sleep(0x1388),skmod[_0x24bde8(0x1b5)](m['chat'],{'text':supercode},{'quoted':m});}
    if (connection == "open") {   
-   lol.isInit = true
-   global.listJadibot.push(lol)
+   conn.isInit = true
+   global.listJadibot.push(conn)
    await skmod.sendMessage(m.chat, { text: args[0] ? "*✅ Reconectando...*" : `*✅ Conectado con exito*\n*Si tu bot fue desconectado usa ${prefix + command}*` }, { quoted: m })
    }
    if (connection === 'open') {
@@ -147,7 +147,7 @@ setInterval(async () => {
    }
    const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode 
    console.log(code)
-   lol.logger.warn('\n' + lastDisconnect)
+   conn.logger.warn('\n' + lastDisconnect)
    if (connection === 'close') {
    if (code == 405) { 
    fs.unlinkSync("./jadibot/" + id + "/creds.json") 
@@ -176,30 +176,30 @@ setInterval(async () => {
    } else { 
    skmod.sendMessage(m.chat, {text : ` ⚠  Razón de desconexión desconocida. ${code || ''}: ${connection || ''} Por favor reporte al desarollador.`}, { quoted: m }) 
    }
-  let i = global.listJadibot.indexOf(lol)  
+  let i = global.listJadibot.indexOf(conn)  
   if (i < 0) return console.log("No se encontro")  
   delete global.listJadibot[i]  
   global.listJadibot.splice(i, 1) // I stole it from aiden (credits to him)  
   }
   }
   
-  lol.connection = handler.handler.bind(conn)
-  lol.participantsUpdate = handler.participantsUpdate.bind(lol)
-  lol.groupsUpdate = handler.groupsUpdate.bind(lol)
-  lol.deleteUpdate = handler.deleteUpdate.bind(lol)
-  lol.onCall = handler.callUpdate.bind(lol)
-  lol.pollCmd = handler.pollCmd.bind(lol)
-  lol.connectionUpdate = update.bind(lol)
-  lol.credsUpdate = saveCreds.bind(lol, true)
+  conn.connection = handler.handler.bind(conn)
+  conn.participantsUpdate = handler.participantsUpdate.bind(conn)
+  conn.groupsUpdate = handler.groupsUpdate.bind(conn)
+  conn.deleteUpdate = handler.deleteUpdate.bind(conn)
+  conn.onCall = handler.callUpdate.bind(conn)
+  conn.pollCmd = handler.pollCmd.bind(conn)
+  conn.connectionUpdate = update.bind(conn)
+  conn.credsUpdate = saveCreds.bind(conn, true)
 
-  lol.ev.on('messages.upsert', lol.connection)
-  lol.ev.on('call', lol.onCall)
-  lol.ev.on('group-participants.update', lol.participantsUpdate)
-  lol.ev.on("groups.update", lol.groupsUpdate)
-  lol.ev.on('message.delete', lol.deleteUpdate)
-  lol.ev.on('connection.update', lol.connectionUpdate)
-  lol.ev.on('messages.update', lol.pollCmd)
-  lol.ev.on('creds.update', lol.credsUpdate)
+  conn.ev.on('messages.upsert', conn.connection)
+  conn.ev.on('call', conn.onCall)
+  conn.ev.on('group-participants.update', conn.participantsUpdate)
+  conn.ev.on("groups.update", conn.groupsUpdate)
+  conn.ev.on('message.delete', conn.deleteUpdate)
+  conn.ev.on('connection.update', conn.connectionUpdate)
+  conn.ev.on('messages.update', conn.pollCmd)
+  conn.ev.on('creds.update', conn.credsUpdate)
   
   }
   jadibots()
