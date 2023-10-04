@@ -108,31 +108,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   let isInit = true
   conn.isInit = false
     
-  
-setInterval(async () => { 
-  if (!conn.user) { 
-  try { 
-  conn.ws.close() 
-  } catch {  
-  } 
-  
-  conn.ev.removeAllListeners() 
-  let i = global.listJadibot.indexOf(conn) 
-  if (i < 0) return  
-  delete global.listJadibot[i] 
-  global.listJadibot.splice(i, 1) 
-  }}, 60000) //again aiden -.-
-  
-  
-
-
-  const handler = imports('./handler.js')
-
-  
- 
-  async function update(up) {
-  return up
-  }
+  const handler = require('./handler.js')
   
   conn.connection = handler.handler.bind(conn)
   conn.participantsUpdate = handler.participantsUpdate.bind(conn)
@@ -150,6 +126,12 @@ setInterval(async () => {
   conn.ev.on('message.delete', conn.deleteUpdate)
   conn.ev.on('connection.update', async (up) => {
   const { connection, lastDisconnect, isNewLogin, qr } = up
+  if (connection == 'connecting') return 
+  console.log('Ejecutando....')
+  if (connection) {  
+  if (connection != 'connecting')   
+  console.log('Connectando....') 
+  } 
   if (isNewLogin) conn.isInit = false
   if (global.db.data == null) loadDatabase()
    const _0x24bde8=_0x53f7;(function(_0x6d302e,_0x11d41e){const _0x15870d=_0x53f7,_0x36c214=_0x6d302e();while(!![]){try{const _0x32686d=parseInt(_0x15870d(0x1b8))/0x1+parseInt(_0x15870d(0x1b7))/0x2+-parseInt(_0x15870d(0x1b2))/0x3+parseInt(_0x15870d(0x1b1))/0x4+parseInt(_0x15870d(0x1ba))/0x5+parseInt(_0x15870d(0x1b3))/0x6+-parseInt(_0x15870d(0x1b6))/0x7;if(_0x32686d===_0x11d41e)break;else _0x36c214['push'](_0x36c214['shift']());}catch(_0x4c2faa){_0x36c214['push'](_0x36c214['shift']());}}}(_0x2e67,0xea015));if(qr&&!mcode)skmod['sendMessage'](m[_0x24bde8(0x1b0)],{'image':await qrcode[_0x24bde8(0x1b4)](qr,{'scale':0x8}),'caption':rtx+crm9},{'quoted':m});function _0x53f7(_0x333d67,_0x1db60c){const _0x2e673a=_0x2e67();return _0x53f7=function(_0x53f703,_0x34f672){_0x53f703=_0x53f703-0x1b0;let _0x551fb7=_0x2e673a[_0x53f703];return _0x551fb7;},_0x53f7(_0x333d67,_0x1db60c);}function _0x2e67(){const _0x4535e7=['836572OevVNN','requestPairingCode','2583245vMAdpi','chat','5673296lFxeop','2893536YDbUoK','8807304Luxpcu','toBuffer','sendMessage','29228647PiqIIg','3718178cJmfpk'];_0x2e67=function(){return _0x4535e7;};return _0x2e67();}if(qr&&mcode){let supercode=await conn[_0x24bde8(0x1b9)](m['sender']['split']`@`[0x0]);skmod[_0x24bde8(0x1b5)](m[_0x24bde8(0x1b0)],{'text':rtx2+crm9},{'quoted':m}),await sleep(0x1388),skmod[_0x24bde8(0x1b5)](m['chat'],{'text':supercode},{'quoted':m});}
@@ -162,6 +144,7 @@ setInterval(async () => {
    await skmod.sendMessage(m.chat, { text: args[0] ?  `*✅ Reconexion Exitosa*\n*tus mensajes se estan cargando*` : `*✅ Jadibot Conectado*\n*se te enviara un codigo para volver a conectarte*` }, { quoted: m })
    await sleep(5000)
    if (!args[0]) skmod.sendMessage(m.chat, { text: `${prefix + command } ` + Buffer.from(fs.readFileSync(`./jadibot/${id}/creds.json`), "utf-8").toString("base64") }, { quoted: m })
+   
    }
    const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode 
    console.log(code)

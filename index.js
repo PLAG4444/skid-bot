@@ -130,7 +130,7 @@ async function connectionUpdate(update) {
   if (isNewLogin) conn.isInit = true
   const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
   if (code && code !== DisconnectReason.loggedOut && conn?.ws?.socket == null) {
-    await global.reload(true).catch(console.error)
+    await startbot()
   }
   if (global.db.data == null) loadDatabase()
   if (qr !== undefined) {
