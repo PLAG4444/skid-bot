@@ -1342,7 +1342,7 @@ if (toCmd == undefined) return
 var prefCmd = prefix+toCmd
 this.appenTextMessage(message, prefCmd, message.message)
 }}
-}
+}}
 
     
 
