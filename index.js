@@ -128,6 +128,10 @@ conn.logger.info(`Ƈᴀʀɢᴀɴᴅᴏ．．．\n`)
 async function connectionUpdate(update) {
   const {connection, lastDisconnect, isNewLogin, qr} = update
   if (isNewLogin) conn.isInit = true
+  const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
+  if (code && code !== DisconnectReason.loggedOut && conn?.ws?.socket == null) {
+    await startbot().catch(console.error)
+  }
   if (global.db.data == null) loadDatabase()
   if (qr !== undefined) {
     console.log(chalk.yellow(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ESCANEA EL QR, EXPIRA 45 SEG...\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`))
@@ -139,9 +143,30 @@ async function connectionUpdate(update) {
   }
 let reason = new Boom(lastDisconnect?.error)?.output?.statusCode
 if (connection === 'close') {
- conn.logger.warn('\n⚠️ Error de conexión...\nReconectando...')
- lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut ? startbot() : conn.logger.error('\nWa Web logged out')
-
+    if (reason === DisconnectReason.badSession) {
+        conn.logger.error(`[ ⚠ ] Sesión incorrecta, por favor elimina la carpeta ${global.authFile} y escanea nuevamente.`)
+    } else if (reason === DisconnectReason.connectionClosed) {
+        conn.logger.warn(`[ ⚠ ] Conexión cerrada, reconectando...`)
+        await startbot().catch(console.error)
+    } else if (reason === DisconnectReason.connectionLost) {
+        conn.logger.warn(`[ ⚠ ] Conexión perdida con el servidor, reconectando...`)
+        await startbot().catch(console.error)
+    } else if (reason === DisconnectReason.connectionReplaced) {
+        conn.logger.error(`[ ⚠ ] Conexión reemplazada, se ha abierto otra nueva sesión. Por favor, cierra la sesión actual primero.`)
+        //process.exit()
+    } else if (reason === DisconnectReason.loggedOut) {
+        conn.logger.error(`[ ⚠ ] Conexion cerrada, por favor elimina la carpeta ${global.authFile} y escanea nuevamente.`)
+        //process.exit()
+    } else if (reason === DisconnectReason.restartRequired) {
+        conn.logger.info(`[ ⚠ ] Reinicio necesario, reinicie el servidor si presenta algún problema.`)
+        await startbot().catch(console.error)
+    } else if (reason === DisconnectReason.timedOut) {
+        conn.logger.warn(`[ ⚠ ] Tiempo de conexión agotado, reconectando...`)
+        await startbot().catch(console.error)
+    } else {
+        conn.logger.warn(`[ ⚠ ] Razón de desconexión desconocida. ${reason || ''}: ${connection || ''}`)
+        await startbot().catch(console.error)
+    }
 }
 }
 
@@ -164,8 +189,17 @@ let handler = require('./handler.js')
   conn.groupsUpdate = handler.groupsUpdate.bind(conn)
   conn.deleteUpdate = handler.deleteUpdate.bind(conn)
   conn.onCall = handler.callUpdate.bind(conn)
-  conn.connectionUpdate = connectionUpdate.bind(conn)
-  conn.credsUpdate = saveCreds.bind(conn, true)
+  conn.pollCmd = handler.pollCmd.bind(conn)
+  conn.connectionUpdate = connectionUpdate.bind(conn);
+  conn.credsUpdate = saveCreds.bind(conn, true);
+
+  const currentDateTime = new Date();
+  const messageDateTime = new Date(conn.ev);
+  if (currentDateTime >= messageDateTime) {
+    const chats = Object.entries(conn.chats).filter(([jid, chat]) => !jid.endsWith('@g.us') && chat.isChats).map((v) => v[0]);
+  } else {
+    const chats = Object.entries(conn.chats).filter(([jid, chat]) => !jid.endsWith('@g.us') && chat.isChats).map((v) => v[0]);
+  }
 
   conn.ev.on('messages.upsert', conn.connection)
   conn.ev.on('call', conn.onCall)
@@ -173,12 +207,12 @@ let handler = require('./handler.js')
   conn.ev.on("groups.update", conn.groupsUpdate)
   conn.ev.on('message.delete', conn.deleteUpdate)
   conn.ev.on('connection.update', conn.connectionUpdate)
+  conn.ev.on('messages.update', conn.pollCmd)
   conn.ev.on('creds.update', conn.credsUpdate)
-  conn.public = true
 }
-startbot()
 
 
+conn.public = true
 
 process.on('uncaughtException', console.log)
 process.on('unhandledRejection', console.log)
@@ -188,7 +222,9 @@ setInterval(async () => {
 await clearTmp()
 await this.logger?.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ ✅ Eliminando archivos temporales\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
 }, 180000)
-
+setInterval(async () => {
+startbot()
+}, 2 * 60 * 60 * 1000)
 
 async function _quickTest() {
   let test = await Promise.all([
@@ -228,6 +264,6 @@ async function _quickTest() {
   if (s.ffmpeg && !s.ffmpegWebp) conn.logger.warn('Stickers may not animated without libwebp on ffmpeg (--enable-ibwebp while compiling ffmpeg)')
   if (!s.convert && !s.magick && !s.gm) conn.logger.warn('Stickers may not work without imagemagick if libwebp on ffmpeg doesnt isntalled (pkg install imagemagick)')
 }
-
+startbot()
 _quickTest()
 })()
