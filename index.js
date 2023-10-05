@@ -120,7 +120,7 @@ const connectionSettings = {
     }
 }
 
-const conn = makeWaSocket(connectionSettings)
+global.conn = makeWaSocket(connectionSettings)
 conn.isInit = false
 conn.well = false
 conn.logger.info(`Ƈᴀʀɢᴀɴᴅᴏ．．．\n`)
@@ -189,24 +189,15 @@ let handler = require('./handler.js')
   conn.groupsUpdate = handler.groupsUpdate.bind(conn)
   conn.deleteUpdate = handler.deleteUpdate.bind(conn)
   conn.onCall = handler.callUpdate.bind(conn)
-  conn.pollCmd = handler.pollCmd.bind(conn)
   conn.connectionUpdate = connectionUpdate.bind(conn);
   conn.credsUpdate = saveCreds.bind(conn, true);
 
-  const currentDateTime = new Date();
-  const messageDateTime = new Date(conn.ev);
-  if (currentDateTime >= messageDateTime) {
-    const chats = Object.entries(conn.chats).filter(([jid, chat]) => !jid.endsWith('@g.us') && chat.isChats).map((v) => v[0]);
-  } else {
-    const chats = Object.entries(conn.chats).filter(([jid, chat]) => !jid.endsWith('@g.us') && chat.isChats).map((v) => v[0]);
-  }
-
+  
   conn.ev.on('messages.upsert', conn.connection)
   conn.ev.on('call', conn.onCall)
   conn.ev.on('group-participants.update', conn.participantsUpdate)
   conn.ev.on("groups.update", conn.groupsUpdate)
   conn.ev.on('message.delete', conn.deleteUpdate)
-  conn.ev.on('connection.update', conn.connectionUpdate)
   conn.ev.on('messages.update', conn.pollCmd)
   conn.ev.on('creds.update', conn.credsUpdate)
   conn.public = true
