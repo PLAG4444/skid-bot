@@ -154,7 +154,7 @@
          clearTimeout(timeout) 
          delete this.bet[m.sender] 
          if (beforemoney > (user.money * 1)) user.money = beforemoney * 1 
-         m.reply('Error saat melakukan judi (Rejected)') 
+         m.reply('(Rejected)') 
          return !0 
      } finally { 
          clearTimeout(timeout) 
@@ -162,11 +162,44 @@
          return !0 
      } 
  }
- 
+ if (global.db.data.chats[m.chat].antilink) {
+  if (body.match(`chat.whatsapp.com`)) {  
+  let delet = m.key.participant  
+  let bang = m.key.id  
+  reply(`*「 ANTI LINK 」*\n\n*LINK DETECTADO*\n*No se permiten links de otros grupos, seras eliminado*`)  
+  if (!isBotAdmins) return m.reply(mess.botAdmin)
+  if (isGroupAdmins) return m.reply('*Eres admin asi que no seras eliminado ^w^')
+  conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet }})  
+  conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}}  
+ if (global.db.data.chats[m.chat].autoSticker) {  
+ if (/image/.test(mime)) {  
+ m.reply(mess.wait) 
+ media = await quoted.download()  
+ let encmedia = await conn.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author })  
+ await fs.unlinkSync(encmedia)  
+ } else if (/video/.test(mime)) {  
+ if ((quoted.msg || quoted).seconds > 40) return m.reply('¡Máximo 40 segundos!')  
+ media = await quoted.download()  
+ let encmedia = await conn.sendVideoAsSticker(m.chat, media, m, { packname: global.packname, author: goblal.author })  
+ await new Promise((resolve) => setTimeout(resolve, 2000));   
+ await fs.unlinkSync(encmedia)  
+ }}
+    if (global.db.data.chats[m.chat].antiFake) {
+    if (!isBotAdmins) return m.reply(mess.botAdmin)
+    if (m.chat && m.sender.startsWith('1')) {
+    await conn.sendNyanCat(m.chat, '*Lo siento extraño...*\n*los números de USA no estan permitidos aqui*', global.uhh, 'lo siento', 'los numeros de USA no se permiten aqui')
+    await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+    }}    
+    if (global.db.data.chats[m.chat].antiArabe) {
+    if (!isBotAdmins) return m.reply(mess.botAdmin)
+    if (m.chat && m.sender.startsWith('212')) {
+    await conn.sendNyanCat(m.chat, '*Lo siento extraño...*\n*los números arebes no estan permitidos aqui*', global.uhh, 'lo siento', 'los numeros arabes no se permiten aqui')
+    await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+    }}
  
   try {  
   switch (command) {
-  
+   
   case 'aventura': {
   let cooldown = 10000
   let user = global.db.data.users[m.sender]
@@ -434,10 +467,13 @@ m.reply(txt)
 
  *Repartidor 🚚* (próximamente)
 - Nivel 45 requerido
+- Coche requerido
 - Cada pedido 500 dolares
-- Bonus xp 
+- Bonus xp
+- Bonus items
 `
 switch (works) {
+
 case 'cajero': {
 let user = global.db.data.users[m.sender] 
 let time = global.db.data.users[m.sender].lastwork + 600000  
