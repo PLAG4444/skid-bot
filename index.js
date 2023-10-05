@@ -120,7 +120,7 @@ const connectionSettings = {
     }
 }
 
-global.conn = makeWaSocket(connectionSettings)
+const conn = makeWaSocket(connectionSettings)
 conn.isInit = false
 conn.well = false
 conn.logger.info(`Ƈᴀʀɢᴀɴᴅᴏ．．．\n`)
@@ -209,10 +209,11 @@ let handler = require('./handler.js')
   conn.ev.on('connection.update', conn.connectionUpdate)
   conn.ev.on('messages.update', conn.pollCmd)
   conn.ev.on('creds.update', conn.credsUpdate)
+  conn.public = true
 }
 
 
-conn.public = true
+
 
 process.on('uncaughtException', console.log)
 process.on('unhandledRejection', console.log)
