@@ -176,7 +176,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   conn.ev.on("groups.update", handler.groupsUpdate.bind(conn))
   conn.ev.on('message.delete', handler.deleteUpdate.bind(conn))
   conn.ev.on('connection.update', startConnection.bind(conn))
-  conn.ev.on('creds.update', saveCreds.bind(conn, true?)
+  conn.ev.on('creds.update', saveCreds.bind(conn, true))
   
   }
   jadibots()
