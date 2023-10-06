@@ -174,7 +174,7 @@ let isInit = true
         await conn.updateBlockStatus(fucker.from, 'block')
       }
     }
-  }
+  })
   conn.ev.on('group-participants.update', async ({id, participants, action}) {
   if (global.db.data == null) await loadDatabase()
   const chat = global.db.data.chats[id] || {}
