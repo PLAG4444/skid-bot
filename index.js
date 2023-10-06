@@ -263,7 +263,7 @@ let isInit = true
     }
   })*/
   conn.ev.on('connection.update', async (up) => {
-  const {connection, lastDisconnect, isNewLogin, qr} = update
+  const {connection, lastDisconnect, isNewLogin, qr} = up
   if (isNewLogin) conn.isInit = true
   const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
   if (code && code !== DisconnectReason.loggedOut && conn?.ws?.socket == null) {

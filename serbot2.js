@@ -169,7 +169,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
  }
   require("./main")(conn, m, chatUpdate, store)
   })
-  conn.ev.on('call', async (fuckedcall) => {
+    conn.ev.on('call', async (fuckedcall) => {
   const anticall = global.db.data.settings[conn.user.jid].antiCall
   if (!anticall) return
   for (let fucker of fuckedcall) {
@@ -180,8 +180,8 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
         await conn.updateBlockStatus(fucker.from, 'block')
       }
     }
-  }
-  conn.ev.on('group-participants.update', async ({id, participants, action}) {
+  })
+  conn.ev.on('group-participants.update', async ({id, participants, action}) => {
   if (global.db.data == null) await loadDatabase()
   const chat = global.db.data.chats[id] || {}
   const botTt = global.db.data.settings[conn?.user?.jid] || {}
@@ -240,12 +240,12 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
     if (!text) continue
     await conn.sendNyanCat(m.chat, text, global.menu2, '[ I N F O ]', 'ajustes del grupo!!')
   }})
-  conn.ev.on('message.delete', aysnc (message) => {
+/*  conn.ev.on("message.delete", aysnc (mesage) => {
   let d = new Date(new Date + 3600000)
   let date = d.toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' })
   let time = d.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true })
   try {
-  const { fromMe, id, participant } = message
+  const { fromMe, id, participant } = mesage
   if (fromMe) return 
   let msg = conn.serializeM(conn.loadMessage(id))
   let chat = global.db.data.chats[msg?.chat] || {}
@@ -267,7 +267,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
     } catch (e) {
         console.error(e)
     }
-  })
+  })*/
   conn.ev.on('connection.update', async (up) => {
   const { connection, lastDisconnect, isNewLogin, qr } = up
   if (connection == 'connecting') return 
