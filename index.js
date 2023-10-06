@@ -354,9 +354,6 @@ setInterval(async () => {
 await clearTmp()
 await conn.logger?.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ ✅ Eliminando archivos temporales\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
 }, 180000)
-setInterval(async () => {
-startbot()
-}, 2 * 60 * 60 * 1000)
 
 protoType()
 serialize()
