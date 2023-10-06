@@ -111,8 +111,6 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
 
   conn.ev.on('messages.upsert', async (chatUpdate) => {
   conn.msgqueque = conn.msgqueque || []
-  conn.uptime = conn.uptime || Date.now()
-  conn.pushMessage(chatUpdate.messages).catch(console.error)
   let m = chatUpdate.messages[chatUpdate.messages.length - 1]
   if (!chatUpdate) return
   if (!m) return
@@ -169,7 +167,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
  }
   require("./main")(conn, m, chatUpdate, store)
   })
-    conn.ev.on('call', async (fuckedcall) => {
+  conn.ev.on('call', async (fuckedcall) => {
   const anticall = global.db.data.settings[conn.user.jid].antiCall
   if (!anticall) return
   for (let fucker of fuckedcall) {
