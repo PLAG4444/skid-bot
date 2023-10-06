@@ -234,12 +234,12 @@ let isInit = true
     if (!text) continue
     await conn.sendNyanCat(m.chat, text, global.menu2, '[ I N F O ]', 'ajustes del grupo!!')
   }})
-  conn.ev.on('message.delete', aysnc (message) => {
+  conn.ev.on('message.delete', aysnc (mesage) => {
   let d = new Date(new Date + 3600000)
   let date = d.toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' })
   let time = d.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true })
   try {
-  const { fromMe, id, participant } = message
+  const { fromMe, id, participant } = mesage
   if (fromMe) return 
   let msg = conn.serializeM(conn.loadMessage(id))
   let chat = global.db.data.chats[msg?.chat] || {}
