@@ -267,10 +267,6 @@ let isInit = true
   conn.ev.on('connection.update', async (up) => {
   const {connection, lastDisconnect, isNewLogin, qr} = up
   if (isNewLogin) conn.isInit = true
-  const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
-  if (code && code !== DisconnectReason.loggedOut && conn?.ws?.socket == null) {
-    await startbot().catch(console.error)
-  }
   if (global.db.data == null) loadDatabase()
   if (qr !== undefined) {
     console.log(chalk.yellow(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ESCANEA EL QR, EXPIRA 45 SEG...\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`))
