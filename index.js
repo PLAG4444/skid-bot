@@ -90,7 +90,7 @@ const connectionSettings = {
     return proto.Message.fromObject({})
     }
 }
-global.conn = makeWaSocket(connectionSettings)
+const conn = makeWaSocket(connectionSettings)
 conn.isInit = false
 conn.well = false
 conn.logger.info(`Ƈᴀʀɢᴀɴᴅᴏ．．．\n`)
