@@ -175,7 +175,7 @@ let isInit = true
       }
     }
   })
-  conn.ev.on('group-participants.update', async ({id, participants, action}) {
+  conn.ev.on('group-participants.update', async ({id, participants, action}) => {
   if (global.db.data == null) await loadDatabase()
   const chat = global.db.data.chats[id] || {}
   const botTt = global.db.data.settings[conn?.user?.jid] || {}
