@@ -108,9 +108,7 @@ let isInit = true
 
   
   conn.ev.on('messages.upsert', async (chatUpdate) => {
-  this.msgqueque = this.msgqueque || []
-  this.uptime = conn.uptime || Date.now()
-  this.pushMessage(chatUpdate.messages).catch(console.error)
+  conn.msgqueque = conn.msgqueque || []
   let m = chatUpdate.messages[chatUpdate.messages.length - 1]
   if (!chatUpdate) return
   if (!m) return
