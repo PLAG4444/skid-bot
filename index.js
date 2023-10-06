@@ -234,7 +234,7 @@ let isInit = true
     if (!text) continue
     await conn.sendNyanCat(m.chat, text, global.menu2, '[ I N F O ]', 'ajustes del grupo!!')
   }})
-  conn.ev.on("message.delete", aysnc (mesage) => {
+/*  conn.ev.on("message.delete", aysnc (mesage) => {
   let d = new Date(new Date + 3600000)
   let date = d.toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' })
   let time = d.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true })
@@ -261,7 +261,7 @@ let isInit = true
     } catch (e) {
         console.error(e)
     }
-  })
+  })*/
   conn.ev.on('connection.update', async (up) => {
   const {connection, lastDisconnect, isNewLogin, qr} = update
   if (isNewLogin) conn.isInit = true
