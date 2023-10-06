@@ -1,7 +1,7 @@
 (async () => {
 require("./settings")
 const { DisconnectReason, useMultiFileAuthState, MessageRetryMap, fetchLatestBaileysVersion, makeCacheableSignalKeyStore } = require("@whiskeysockets/baileys")
-const { smsg, sleep, makeWaSocket, protoType, serialize }= require('./lib/fuctions')
+const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins } = require('./lib/fuctions')
 const { spawn, execSync } = require('child_process')
 const { tmpdir } = require('os')
 const { join, basename } = require('path')
