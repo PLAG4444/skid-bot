@@ -184,7 +184,7 @@ conn.logger.warn(`\n⚠️ CONEXION CERRADA, INTENTANDO RECONECTAR...`)
 lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut ? startBot() : conn.logger.error(`\n❌ WA WEB LOGGED OUT`)
 } else if (connection == 'open') {
 conn.logger.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊Skid bot Se Conecto Correctamente a WhatsApp\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
-})
+}})
 conn.ev.on('creds.update', saveCreds)
 conn.public = true
 async function _quickTest() {
