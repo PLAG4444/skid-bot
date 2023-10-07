@@ -67,15 +67,15 @@ function clearTmp() {
 
 async function startBot() {
 const msgRetryMap = (MessageRetryMap) => { }
+const {state, saveState, saveCreds} = await useMultiFileAuthState('./authFolder/')
 let { version, isLatest } = await fetchLatestBaileysVersion()
-const { state, saveCreds } = await useMultiFileAuthState('./authFolder')
+
 const connectionSettings = {
     printQRInTerminal: true,
     logger: pino({ level: 'silent' }),
     auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({level: 'silent'})) },
     msgRetryMap,
     version,
-    syncFullHistory: true,
     browser: ['SkidBot', 'Safari', '1.0.0'],
     getMessage: async (key) => { 
     if (store) { 
@@ -103,7 +103,8 @@ if (m.isBaileys) return
 if (!chatUpdate) return
 if (!conn.public && !m.key.fromMe && chatUpdate.type === 'notify') return
 if (global.db.data == null) await loadDatabase()
-    
+global.numBot = conn.user.jid
+global.numBot2 = conn.user.id    
 require('./main.js')(conn, m, chatUpdate, store)
 })
 conn.ev.on("call", async (fuckedcall) => {
@@ -173,15 +174,18 @@ if (!text) continue
 await conn.sendNyanCat(m.chat, text, global.menu2, '[ I N F O ]', 'ajustes del grupo!!')
 }})
 conn.ev.on("connection.update", async (update) => {
-const { connection, lastDisconnect, qr } = update
+const { connection, lastDisconnect, isNewLogin, qr } = update
 if (connection == 'connecting') {
 conn.logger.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊🧡 INICIANDO AGUARDE UN MOMENTO...\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
-} else if (qr !== undefined) {
+} 
+if (qr !== undefined) {
 conn.logger.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ESCANEA EL QR, EXPIRA 45 SEG...\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
-} else if (connection === 'close') {
+}
+if (connection === 'close') {
 conn.logger.warn(`\n⚠️ CONEXION CERRADA, INTENTANDO RECONECTAR...`)
 lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut ? startBot() : conn.logger.error(`\n❌ WA WEB LOGGED OUT`)
-} else if (connection == 'open') {
+} 
+if (connection == 'open') {
 conn.logger.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊Skid bot Se Conecto Correctamente a WhatsApp\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
 }})
 conn.ev.on('creds.update', saveCreds)
