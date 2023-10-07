@@ -18,7 +18,7 @@ const _ = require('lodash')
 const NodeCache = require('node-cache')
 const pino = require('pino')
 const store = require('./lib/store.js')
-prototype()
+protoType()
 serialize()
 var low
 try {
