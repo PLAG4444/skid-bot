@@ -1,6 +1,7 @@
 require('./settings.js')
 const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins, clockString }= require('./lib/fuctions')
 const { useMultiFileAuthState, DisconnectReason, proto, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion } = require("@whiskeysockets/baileys")
+const { useLowDBAuthState } = require('./lib/authcreds.js')
 const gradient = require('gradient-string')
 const fs = require('fs')
 const { watchFile, unwatchFile } = require('fs')
@@ -68,7 +69,7 @@ function clearTmp() {
 async function startBot() {
 console.info = () => {}
 const msgRetryMap = (MessageRetryMap) => { }
-const {state, saveState, saveCreds} = await useMultiFileAuthState('./authFolder/')
+const {state, saveState, saveCreds} = await useLowDBAuthState('./skid.db')
 let { version, isLatest } = await fetchLatestBaileysVersion()
 
 const connectionSettings = {

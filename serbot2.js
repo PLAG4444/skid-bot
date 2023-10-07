@@ -38,8 +38,8 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   if (global.listJadibot instanceof Array) console.log()   
   else global.listJadibot = []   
   
-  const jadibots = async (conn, m, command, args) => {
-  const skmod = conn
+  const jadibots = async (mod, m, command, args) => {
+  const skmod = mod
   if (!global.db.data.settings[conn.user.jid].jadibot) return m.reply(`*[❗] este comando fue desabilitado por el creador*`)
   if (conn.user.jid !== global.numBot) return m.reply(`*[❗] Este comando solo puede ser usado en el Bot principal!!*\n\n*—◉ Da click aquí para ir:*\n*◉* https://api.whatsapp.com/send/?phone=${global.numBot.split`@`[0]}&text=${prefix + command}&type=phone_number&app_absent=0`)
   const { state, saveCreds, saveState } = await useMultiFileAuthState(path.join(__dirname, `./jadibot/${m.sender.split("@")[0]}`), pino({ level: "silent" }))
