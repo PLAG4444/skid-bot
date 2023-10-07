@@ -66,6 +66,7 @@ function clearTmp() {
 }
 
 async function startBot() {
+console.info = () => {}
 const msgRetryMap = (MessageRetryMap) => { }
 const {state, saveState, saveCreds} = await useMultiFileAuthState('./authFolder/')
 let { version, isLatest } = await fetchLatestBaileysVersion()
