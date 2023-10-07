@@ -60,7 +60,6 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
     logger: pino({ level: 'silent' }),
     auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({level: 'silent'})) },
     msgRetry,
-    msgRetryCache,
     version,
     browser: mcode ? ['Chrome (Linux)','',''] : ['SkidBot', 'Safari', '1.0.0'],
     getMessage: async (key) => { 
