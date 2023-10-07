@@ -38,7 +38,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   if (global.listJadibot instanceof Array) console.log()   
   else global.listJadibot = []   
   
-  const jadibot = async (conn, m, command, args) => {
+  const jadibots = async (conn, m, command, args) => {
   if (!global.db.data.settings[conn.user.jid].jadibot) return m.reply(`*[❗] este comando fue desabilitado por el creador*`)
   if (conn.user.jid !== global.numBot) return m.reply(`*[❗] Este comando solo puede ser usado en el Bot principal!!*\n\n*—◉ Da click aquí para ir:*\n*◉* https://api.whatsapp.com/send/?phone=${global.numBot.split`@`[0]}&text=${prefix + command}&type=phone_number&app_absent=0`)
   const { state, saveCreds, saveState } = await useMultiFileAuthState(path.join(__dirname, `./jadibot/${m.sender.split("@")[0]}`), pino({ level: "silent" }))
@@ -205,187 +205,6 @@ break
   conn.ev.on('creds.update', saveCreds)
   }
   }
-  const jadibot = async (mod, m, command, args) => {
-  const skmod = mod
-  
-  
-  async function jadibts() {
-  let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? skmod.user.jid : m.sender
-  let id = `${who.split`@`[0]}` 
-  
-  console.info = () => {} 
-  const msgRetry = (MessageRetryMap) => { }
-  const msgRetryCache = new NodeCache()
-  const {state, saveState, saveCreds} = await useMultiFileAuthState('./jadibot/' + id, pino({ level: 'silent' }))
-  const { version, isLatest } = await fetchLatestBaileysVersion()   
-
-  
-  
-
-  let isInit = true
-  conn.isInit = false
-    
-
-  conn.ev.on('messages.upsert', async (chatUpdate) => {
-  conn.msgqueque = conn.msgqueque || []
-  let m = chatUpdate.messages[chatUpdate.messages.length - 1]
-  if (!chatUpdate) return
-  if (!m) return
-  m = smsg(conn, m) || m    
-  if (m.key.id.startsWith("BAE5")) return  
-  var body = (typeof m.text == 'string' ? m.text : '') 
-  const msgs = (message) => { 
-  if (message.length >= 10) { 
-  return `${message.substr(0, 500)}` 
-  } else { 
-  return `${message}`}}
-  const _isBot = conn.user.jid
-  const args = body.trim().split(/ +/).slice(1) 
-  const pushname = m.pushName || "Sin nombre" 
-  const userSender = m.key.fromMe ? _isBot : m.isGroup && m.key.participant.includes(":") ? m.key.participant.split(":")[0] + "@s.whatsapp.net" : m.key.remoteJid.includes(":") ? m.key.remoteJid.split(":")[0] + "@s.whatsapp.net" : m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid  
-  const quoted = m.quoted ? m.quoted : m 
-  const sender = m.key.fromMe ? _isBot : m.isGroup ? m.key.participant : m.key.remoteJid 
-  const mime = (quoted.msg || quoted).mimetype || ''  
-  const isMedia = /image|video|sticker|audio/.test(mime)
-  const groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : ''
-  const groupName = m.isGroup ? groupMetadata.subject : '' 
-  const participants = m.isGroup ? await groupMetadata.participants : '' 
-  const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : '' 
-  const isBotAdmins = m.isGroup ? groupAdmins.includes(conn.user.jid) : false  
-  const isGroupAdmins = m.isGroup ? groupAdmins.includes(userSender) : false  
-  if (!conn.public && m.key.fromMe) return
-  if (typeof m.text !== 'string') {
-  m.text = ''
-  }
-  if (m.isBaileys) return
-  if (!conn.public && !m.key.fromMe && chatUpdate.type === 'notify') return
-  let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
-  for (let jid of mentionUser) {
-  let user = global.db.data.users[jid]
-  if (!user) continue
-  let afkTime = user.afkTime
-  if (!afkTime || afkTime < 0) continue
-  let reason = user.afkReason || ''
-  m.reply(`*❗ No lo etiquetes*\n*El esta afk ${reason ? 'por la razon ' + reason : 'Sin ninguna razon -_-'}*\nDurante ${clockString(new Date - afkTime)}`.trim())
-  }
-  if (global.db.data.users[m.sender].afkTime > -1) {
-  let user = global.db.data.users[m.sender]
-  m.reply(`*❗Dejaste de estar afk ${user.afkReason ? 'Por ' + user.afkReason : ''}*\n*Durante ${clockString(new Date - user.afkTime)} ^_^*`.trim())
-  user.afkTime = -1
-  user.afkReason = ''
-  }
- if (m.message) { 
- conn.logger.info(chalk.bold.white(`\n▣────────────···\n│${botname} ${conn.user.id == global.numBot2 ? '' : '(jadibot)'}`),  
- chalk.bold.white('\n│📑TIPO (SMS): ') + chalk.yellowBright(`${m.mtype}`),  
- chalk.bold.white('\n│📊USUARIO: ') + chalk.cyanBright(pushname) + ' ➜', gradient.rainbow(m.sender),  
- m.isGroup ? chalk.bold.white('\n│📤GRUPO: ') + chalk.greenBright(groupName) + ' ➜ ' + gradient.rainbow(m.chat) : chalk.bold.greenBright('\n│📥PRIVADO'),  
- chalk.bold.white('\n️│🏷️ TAGS: ') + chalk.bold.white(`[${conn.public ? 'Publico' : 'Privado'}]`),  
- chalk.bold.white('\n│💬MENSAJE: ') + chalk.bold.white(`${msgs(m.text)}`) + chalk.whiteBright(`\n▣────────────···\n`)) 
- }
-  require("./main")(conn, m, chatUpdate, store)
-  })
-  conn.ev.on('call', async (fuckedcall) => {
-  const anticall = global.db.data.settings[conn.user.jid].antiCall
-  if (!anticall) return
-  for (let fucker of fuckedcall) {
-    if (fucker.isGroup == false) {
-        const callmsg = await conn.reply(fucker.from, `*${conn.user.name} no recibe ${fucker.isVideo ? `videollamadas` : `llamadas` }*\n*@${fucker.from.split('@')[0]} serás bloqueado.*\n*Si accidentalmente llamaste, comunícate con el propietario para que lo desbloquee.*`, false, {mentions: [fucker.from]})
-        const vcard = `BEGIN:VCARD\nVERSION:3.0\nN:SKID CREADOR ✨\nSKID CREADOR ✨\nORG:GITHUB\nTITLE:\nitem1.TELwaid=5218442114446:+521 844 211 4446\nitem1.X-ABLabel:SKID CREADOR ✨\nX-WA-BIZ-DESCRIPTION:[❗] ᴄᴏɴᴛᴀᴄᴛᴀ ᴀ ᴇsᴛᴇ ɴᴜᴍ ᴘᴀʀᴀ ᴄᴏsᴀs ɪᴍᴘᴏʀᴛᴀɴᴛᴇs.\nX-WA-BIZ-NAME:SKID CREADOR ✨nEND:VCARD`
-        await conn.sendMessage(fucker.from, {contacts: {displayName: 'SKID CREADOR ✨', contacts: [{vcard}]}}, {quoted: callmsg})
-        await conn.updateBlockStatus(fucker.from, 'block')
-      }
-    }
-  })
-  conn.ev.on('group-participants.update', async ({id, participants, action}) => {
-  if (global.db.data == null) await loadDatabase()
-  const chat = global.db.data.chats[id] || {}
-  const botTt = global.db.data.settings[conn?.user?.jid] || {}
-  let text = ''
-  switch (action) {
-    case 'add':
-    case 'remove':
-    if(chat.welcome) {
-    const groupMetadata = await conn.groupMetadata(id) || (conn.chats[id] || {}).metadata
-    for (const user of participants) {
-    let pp = global.noperfil
-    try {
-    pp = await conn.profilePictureUrl(user, 'image')
-    } catch (e) {
-    } finally {
-    const api = await conn.getFile(pp)
-    const bot = groupMetadata.participants.find((u) => conn.decodeJid(u.id) == conn.user.jid) || {}
-    const isBotAdmin = bot?.admin === 'admin' || false
-    text = (action === 'add' ? (chat.sWelcome || conn.welcome || conn.welcome || 'Welcome, @user!').replace('@subject', await conn.getName(id)).replace('@desc', groupMetadata.desc?.toString() || '*sin descripción :(*') :
-    (chat.sBye || conn.bye || conn.bye || 'Bye, @user!')).replace('@user', '@' + user.split('@')[0])
-    conn.sendFile(id, api.data, 'pp.jpg', text, null, false, { mentions: [user] })
-    }
-    }
-    }
-    break
-    case 'promote':
-    case 'daradmin':
-    case 'darpoder':
-      text = (chat.sPromote || conn.spromote || conn.spromote || '@user ```is now Admin```')
-    case 'demote':
-    case 'quitarpoder':
-    case 'quitaradmin':
-      if (!text) {
-        text = (chat.sDemote || conn.sdemote || conn.sdemote || '@user ```is no longer Admin```')
-      }
-      text = text.replace('@user', '@' + participants[0].split('@')[0])
-      if (chat.detect) {
-        conn.sendMessage(id, { text, mentions: conn.parseMention(text) })
-      }
-      break
-    }
-  })
-  conn.ev.on("groups.update", async (groupsUpdate) => {
-  for (const groupUpdate of groupsUpdate) {
-    const id = groupUpdate.id
-    if (!id) continue
-    if (groupUpdate.size == NaN) continue
-    if (groupUpdate.subjectTime) continue
-    const chats = global.db.data.chats[id]
-    let text = ''
-    if (!chats?.autoDetect) continue
-    if (groupUpdate.desc) text = (chats.sDesc || conn.sDesc || '```Description has been changed to```\n@desc').replace('@desc', groupUpdate.desc)
-    if (groupUpdate.subject) text = (chats.sSubject || conn.sSubject || '```Subject has been changed to```\n@subject').replace('@subject', groupUpdate.subject)
-    if (groupUpdate.icon) text = (chats.sIcon || conn.sIcon || '```Icon has been changed to```').replace('@icon', groupUpdate.icon)
-    if (groupUpdate.revoke) text = (chats.sRevoke || conn.sRevoke || '```Group link has been changed to```\n@revoke').replace('@revoke', groupUpdate.revoke)
-    if (!text) continue
-    await conn.sendNyanCat(m.chat, text, global.menu2, '[ I N F O ]', 'ajustes del grupo!!')
-  }})
-/*  conn.ev.on("message.delete", aysnc (mesage) => {
-  let d = new Date(new Date + 3600000)
-  let date = d.toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' })
-  let time = d.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true })
-  try {
-  const { fromMe, id, participant } = mesage
-  if (fromMe) return 
-  let msg = conn.serializeM(conn.loadMessage(id))
-  let chat = global.db.data.chats[msg?.chat] || {}
-  if (!chat?.antidelete) return 
-  if (!msg) return 
-  if (!msg?.isGroup) return 
-	const antideleteMessage = `
-┏━━━━━━━━━⬣  𝘼𝙉𝙏𝙄 𝘿𝙀𝙇𝙀𝙏𝙀  ⬣━━━━━━━━━
-*■ Usuario:* @${participant.split`@`[0]}
-*■ Hora:* ${time}
-*■ Fecha:* ${date}
-*■ Enviando el mensaje eliminado...*
-    
-*■ Para desactivar esta función, escribe el comando:*
-*#disable antidelete
-┗━━━━━━━━━⬣  𝘼𝙉𝙏𝙄 𝘿𝙀𝙇𝙀𝙏𝙀  ⬣━━━━━━━━━`.trim()
-        await conn.sendMessage(msg.chat, {text: antideleteMessage, mentions: [participant]}, {quoted: msg})
-        conn.copyNForward(msg.chat, msg).catch(e => console.log(e, msg))
-    } catch (e) {
-        console.error(e)
-    }
-  })*/
-  
-  
-  }
   jadibts()
   }
   const killJadibot = async (conn, m, command) => {
@@ -402,5 +221,5 @@ break
   }
   
   exports.listJadibot = listJadibot
-  exports.jadibot = jadibot
+  exports.jadibot = jadibots
   exports.killJadibot = killJadibot
