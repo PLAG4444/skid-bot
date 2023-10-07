@@ -204,9 +204,10 @@ break
   })
   conn.ev.on('creds.update', saveCreds)
   }
-  }
   jadibts()
   }
+  
+  
   const killJadibot = async (conn, m, command) => {
   try {
   if (!fs.existsSync(path.join(__dirname, `./jadibot/${m.sender.split("@")[0]}`))) {
