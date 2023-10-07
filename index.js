@@ -1,6 +1,6 @@
 require('./settings.js')
 const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins, clockString }= require('./lib/fuctions')
-const { makeInMemoryStore, areJidsSameUser, useMultiFileAuthState, DisconnectReason, proto, jidNormalizedUser, WAMessageStubType, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, getAggregateVotesInPollMessage } = require("@whiskeysockets/baileys")
+const { useMultiFileAuthState, DisconnectReason, proto, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion } = require("@whiskeysockets/baileys")
 const gradient = require('gradient-string')
 const fs = require('fs')
 const { watchFile, unwatchFile } = require('fs')
@@ -65,7 +65,7 @@ function clearTmp() {
   })
 }
 
-async function startBot() => {
+async function startBot() {
 const msgRetryMap = (MessageRetryMap) => { }
 let { version, isLatest } = await fetchLatestBaileysVersion()
 const { state, saveCreds } = await useMultiFileAuthState('./authFolder')

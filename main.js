@@ -34,7 +34,11 @@
   const { skrpg } = require('./lib/rpg.js')
   const { jadibot, listJadibot, killJadibot } = require('./serbot2.js')
   const { canLevelUp, xpRange } = require('./lib/levelling.js')
-  
+  const msgs = (message) => { 
+  if (message.length >= 10) { 
+  return `${message.substr(0, 500)}` 
+  } else { 
+  return `${message}`}}
     
    
 
@@ -196,6 +200,29 @@
     await conn.sendNyanCat(m.chat, '*Lo siento extraño...*\n*los números arebes no estan permitidos aqui*', global.uhh, 'lo siento', 'los numeros arabes no se permiten aqui')
     await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
     }}
+    let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
+  for (let jid of mentionUser) {
+  let user = global.db.data.users[jid]
+  if (!user) continue
+  let afkTime = user.afkTime
+  if (!afkTime || afkTime < 0) continue
+  let reason = user.afkReason || ''
+  m.reply(`*❗ No lo etiquetes*\n*El esta afk ${reason ? 'por la razon ' + reason : 'Sin ninguna razon -_-'}*\nDurante ${clockString(new Date - afkTime)}`.trim())
+  }
+  if (global.db.data.users[m.sender].afkTime > -1) {
+  let user = global.db.data.users[m.sender]
+  m.reply(`*❗Dejaste de estar afk ${user.afkReason ? 'Por ' + user.afkReason : ''}*\n*Durante ${clockString(new Date - user.afkTime)} ^_^*`.trim())
+  user.afkTime = -1
+  user.afkReason = ''
+  }
+ if (m.message) { 
+ conn.logger.info(chalk.bold.white(`\n▣────────────···\n│${botname} ${conn.user.id == global.numBot2 ? '' : '(jadibot)'}`),  
+ chalk.bold.white('\n│📑TIPO (SMS): ') + chalk.yellowBright(`${m.mtype}`),  
+ chalk.bold.white('\n│📊USUARIO: ') + chalk.cyanBright(pushname) + ' ➜', gradient.rainbow(m.sender),  
+ m.isGroup ? chalk.bold.white('\n│📤GRUPO: ') + chalk.greenBright(groupName) + ' ➜ ' + gradient.rainbow(m.chat) : chalk.bold.greenBright('\n│📥PRIVADO'),  
+ chalk.bold.white('\n️│🏷️ TAGS: ') + chalk.bold.white(`[${conn.public ? 'Publico' : 'Privado'}]`),  
+ chalk.bold.white('\n│💬MENSAJE: ') + chalk.bold.white(`${msgs(m.text)}`) + chalk.whiteBright(`\n▣────────────···\n`)) 
+ }
  
   try {  
   switch (command) {
