@@ -43,7 +43,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   if (conn.user.jid !== global.numBot) return m.reply(`*[❗] Este comando solo puede ser usado en el Bot principal!!*\n\n*—◉ Da click aquí para ir:*\n*◉* https://api.whatsapp.com/send/?phone=${global.numBot.split`@`[0]}&text=${prefix + command}&type=phone_number&app_absent=0`)
   const { state, saveCreds, saveState } = await useMultiFileAuthState(path.join(__dirname, `./jadibot/${m.sender.split("@")[0]}`), pino({ level: "silent" }))
   
-  async function skBot() {
+  async function jadibots() {
   const mcode = args[0] && args[0].includes("--code") ? true : args[1] && args[1].includes("--code") ? true : false // stoled from aiden hehe
   if (mcode) {
     args[0] = args[0].replace("--code", "").trim()
@@ -158,12 +158,12 @@ break
    global.listJadibot.push(skmod)   
    let userId = await conn.user.jid
    global.jadibotConn = conn.user.jid
-   await  sendMessage(m.chat, { text: _text ? "*✅ Reconectado con exito*" : `*✅ Conectado con exito*\n*Si tu bot fue desconectado usa ${prefix + command}*` }, { quoted: m })
+   await  sendMessage(m.chat, { text: args ? "*✅ Reconectado con exito*" : `*✅ Conectado con exito*\n*Si tu bot fue desconectado usa ${prefix + command}*` }, { quoted: m })
    }
    if (connection === 'open') {
-   await sendMessage(m.chat, { text: _text ?  `*✅ Reconexion Exitosa*\n*tus mensajes se estan cargando*` : `*✅ Jadibot Conectado*\n*se te enviara un codigo para volver a conectarte*` }, { quoted: m })
+   await sendMessage(m.chat, { text: args ?  `*✅ Reconexion Exitosa*\n*tus mensajes se estan cargando*` : `*✅ Jadibot Conectado*\n*se te enviara un codigo para volver a conectarte*` }, { quoted: m })
    await sleep(5000)
-   if (!_text) sendMessage(m.chat, { text: `${prefix + command } ` + Buffer.from(fs.readFileSync(`./jadibot/${m.sender.split("@")[0]}/creds.json`), "utf-8").toString("base64") }, { quoted: m })
+   if (!args) sendMessage(m.chat, { text: `${prefix + command } ` + Buffer.from(fs.readFileSync(`./jadibot/${m.sender.split("@")[0]}/creds.json`), "utf-8").toString("base64") }, { quoted: m })
    }
    const reason = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
    if (connection === 'close') {
@@ -176,17 +176,17 @@ break
    return await reply(`*❗ Reenvia el comando*`)
    }
    if (reason === DisconnectReason.restartRequired) {
-   skBot()
+   jadibots()
    return reply(`*⚠️ Reinicio requerido,*\n*Reiniciando...*`)
    } else if (reason === DisconnectReason.loggedOut) {
    await endSesion(false)
    sleep(4000)
    return reply(`*❌ Dispositivo desconectado*\n\n*Tendras que volver a iniciar sesion (usa .deljadibot)*`)
    } else if (reason == 428) {
-   await skBot()
+   await jadibots()
    return reply(`*⚠️ Conexion cerrada\n*Reconexion Forzada...*`)
    } else if (reason === DisconnectReason.connectionLost) {
-   await skBot()
+   await jadibots()
    return await reply(`*❗ Conexion perdida del servidor*\n*reconexion Forzada*`)
    } else if (reason === DisconnectReason.badSession) {
    return await reply(`*❌ Tu conexion es invalida*\n*no se te reconectara*`)
