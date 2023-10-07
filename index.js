@@ -147,7 +147,7 @@ case 'darpoder':
 text = (chat.sPromote || conn.spromote || conn.spromote || '@user ```is now Admin```')
 case 'demote':
 case 'quitaradmin':
-case 'quitarpoder';
+case 'quitarpoder':
 if  (!text) {
 text = (chat.sDemote || conn.sdemote || conn.sdemote || '@user ```is no longer Admin```')
 }
