@@ -1,8 +1,6 @@
 // Código desde cero y comentarios hecho por:   
 // @gata_dios  
 // @Skidy89  
-// Ladron de codigo
-// @elrebelde21
   
   // Importaciones   
   require("./settings")
