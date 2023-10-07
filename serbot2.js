@@ -43,7 +43,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
   if (conn.user.jid !== global.numBot) return m.reply(`*[❗] Este comando solo puede ser usado en el Bot principal!!*\n\n*—◉ Da click aquí para ir:*\n*◉* https://api.whatsapp.com/send/?phone=${global.numBot.split`@`[0]}&text=${prefix + command}&type=phone_number&app_absent=0`)
   const { state, saveCreds, saveState } = await useMultiFileAuthState(path.join(__dirname, `./jadibot/${m.sender.split("@")[0]}`), pino({ level: "silent" }))
   
-  async function jadibots() {
+  async function jadibts() {
   const mcode = args[0] && args[0].includes("--code") ? true : args[1] && args[1].includes("--code") ? true : false // stoled from aiden hehe
   if (mcode) {
     args[0] = args[0].replace("--code", "").trim()
@@ -176,17 +176,17 @@ break
    return await reply(`*❗ Reenvia el comando*`)
    }
    if (reason === DisconnectReason.restartRequired) {
-   jadibots()
+   jadibts()
    return reply(`*⚠️ Reinicio requerido,*\n*Reiniciando...*`)
    } else if (reason === DisconnectReason.loggedOut) {
    await endSesion(false)
    sleep(4000)
    return reply(`*❌ Dispositivo desconectado*\n\n*Tendras que volver a iniciar sesion (usa .deljadibot)*`)
    } else if (reason == 428) {
-   await jadibots()
+   await jadibts()
    return reply(`*⚠️ Conexion cerrada\n*Reconexion Forzada...*`)
    } else if (reason === DisconnectReason.connectionLost) {
-   await jadibots()
+   await jadibts()
    return await reply(`*❗ Conexion perdida del servidor*\n*reconexion Forzada*`)
    } else if (reason === DisconnectReason.badSession) {
    return await reply(`*❌ Tu conexion es invalida*\n*no se te reconectara*`)
@@ -209,7 +209,7 @@ break
   const skmod = mod
   
   
-  async function jadibots() {
+  async function jadibts() {
   let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? skmod.user.jid : m.sender
   let id = `${who.split`@`[0]}` 
   
@@ -386,7 +386,7 @@ break
   
   
   }
-  jadibots()
+  jadibts()
   }
   const killJadibot = async (conn, m, command) => {
   try {
