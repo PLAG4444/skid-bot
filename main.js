@@ -218,6 +218,8 @@
   
   
 this.suit = this.suit ? this.suit : {}
+let roof = Object.values(this.suit).find(roof => roof.id && roof.status && [roof.p, roof.p2].includes(m.sender))
+
 if (roof) {
 let win = ''
 let tie = false
@@ -237,7 +239,7 @@ conn.sendText(m.chat, `
 @${roof.p.split`@`[0]} Reto a
 @${roof.p2.split`@`[0]}
 
-```por favor vayan al privado del bot```
+*por favor vayan al privado del bot*
 https://wa.me/${conn.user.jid.split`@`[0]}`, m, { mentions: [roof.p, roof.p2] })
 if (!roof.pilih) conn.sendText(roof.p, `*elige* \n\nPiedra🗿\nPapel📄\nTijeras✂️`, m)
 if (!roof.pilih2) conn.sendText(roof.p2, `*elige* \n\nPiedra🗿\nPapel📄\nTijeras✂️`, m)
@@ -256,7 +258,7 @@ let jwb2 = m.sender == roof.p2
 let g = /Tijeras/i
 let b = /Piedra/i
 let k = /Papel/i
-let reg = /^(Tijeras|Piedra|Papel/i
+let reg = /^(Tijeras|Piedra|Papel)/i
 if (jwb && reg.test(m.text) && !roof.pilih && !m.isGroup) {
 roof.pilih = reg.exec(m.text.toLowerCase())[0]
 roof.text = m.text
@@ -316,13 +318,13 @@ let caption = `_*PVP*_
 
 Por favor @${m.mentionedJid[0].split`@`[0]} Por favor escriba aceptar/rechazar`
 this.suit[id] = {
-chat: await haikal.sendText(m.chat, caption, m, { mentions: parseMention(caption) }),
+chat: await conn.sendText(m.chat, caption, m, { mentions: parseMention(caption) }),
 id: id,
 p: m.sender,
 p2: m.mentionedJid[0],
 status: 'wait',
 waktu: setTimeout(() => {
-if (this.suit[id]) haikal.sendText(m.chat, `_se acabo el tiempo_`, m)
+if (this.suit[id]) conn.sendText(m.chat, `_se acabo el tiempo_`, m)
 delete this.suit[id]
 }, 60000), poin, poin_lose, timeout
 }
