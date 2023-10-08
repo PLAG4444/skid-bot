@@ -215,6 +215,79 @@
   user.afkTime = -1
   user.afkReason = ''
   }
+  
+  
+this.suit = this.suit ? this.suit : {}
+if (roof) {
+let win = ''
+let tie = false
+if (m.sender == roof.p2 && /^(Acepto|aceptar|si|Si|acepto)/i.test(m.text) && m.isGroup && roof.status == 'wait') {
+if (/^(NO|no|No|despues)/i.test(m.text)) {
+conn.sendTextWithMentions(m.chat, `@${roof.p2.split`@`[0]} *no acepto tu juego -_-*\n*juego cancelado*`, m)
+delete this.suit[roof.id]
+return !0
+}
+roof.status = 'play'
+roof.asal = m.chat
+clearTimeout(roof.waktu)
+//delete roof[roof.id].waktu
+conn.sendText(m.chat, `
+*🎮 El juego empezo 🎮*
+
+@${roof.p.split`@`[0]} Reto a
+@${roof.p2.split`@`[0]}
+
+```por favor vayan al privado del bot```
+https://wa.me/${conn.user.jid.split`@`[0]}`, m, { mentions: [roof.p, roof.p2] })
+if (!roof.pilih) conn.sendText(roof.p, `*elige* \n\nPiedra🗿\nPapel📄\nTijeras✂️`, m)
+if (!roof.pilih2) conn.sendText(roof.p2, `*elige* \n\nPiedra🗿\nPapel📄\nTijeras✂️`, m)
+roof.waktu_milih = setTimeout(() => {
+if (!roof.pilih && !roof.pilih2) conn.sendText(m.chat, `*ambos jugadores no quieren jugar\nGame over`, m)
+else if (!roof.pilih || !roof.pilih2) {
+win = !roof.pilih ? roof.p2 : roof.p
+conn.sendTextWithMentions(m.chat, `@${(roof.pilih ? roof.p2 : roof.p).split`@`[0]} *no eligio*\nJuego terminado`, m)
+}
+delete this.suit[roof.id]
+return !0
+}, roof.timeout)
+}
+let jwb = m.sender == roof.p
+let jwb2 = m.sender == roof.p2
+let g = /Tijeras/i
+let b = /Piedra/i
+let k = /Papel/i
+let reg = /^(Tijeras|Piedra|Papel/i
+if (jwb && reg.test(m.text) && !roof.pilih && !m.isGroup) {
+roof.pilih = reg.exec(m.text.toLowerCase())[0]
+roof.text = m.text
+m.reply(`Has elegido ${m.text} ${!roof.pilih2 ? `\nEsperando al otro jugador` : ''}`)
+if (!roof.pilih2) conn.sendText(roof.p2, '_Tu oponente ha elegido_\nAhora es tu turno', 0)
+}
+if (jwb2 && reg.test(m.text) && !roof.pilih2 && !m.isGroup) {
+roof.pilih2 = reg.exec(m.text.toLowerCase())[0]
+roof.text2 = m.text
+m.reply(`Has elegido ${m.text} ${!roof.pilih2 ? `\nEsperando al otro jugador` : ''}`)
+if (!roof.pilih) conn.sendText(roof.p, '_Tu oponente ha elegido_\nAhora es tu turno', 0)
+}
+let stage = roof.pilih
+let stage2 = roof.pilih2
+if (roof.pilih && roof.pilih2) {
+clearTimeout(roof.waktu_milih)
+if (b.test(stage) && g.test(stage2)) win = roof.p
+else if (b.test(stage) && k.test(stage2)) win = roof.p2
+else if (g.test(stage) && k.test(stage2)) win = roof.p
+else if (g.test(stage) && b.test(stage2)) win = roof.p2
+else if (k.test(stage) && b.test(stage2)) win = roof.p
+else if (k.test(stage) && g.test(stage2)) win = roof.p2
+else if (stage == stage2) tie = true
+conn.sendText(roof.asal, `_*PVP*_${tie ? '\n Empate' : ''}
+
+@${roof.p.split`@`[0]} (${roof.text}) ${tie ? '' : roof.p == win ? ` Gano \n` : ` perdio \n`}
+@${roof.p2.split`@`[0]} (${roof.text2}) ${tie ? '' : roof.p2 == win ? ` Gano \n` : ` perdio \n`}
+`.trim(), m, { mentions: [roof.p, roof.p2] })
+delete this.suit[roof.id]
+}
+}
  if (m.message) { 
  conn.logger.info(chalk.bold.white(`\n▣────────────···\n│${botname} ${conn.user.id == global.numBot2 ? '' : '(jadibot)'}`),  
  chalk.bold.white('\n│📑TIPO (SMS): ') + chalk.yellowBright(`${m.mtype}`),  
@@ -226,7 +299,35 @@
  
   try {  
   switch (command) {
-   
+  
+  case 'pvp': case 'suitpvp': {
+  this.suit = this.suit ? this.suit : {}
+let poin = 10
+let poin_lose = 10
+let timeout = 60000
+if (Object.values(this.suit).find(roof => roof.id.startsWith('suit') && [roof.p, roof.p2].includes(m.sender))) m.reply(`Selesaikan suit mu yang sebelumnya`)
+if (m.mentionedJid[0] === m.sender) return m.reply(`acaso eres idiota\nno puedes jugar contigo!`)
+if (!m.mentionedJid[0]) return m.reply(`con quien quieres jugar?\netiqueta a alguien...\n\nejemplo : ${prefix}suit @0`, m.chat, { mentions: ['0@s.whatsapp.net'] })
+if (Object.values(this.suit).find(roof => roof.id.startsWith('suit') && [roof.p, roof.p2].includes(m.mentionedJid[0]))) throw `La persona a la que estás desafiando está jugando con otra persona :(`
+let id = 'suit_' + new Date() * 1
+let caption = `_*PVP*_
+
+@${m.sender.split`@`[0]} desafío a @${m.mentionedJid[0].split`@`[0]} 
+
+Por favor @${m.mentionedJid[0].split`@`[0]} Por favor escriba aceptar/rechazar`
+this.suit[id] = {
+chat: await haikal.sendText(m.chat, caption, m, { mentions: parseMention(caption) }),
+id: id,
+p: m.sender,
+p2: m.mentionedJid[0],
+status: 'wait',
+waktu: setTimeout(() => {
+if (this.suit[id]) haikal.sendText(m.chat, `_se acabo el tiempo_`, m)
+delete this.suit[id]
+}, 60000), poin, poin_lose, timeout
+}
+}
+break
   case 'aventura': {
   let cooldown = 10000
   let user = global.db.data.users[m.sender]
@@ -252,8 +353,8 @@
   function reward(user = {}) { 
      let rewards = { 
          reward: { 
-             money: 201, 
-             exp: 301, 
+             money: 201 + user.dog * 2000,
+             exp: 301 + user.dog * 2000,
              trash: 101, 
              potion: 2, 
              rock: 2, 
@@ -319,7 +420,7 @@
   function reward(user = {}) {
   let rewards = {
   reward: {
-  exp: 702 * user.level,
+  exp: 702 + user.level * 5000,
   trash: 103,
   string: 25,
   rock: 30,
