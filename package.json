@@ -30,7 +30,7 @@
     "jimp": "^0.16.13",
     "jsdom": "^22.1.0",
     "lodash": "^4.17.21",
-    "lowdb": "^2.4.0",
+    "lowdb": "^2.1.0",
     "mime-types": "^2.1.35",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
