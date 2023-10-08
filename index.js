@@ -179,7 +179,7 @@ if (groupUpdate.subject) text = (chats.sSubject || conn.sSubject || '```Subject 
 if (groupUpdate.icon) text = (chats.sIcon || conn.sIcon || '```Icon has been changed to```').replace('@icon', groupUpdate.icon)
 if (groupUpdate.revoke) text = (chats.sRevoke || conn.sRevoke || '```Group link has been changed to```\n@revoke').replace('@revoke', groupUpdate.revoke)
 if (!text) continue
-await conn.sendNyanCat(this.chat, text, global.menu2, '[ I N F O ]', 'ajustes del grupo!!')
+await conn.sendNyanCat(id, text, global.menu2, '[ I N F O ]', 'ajustes del grupo!!')
 }})
 conn.ev.on("connection.update", async (update) => {
 const { connection, lastDisconnect, isNewLogin, qr } = update
