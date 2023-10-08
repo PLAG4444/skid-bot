@@ -1,7 +1,7 @@
 require('./settings.js')
 const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins, clockString }= require('./lib/fuctions')
 const { useMultiFileAuthState, DisconnectReason, proto, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion } = require("@whiskeysockets/baileys")
-const { useLowDBAuthState } = require('./lib/authcreds.js')
+
 const gradient = require('gradient-string')
 const fs = require('fs')
 const { watchFile, unwatchFile } = require('fs')
@@ -23,14 +23,19 @@ protoType()
 serialize()
 var low
 try {
-  low = require('lowdb')
+low = require('lowdb')
 } catch (e) {
-  low = require('./database/lowdb')
+low = require('./database/lowdb')
 }
 const { Low, JSONFile } = low
 const mongoDB = require('./database/mongoDB')
 global.opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())
-global.db = new Low(/https?:\/\//.test(opts['db'] || '') ? new cloudDBAdapter(opts['db']) : /mongodb/.test(opts['db']) ? new mongoDB(opts['db']) : new JSONFile(`./database.json`))
+const dbAdapter = /^https?:\/\//.test(opts['db'])
+  ? new cloudDBAdapter(opts['db'])
+  : /mongodb/.test(opts['db'])
+  ? new mongoDB(opts['db'])
+  : new JSONFile(`./database.json`)
+global.db = new Low(dbAdapter)
 global.loadDatabase = async function loadDatabase() {
 if (global.db.READ) return new Promise((resolve) => setInterval(function () { (!global.db.READ ? (clearInterval(this), resolve(global.db.data == null ? global.loadDatabase() : global.db.data)) : null) }, 1 * 1000))
 if (global.db.data !== null) return
@@ -69,7 +74,7 @@ function clearTmp() {
 async function startBot() {
 console.info = () => {}
 const msgRetryMap = (MessageRetryMap) => { }
-const {state, saveState, saveCreds} = await useLowDBAuthState('./skid.db')
+const {state, saveState, saveCreds} = await useMultiFileAuthState('./authFolder')
 let { version, isLatest } = await fetchLatestBaileysVersion()
 
 const connectionSettings = {
@@ -98,6 +103,7 @@ conn.sIcon = '*「 Grupos 」*\n*Se cambio la foto del grupo ^w^*'
 conn.sRevoke = '*「 Grupos 」*\n*Hay un nuevo link del grupo nwn*\n*nuevo link:* @revoke'
 
 conn.ev.on("messages.upsert", async (chatUpdate) => {
+conn.pushMessage(chatUpdate.messages).catch(console.error)
 let m = chatUpdate.messages[chatUpdate.messages.length - 1]
 m = smsg(conn, m) || m
 if (!m) return
@@ -155,7 +161,7 @@ text = (chat.sDemote || conn.sdemote || conn.sdemote || '@user ```is no longer A
 }
 text = text.replace('@user', '@' + participants[0].split('@')[0])
 if (chat.detect) {
-conn.sendNyanCat(m.chat, text, api.data, 'Dejaste de ser admin!!', '-_-')
+conn.sendNyanCat(this.chat, text, api.data, 'Dejaste de ser admin!!', '-_-')
 }
 break
 }})
@@ -173,7 +179,7 @@ if (groupUpdate.subject) text = (chats.sSubject || conn.sSubject || '```Subject 
 if (groupUpdate.icon) text = (chats.sIcon || conn.sIcon || '```Icon has been changed to```').replace('@icon', groupUpdate.icon)
 if (groupUpdate.revoke) text = (chats.sRevoke || conn.sRevoke || '```Group link has been changed to```\n@revoke').replace('@revoke', groupUpdate.revoke)
 if (!text) continue
-await conn.sendNyanCat(m.chat, text, global.menu2, '[ I N F O ]', 'ajustes del grupo!!')
+await conn.sendNyanCat(this.chat, text, global.menu2, '[ I N F O ]', 'ajustes del grupo!!')
 }})
 conn.ev.on("connection.update", async (update) => {
 const { connection, lastDisconnect, isNewLogin, qr } = update
