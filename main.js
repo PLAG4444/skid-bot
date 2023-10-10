@@ -1253,7 +1253,7 @@ await conn.sendMessage(m.chat, {
     }
     }  
     }, { quoted: fkontak })
-   await conn.sendNyanCat(m.chat, 'hay un bug que no deja conectarte como subbot. estamos arreglando eso\n*nuevos comandos*\n.inv\n.aventura\n.reparar\n.craft\n.work\notras mejoras de rendimiento\n*Recuerda que este bot aun no esta terminado al %100* ^w^', global.menu3, '[ I N F O ]', 'nueva update!!', m)
+   await conn.sendNyanCat(m.chat, '*COMANDOS ARREGLADOS*\n.serbot\n.serbot --code\n.tiktok\n.tiktokmp3\n.qc\n*Recuerda que este bot aun no esta terminado al %100* ^w^', global.menu3, '[ I N F O ]', 'nueva update!!', m)
    }
    break 
    case 'afk': {
@@ -1326,13 +1326,13 @@ await conn.sendMessage(m.chat, {
       try {
         userPfp = await conn.profilePictureUrl(m.quoted.sender, "image")
       } catch (e) {
-        userPfp = defaultpp
+        userPfp = noperfil
       }
     } else {
       try {
         userPfp = await conn.profilePictureUrl(m.sender, "image")
       } catch (e) {
-        userPfp = defaultpp
+        userPfp = noperfil
       }
     }
     const waUserName = pushname
@@ -1547,7 +1547,7 @@ await conn.sendMessage(m.chat, {
     if (!text) return m.reply( `*Ejemplo: ${prefix + command} link`)
     if (!q.includes('tiktok')) return m.reply(`*link invalido!*`)
     m.reply(mess.wait)
-    require('./lib/tiktok').Tiktok(q).then( data => {
+    require('./lib/tiktok').Tiktok(m.text).then( data => {
     conn.sendMessage(m.chat, { video: { url: data.nowm }}, { quoted: m })
     })    
     break
@@ -1558,7 +1558,7 @@ await conn.sendMessage(m.chat, {
     if (!text) return m.reply( `*Ejemplo: ${prefix + command} link*`)
     if (!q.includes('tiktok')) return m.reply(`*link invalido!*`)
     m.reply(mess.wait)
-    require('./lib/tiktok').Tiktok(q).then( data => {
+    require('./lib/tiktok').Tiktok(m.text).then( data => {
     conn.sendMessage(m.chat, { audio: { url: data.audio }, mimetype: 'audio/mp4' }, { quoted: m })
     })    
     break
