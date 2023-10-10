@@ -331,51 +331,7 @@ delete this.suit[id]
 }
 break
 
-  case 'simulation': case 'simular': { 
-  if (!isCreator) throw mess.owner
-  let event = args
-  if (!event) return await conn.sendNyanCat(m.chat, `simulaciones disponibles
-${usedPrefix + command} welcome @user
-${usedPrefix + command} bye @user
-${usedPrefix + command} promote @user
-${usedPrefix + command} demote @user`.trim(), m, global.menu2, 'simulacion de eventos!', null)
-    let mentions = text.replace(event, '').trimStart()
-    let who = mentions ? conn.parseMention(mentions) : []
-    let part = who.length ? who : [m.sender]
-    let act = false
-    m.reply(`*Simulando ${event}...*`)
-    switch (event.toLowerCase()) {
-        case 'add':
-        case 'invite':
-        case 'welcome':
-            act = 'add'
-            break
-        case 'bye':
-        case 'kick':
-        case 'leave':
-        case 'remove':
-            act = 'remove'
-            break
-        case 'promote':
-            act = 'promote'
-            break
-        case 'demote':
-            act = 'demote'
-            break
-/*        case 'delete':
-            deleted = m
-            break
-*/
-        default:
-            throw eror
-    }
-    if (act) return conn.participantsUpdate({
-        id: m.chat,
-        participants: part,
-        action: act
-    })
-    }
-    break
+  
   case 'aventura': {
   let cooldown = 10000
   let user = global.db.data.users[m.sender]
@@ -1678,6 +1634,7 @@ await conn.sendMessage(m.chat, {
   break  
   
   case 'kick': {  
+    if (global.db.data.chats[m.chat].restrict) throw mess.restrict
     if (!m.isGroup) return m.reply(mess.group);  
     if (!isBotAdmins) return m.reply(mess.botAdmin);  
     if (!isGroupAdmins) return m.reply(mess.admin);  
