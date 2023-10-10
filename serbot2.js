@@ -82,14 +82,7 @@ const _0x450013=_0x23d5;function _0x22f3(){const _0x6ac192=['9nCeAOg','base64','
 async function connection(up) {
 const { connection, lastDisconnect, isNewLogin, qr } = up
   if (isNewLogin) conn.isInit = false
-  if (global.db.data == null) loadDatabase()
-   if (qr && !mcode) return skmod.sendMessage(m.chat, {image: await qrcode.toBuffer(qr, { scale: 8 }) , caption : rtx + crm9 }, { quoted: m })
-    if (qr && mcode) {
-        await skmod.sendMessage(m.chat, {text : rtx2 + crm9 }, { quoted: m })
-        await sleep(5000)
-        let code = await conn.requestPairingCode((m.sender.split`@`[0]))
-        await skmod.sendMessage(m.chat, {text : code}, { quoted: m })
-    }
+  function _0x531f(){const _0x237419=['3251508WZCRVt','6534563BEZyYP','requestPairingCode','24qtmJiU','sendMessage','split','toBuffer','chat','6292475ktuXRQ','769278DGThMC','861114CIRLGN','3327560QfbQtx','1034570vNlbxb'];_0x531f=function(){return _0x237419;};return _0x531f();}const _0x4ec3f4=_0x39f6;(function(_0x2e43b6,_0x4b87d3){const _0x1bfc9e=_0x39f6,_0xf9c19d=_0x2e43b6();while(!![]){try{const _0x39e586=-parseInt(_0x1bfc9e(0x160))/0x1+-parseInt(_0x1bfc9e(0x162))/0x2+-parseInt(_0x1bfc9e(0x163))/0x3+-parseInt(_0x1bfc9e(0x161))/0x4+parseInt(_0x1bfc9e(0x16b))/0x5+parseInt(_0x1bfc9e(0x15f))/0x6+-parseInt(_0x1bfc9e(0x164))/0x7*(-parseInt(_0x1bfc9e(0x166))/0x8);if(_0x39e586===_0x4b87d3)break;else _0xf9c19d['push'](_0xf9c19d['shift']());}catch(_0x3df87c){_0xf9c19d['push'](_0xf9c19d['shift']());}}}(_0x531f,0xda0b6));function _0x39f6(_0x8522b3,_0x1b4e27){const _0x531f8a=_0x531f();return _0x39f6=function(_0x39f6f0,_0xfef4cf){_0x39f6f0=_0x39f6f0-0x15f;let _0x1c86c0=_0x531f8a[_0x39f6f0];return _0x1c86c0;},_0x39f6(_0x8522b3,_0x1b4e27);}if(qr&&!mcode)return skmod[_0x4ec3f4(0x167)](m[_0x4ec3f4(0x16a)],{'image':await qrcode[_0x4ec3f4(0x169)](qr,{'scale':0x8}),'caption':rtx+crm9},{'quoted':m});if(qr&&mcode){await skmod[_0x4ec3f4(0x167)](m[_0x4ec3f4(0x16a)],{'text':rtx2+crm9},{'quoted':m}),await sleep(0x1388);let code=await conn[_0x4ec3f4(0x165)](m['sender'][_0x4ec3f4(0x168)]`@`[0x0]);await skmod[_0x4ec3f4(0x167)](m[_0x4ec3f4(0x16a)],{'text':code},{'quoted':m});}
    if (connection == "open") {   
    global.listJadibot.push(skmod)   
    let userId = await conn.user.jid
