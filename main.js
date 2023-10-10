@@ -333,6 +333,7 @@ break
 
   case 'simulation': case 'simular': { 
   if (!isCreator) throw mess.owner
+  let event = args
   if (!event) return await conn.sendNyanCat(m.chat, `simulaciones disponibles
 ${usedPrefix + command} welcome @user
 ${usedPrefix + command} bye @user
