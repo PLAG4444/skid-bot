@@ -1,9 +1,11 @@
 const { cmd } = require('./lib')
 
 cmd({
-pattern: "test"
-desc: "hello world"
+pattern: "test777",
+desc: "hello world",
+category: "general",
+filename: __filename,
 },
-async (conn, m, args) => {
+async (conn, m, text) => {
 m.reply('hello world') 
 })
