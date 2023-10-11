@@ -23,7 +23,7 @@
   const webp = require("node-webpmux")  
   const ffmpeg = require('fluent-ffmpeg')
   const JavaScriptObfuscator = require('javascript-obfuscator')
-  const { canLevelUp, toAudio, toPTT, toVideo, xpRange pinterest, formatByte, TelegraPh, UploadFileUgu, webp2mp4File, floNime, fetchBuffer, getBuffer, buffergif, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom, msToTime } = require('./lib')  
+  const { canLevelUp, toAudio, toPTT, toVideo, xpRange, pinterest, formatByte, TelegraPh, UploadFileUgu, webp2mp4File, floNime, fetchBuffer, getBuffer, buffergif, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom, msToTime } = require('./lib')  
   const { proto } = require("@whiskeysockets/baileys")
   const speed = require("performance-now")  
   const util = require('util')
