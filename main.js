@@ -1410,11 +1410,6 @@ await conn.sendMessage(m.chat, {
       m.reply('*ahora el bot es de uso publico*')
       }
       break
-      
-      case 'test':
-      if (!text) throw '*❗ Falta un texto*'
-      conn.sendMessage(m.chat, { image: { url: `https://api.clayzaaubert.my.id/api/ai/animediffusion?q=${text}&apikey=gt5JP8QgJl` }, caption: 'aqui tienes ✨' }, { quoted: m })
-      break
   
       case 'self':
       if(_isBot !== m.sender) return conn.fakeReply(m.chat, 'este comando solo lo pueden usar bots o subbots', '0@s.whatsapp.net', '❌ No eres bot')
