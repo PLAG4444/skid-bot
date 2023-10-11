@@ -121,7 +121,7 @@ var body = (typeof m.text == 'string' ? m.text : '')
   const args = body.trim().split(/ +/).slice(1) 
   const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(m.sender) 
   const isBot = conn.user?.jid
-  const cmdName = icmd ? body.slice(1).trim().split(" ")[0].toLowerCase() : false
+  const cmdName = isCmd ? body.slice(1).trim().split(" ")[0].toLowerCase() : false
   if (isCmd) {
   const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
   if (cmd) {
