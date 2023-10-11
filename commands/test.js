@@ -6,6 +6,6 @@ desc: "hello world",
 category: "general",
 filename: __filename,
 },
-async (conn, m, text) => {
+async(conn, m, text) => {
 m.reply('hello world') 
 })
