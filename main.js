@@ -18,13 +18,12 @@
   const axios = require('axios')  
   const cheerio = require('cheerio')
   const qrcode = require('qrcode')
-  const { toAudio, toPTT, toVideo } = require('./lib/converter.js')
   const mimetype = require("mime-types")  
   const ws = require('ws')
   const webp = require("node-webpmux")  
   const ffmpeg = require('fluent-ffmpeg')
   const JavaScriptObfuscator = require('javascript-obfuscator')
-  const { canLevelUp, xpRange pinterest, formatByte, TelegraPh, UploadFileUgu, webp2mp4File, floNime, smsg, fetchBuffer, getBuffer, buffergif, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom, msToTime, downloadMediaMessage, protoType, serialize } = require('./lib')  
+  const { canLevelUp, toAudio, toPTT, toVideo, xpRange pinterest, formatByte, TelegraPh, UploadFileUgu, webp2mp4File, floNime, smsg, fetchBuffer, getBuffer, buffergif, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom, msToTime, downloadMediaMessage, protoType, serialize } = require('./lib')  
   const { proto } = require("@whiskeysockets/baileys")
   const speed = require("performance-now")  
   const util = require('util')
@@ -1479,7 +1478,6 @@ await conn.sendMessage(m.chat, {
      }
      break
     case 'levelup': {
-    let { levelup } = require('./lib/canvas.js')
     let name = await conn.getName(m.sender); 
     let user = global.db.data.users[m.sender]; 
    if (!canLevelUp(user.level, user.exp, global.multiplier)) { 
@@ -1543,7 +1541,7 @@ await conn.sendMessage(m.chat, {
     if (!text) return m.reply( `*Ejemplo: ${prefix + command} link`)
     if (!q.includes('tiktok')) return m.reply(`*link invalido!*`)
     m.reply(mess.wait)
-    require('./lib/tiktok').Tiktok(m.text).then( data => {
+    require('./lib').Tiktok(m.text).then( data => {
     conn.sendMessage(m.chat, { video: { url: data.nowm }}, { quoted: m })
     })    
     break
@@ -1554,7 +1552,7 @@ await conn.sendMessage(m.chat, {
     if (!text) return m.reply( `*Ejemplo: ${prefix + command} link*`)
     if (!q.includes('tiktok')) return m.reply(`*link invalido!*`)
     m.reply(mess.wait)
-    require('./lib/tiktok').Tiktok(m.text).then( data => {
+    require('./lib').Tiktok(m.text).then( data => {
     conn.sendMessage(m.chat, { audio: { url: data.audio }, mimetype: 'audio/mp4' }, { quoted: m })
     })    
     break
@@ -1842,7 +1840,7 @@ conn.sendMessage(m.chat, docAd, { quoted: m })
    break
    case 'play': {
    let { youtubedl, youtubedlv2 } = require('@bochilteam/scraper')
-   let { search } = require('./lib/RandomFuctions.js')
+   let { search } = require('./lib')
    let enviando
    let _limit1 = 100
    let _limit2 = 400
@@ -1903,7 +1901,7 @@ case 'play2': {
  let limit_a2 = 400
  if (!text) throw `*❗No hay cancion o texto para buscar*\n*ejemplo: ${prefix + command} everyone wants to rule the world*`
  try { 
- let { search } = require('./lib/RandomFuctions.js')
+ let { search } = require('./lib')
  let { youtubedl, youtubedlv2 } = require('@bochilteam/scraper')
  let yt_play = await search(args.join(' '))
  let text1 = `*——⌈🔊 YOUTUBE PLAY 🔊⌋——*\n📌 *Titulo*: _${yt_play[0].title}_\n📆 *Publicado*: ${yt_play[0].ago}\n*🔗 Link*: ${yt_play[0].url}`
@@ -1966,7 +1964,7 @@ case 'play2': {
     if (!quoted) throw 'Responde a un sticker animado'
     if (!/webp/.test(mime)) throw `*Responde a un sticker animado*`
     await m.reply(mess.wait)
-    let { webp2mp4File } = require('./lib/uploader')
+    let { webp2mp4File } = require('./lib')
     let media = await conn.downloadAndSaveMediaMessage(quoted)
     let webpToMp4 = await webp2mp4File(media)
     await conn.sendMessage(m.chat, { video: { url: webpToMp4.result, caption: 'Convert Webp To Video' }, gifPlayback: true }, {quoted:m})
@@ -2367,7 +2365,7 @@ break
                   case 'toaudio': case 'tomp3': {
                   if (!/video/.test(mime) && !/audio/.test(mime)) throw `*❗ Etiqueta un audio con ${prefix + command}*`
                   if (!quoted) throw `*❗ Etiqueta un video con ${prefix + command}*`
-                  let { toAudio } = require('./lib/converter.js')
+                  let { toAudio } = require('./lib')
                   let media  = await conn.downloadMediaMessage(quoted)
                   let audio = await toAudio(media, 'mp4')
                   await conn.sendMessage(m.chat, {audio: audio, mimetype: 'audio/mpeg', contextInfo:{  externalAdReply: { showAdAttribution: true,
