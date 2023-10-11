@@ -1,7 +1,7 @@
 require('./settings.js')
-const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins, clockString }= require('./lib/fuctions')
+const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins, clockString }= require('./lib')
+const events = require('./lib/commands.js')
 const { useMultiFileAuthState, DisconnectReason, proto, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion } = require("@whiskeysockets/baileys")
-
 const gradient = require('gradient-string')
 const fs = require('fs')
 const { watchFile, unwatchFile } = require('fs')
@@ -111,10 +111,32 @@ if (m.isBaileys) return
 if (!chatUpdate) return
 if (!conn.public && !m.key.fromMe && chatUpdate.type === 'notify') return
 if (global.db.data == null) await loadDatabase()
+var body = (typeof m.text == 'string' ? m.text : '') 
 global.numBot = conn.user.jid
 global.numBot2 = conn.user.id    
+var body = (typeof m.text == 'string' ? m.text : '') 
+
+  const isCmd = body.startsWith(global.prefix)   
+  const command = isCmd ? body.slice(1).trim().split(/ +/).shift().toLocaleLowerCase() : null
+  const args = body.trim().split(/ +/).slice(1) 
+  const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(userSender) 
+  const isBot = conn.user?.jid
+  const cmdName = icmd ? body.slice(1).trim().split(" ")[0].toLowerCase() : false
+  if (isCmd) {
+  const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
+  if (cmd) {
+  try {
+  let text = m.text
+  cmd.function(conn, m,  text, { args, isCreator, body, isBot })
+  } catch (e) {
+  conn.logger.error('\n❗ Error Critico\n Reporte del fallo!!\n' + e)
+  }
+  
+  
+  }
 require('./main.js')(conn, m, chatUpdate, store)
 })
+
 conn.ev.on("call", async (fuckedcall) => {
 const anticall = global.db.data.settings[conn.user.jid].antiCall
 if (!anticall) return
@@ -195,6 +217,7 @@ lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut ? startB
 } 
 if (connection == 'open') {
 conn.logger.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊Skid bot Se Conecto Correctamente a WhatsApp\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
+
 }})
 conn.ev.on('creds.update', saveCreds)
 conn.public = true

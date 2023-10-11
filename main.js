@@ -18,22 +18,18 @@
   const axios = require('axios')  
   const cheerio = require('cheerio')
   const qrcode = require('qrcode')
-  const { TelegraPh, UploadFileUgu, webp2mp4File, floNime } = require('./lib/uploader.js')
   const { toAudio, toPTT, toVideo } = require('./lib/converter.js')
   const mimetype = require("mime-types")  
   const ws = require('ws')
   const webp = require("node-webpmux")  
   const ffmpeg = require('fluent-ffmpeg')
   const JavaScriptObfuscator = require('javascript-obfuscator')
-  const { smsg, fetchBuffer, getBuffer, buffergif, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom, msToTime, downloadMediaMessage, protoType, serialize } = require('./lib/fuctions')  
+  const { canLevelUp, xpRange pinterest, formatByte, TelegraPh, UploadFileUgu, webp2mp4File, floNime, smsg, fetchBuffer, getBuffer, buffergif, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom, msToTime, downloadMediaMessage, protoType, serialize } = require('./lib')  
   const { proto } = require("@whiskeysockets/baileys")
   const speed = require("performance-now")  
   const util = require('util')
   const diskusage = require('diskusage')
-  const { pinterest, formatByte } = require('./lib/RandomFuctions.js')  
-  const { skrpg } = require('./lib/rpg.js')
   const { jadibot, listJadibot, killJadibot } = require('./serbot2.js')
-  const { canLevelUp, xpRange } = require('./lib/levelling.js')
   const msgs = (message) => { 
   if (message.length >= 10) { 
   return `${message.substr(0, 500)}` 
