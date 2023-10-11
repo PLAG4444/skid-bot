@@ -134,6 +134,7 @@ var body = (typeof m.text == 'string' ? m.text : '')
   
   
   }
+  }
 require('./main.js')(conn, m, chatUpdate, store)
 })
 
