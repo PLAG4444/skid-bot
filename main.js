@@ -864,10 +864,7 @@ let caption = `
   }
   break
   
-  case 'lb': {
-  skrpg(conn, args, participants, m)
-  }
-  break
+  
   case 'toimg': {
   if (!m.quoted) throw '*uhh... puedes responder a un sticker ಠ⁠_⁠ಠ*'
   if (!/webp/.test(mime)) throw '*uhh... puedes responder a un sticker ಠ⁠_⁠ಠ*'

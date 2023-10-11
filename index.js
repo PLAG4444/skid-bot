@@ -1,6 +1,6 @@
 require('./settings.js')
 const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins, clockString }= require('./lib')
-const events = require('./lib/commands.js')
+const events = require('./commands')
 const { useMultiFileAuthState, DisconnectReason, proto, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion } = require("@whiskeysockets/baileys")
 const gradient = require('gradient-string')
 const fs = require('fs')
@@ -121,31 +121,38 @@ var body = (typeof m.text == 'string' ? m.text : '')
   const args = body.trim().split(/ +/).slice(1) 
   const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(m.sender) 
   const isBot = conn.user?.jid
+  const groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : ''
+  const groupName = m.isGroup ? groupMetadata.subject : '' 
+  const participants = m.isGroup ? await groupMetadata.participants : '' 
+  const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : '' 
+  
+  const isBotAdmins = m.isGroup ? groupAdmins.includes(isBot) : false  
+  const isGroupAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false 
   const cmdName = isCmd ? body.slice(1).trim().split(" ")[0].toLowerCase() : false
   if (isCmd) {
   const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
   if (cmd) {
   try {
   let text = m.text
-  cmd.function(conn, m,  text, { args, isCreator, body, isBot })
+  cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName })
   } catch (e) {
   conn.logger.error('\n❗ Error Critico\n Reporte del fallo!!\n' + e)
   }}}
   events.commands.map(async(command) => {
   if (body && command.on === "body") {
-  command.function(conn, m,{args,  args, isCreator, body, isBot });
+  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
   } else if (m.text && command.on === "text") {
-  command.function(conn, m, args, { args, isCreator, body, isBot });
+  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
   } else if (
   (command.on === "image" || command.on === "photo") &&
   m.mtype === "imageMessage"
   ) {
-  command.function(conn, m, args, { args, isCreator, body, isBot });
+  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
   } else if (
   command.on === "sticker" &&
   m.mtype === "stickerMessage"
   ) {
-  command.function(conn, m, args, { args, isCreator, body, isBot });
+  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
   }
   })
 require('./main.js')(conn, m, chatUpdate, store)
