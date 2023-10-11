@@ -116,7 +116,7 @@ global.numBot = conn.user.jid
 global.numBot2 = conn.user.id    
 var body = (typeof m.text == 'string' ? m.text : '') 
 
-  const isCmd = body.startsWith(global.prefix)   
+  const isCmd = body.startsWith(global.prefix) ? body.slice(1).trim().split(/ +/).shift().toLocaleLowerCase() : null 
   const command = isCmd ? body.slice(1).trim().split(/ +/).shift().toLocaleLowerCase() : null
   const args = body.trim().split(/ +/).slice(1) 
   const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(m.sender) 
@@ -130,11 +130,24 @@ var body = (typeof m.text == 'string' ? m.text : '')
   cmd.function(conn, m,  text, { args, isCreator, body, isBot })
   } catch (e) {
   conn.logger.error('\n❗ Error Critico\n Reporte del fallo!!\n' + e)
+  }}}
+  events.commands.map(async(command) => {
+  if (body && command.on === "body") {
+  command.function(conn, m,{args,  args, isCreator, body, isBot });
+  } else if (m.text && command.on === "text") {
+  command.function(conn, m, args, { args, isCreator, body, isBot });
+  } else if (
+  (command.on === "image" || command.on === "photo") &&
+  m.mtype === "imageMessage"
+  ) {
+  command.function(conn, m, args, { args, isCreator, body, isBot });
+  } else if (
+  command.on === "sticker" &&
+  m.mtype === "stickerMessage"
+  ) {
+  command.function(conn, m, args, { args, isCreator, body, isBot });
   }
-  
-  
-  }
-  }
+  })
 require('./main.js')(conn, m, chatUpdate, store)
 })
 
