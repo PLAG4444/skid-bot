@@ -4,7 +4,7 @@ const ws = require('ws')
 const qrcode = require('qrcode') 
 const store = require('./lib')
 const { useMultiFileAuthState, DisconnectReason, msgRetryCounterMap, fetchLatestBaileysVersion, makeCacheableSignalKeyStore } = require("@whiskeysockets/baileys")
-const { smsg, default: makeWaSocket, sleep } = require('./lib')
+const { smsg, makeWaSocket, sleep } = require('./lib')
 const fs = require('fs')
 
 
