@@ -58,6 +58,7 @@ setInterval(async () => {
 if (global.db.data || global.db ) await global.db.write()
 }, 30 * 1000)
 
+global.temp = join(__dirname, './temp')
 function clearTmp() {
   const tmp = [tmpdir(), join(__dirname, './temp')]
   const filename = [] 
