@@ -115,7 +115,7 @@ var body = (typeof m.text == 'string' ? m.text : '')
 global.numBot = conn.user.jid
 global.numBot2 = conn.user.id    
 var body = (typeof m.text == 'string' ? m.text : '') 
-  const prefix = new regExp('^[' + ('/i!#$%+£¢€¥^°=¶∆×÷π√✓©®:;?&.\\-').replace(/[|\\{}()[\]^$+*?.\-\^]/g, '\\$&') + ']')
+  const prefix = new RegExp('^[' + ('/i!#$%+£¢€¥^°=¶∆×÷π√✓©®:;?&.\\-').replace(/[|\\{}()[\]^$+*?.\-\^]/g, '\\$&') + ']')
   const isCmd = body ? prefix.test(body) : false
   const args = body.trim().split(/ +/).slice(1) 
   const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(m.sender) 
