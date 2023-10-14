@@ -8,19 +8,9 @@ alias: ["help"],
 desc: "comandos del bot",
 filename: __filename
 },
-async(conn, m, { text } ) => {
+async(conn, m ) => {
 const { commands } = require('../lib/commands.js') 
-if (text.split(" ")[0]) {
-let arr = [];
-const cmd = commands.find((cmd) => cmd.pattern === (text.split(" ")[0].toLowerCase()))
-if (!cmd) return await m.reply("*❌ No hay comandos*");
-else arr.push(`*🍁 Comando:* ${cmd.pattern}`);
-if (cmd.category) arr.push(`*🧩 Categoría:* ${cmd.category}`);
-if (cmd.alias) arr.push(`*🧩 Alias* ${cmd.alias}`);
-if (cmd.desc) arr.push(`*🧩 Descripción:* ${cmd.desc}`);
-if (cmd.use) arr.push(`*〽️Uso:*\n \`\`\`${prefix}${cmd.pattern} ${cmd.use}\`\`\``);
-return await m.reply(arr.join('\n'));
-} else {
+
     const cmds = {}
     commands.map(async(command, index) => {
     if (command.dontAddCommandList === false && command.pattern !== undefined) {
@@ -47,13 +37,13 @@ str += `╭────❏ *${category}* ❏\n` ;
 if (m.text.toLowerCase() == category.toLowerCase()) {
 str = `╭─────❏ *${category}* ❏\n` ;      
 for (const plugins of cmds[category]) { 
-str += `│ ${plugins,1}\n` 
+str += `│ ${plugins, 1}\n` 
 }
 str += `╰━━━━━━━━━━━━━──⊷\n`  ;
 break ;
 } else {
 for (const plugins of cmds[category]) {
-str += `│ ${plugins,1}\n`
+str += `│ ${plugins, 1}\n`
 }
 str += `╰━━━━━━━━━━━━━━──⊷\n`  ; 
 }}
@@ -80,5 +70,4 @@ await conn.sendMessage(m.chat, {
     }  
     }, { quoted: m})
     await conn.sendNyanCat(m.chat, '*ATENCION*\n*durante esta semana se estara mejorando al bot, por lo que habra muchos reinicios*', global.menu3, '[ I N F O ]', 'nueva update!!', m)
-    }
     })
