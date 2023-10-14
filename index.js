@@ -58,7 +58,6 @@ setInterval(async () => {
 if (global.db.data || global.db ) await global.db.write()
 }, 30 * 1000)
 
-global.temp = tmpdir(), join(__dirname, './temp')
 function clearTmp() {
   const tmp = [tmpdir(), join(__dirname, './temp')]
   const filename = [] 
@@ -238,7 +237,11 @@ lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut ? startB
 } 
 if (connection == 'open') {
 conn.logger.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊Skid bot Se Conecto Correctamente a WhatsApp\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
-
+fs.readdirSync(__dirname + "./commands").forEach((plugin) => {
+if (path.extname(plugin).toLowerCase() == ".js") {
+require(__dirname + "./commands/" + plugin);
+}
+})
 }})
 conn.ev.on('creds.update', saveCreds)
 conn.public = true
