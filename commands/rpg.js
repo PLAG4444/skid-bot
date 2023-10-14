@@ -6,7 +6,9 @@ desc: "muestra la leadboard",
 category: "rpg",
 filename: __filename,
 },
-async (conn, m, text, { participants, body}) => {
+async (conn, m, text, { body }) => {
+const groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : ''
+const participants = m.isGroup ? await groupMetadata.participants : '' 
 const args = body.trim().split(/ +/).slice(1) || []
  let member = participants.map(u => u.id) 
  let me = m.split 
