@@ -28,7 +28,6 @@
   const speed = require("performance-now")  
   const util = require('util')
   const diskusage = require('diskusage')
-  const { jadibot, listJadibot, killJadibot } = require('./serbot2.js')
   const msgs = (message) => { 
   if (message.length >= 10) { 
   return `${message.substr(0, 500)}` 
@@ -74,10 +73,10 @@
   const isBaneed = m.isGroup ? blockList.includes(userSender) : false 
   const isPremium = m.isGroup ? premium.includes(userSender) : false   
   const who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
-  const fkontak = { "key": { "participants":"0@s.whatsapp.net", "remoteJid": "status@broadcast", "fromMe": false, "id": "Halo" }, "message": { "contactMessage": { "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${userSender.split('@')[0]}:${userSender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD` }}, "participant": "0@s.whatsapp.net" }  
-  const ftroli ={key: {fromMe: false,"participant":"0@s.whatsapp.net", "remoteJid": "status@broadcast"}, "message": {orderMessage: {itemCount: 2022,status: 200, thumbnail: menu, surface: 200, message: "puta gata", orderTitle: "puto aiden me lo folle", sellerJid: '0@s.whatsapp.net'}}, contextInfo: {"forwardingScore":999,"isForwarded":true},sendEphemeral: true}  
-  const fdoc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {documentMessage: {title: "A", jpegThumbnail: null}}}  
-  const fgif = { key: {  participant: "0@s.whatsapp.net", }, message: { videoMessage: { title: botname, h: `Hmm`, seconds: "999999999", gifPlayback: "true", caption: m.pushName, jpegThumbnail: success, }, }, }
+  global.fkontak = { "key": { "participants":"0@s.whatsapp.net", "remoteJid": "status@broadcast", "fromMe": false, "id": "Halo" }, "message": { "contactMessage": { "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${userSender.split('@')[0]}:${userSender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD` }}, "participant": "0@s.whatsapp.net" }  
+  global.ftroli ={key: {fromMe: false,"participant":"0@s.whatsapp.net", "remoteJid": "status@broadcast"}, "message": {orderMessage: {itemCount: 2022,status: 200, thumbnail: menu, surface: 200, message: "puta gata", orderTitle: "puto aiden me lo folle", sellerJid: '0@s.whatsapp.net'}}, contextInfo: {"forwardingScore":999,"isForwarded":true},sendEphemeral: true}  
+  global.fdoc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {documentMessage: {title: "A", jpegThumbnail: null}}}  
+  global.fgif = { key: {  participant: "0@s.whatsapp.net", }, message: { videoMessage: { title: botname, h: `Hmm`, seconds: "999999999", gifPlayback: "true", caption: m.pushName, jpegThumbnail: success, }, }, }
   global.fakevovid = { key: { fromMe: false, participant: '0@s.whatsapp.net', remoteJid: 'status@broadcast' }, message: { videoMessage: { mimetype: 'video/mp4', caption: botname, jpegThumbnail: success, viewOnce: true }}}
   global.fpay = { "key": { "participant": `0@s.whatsapp.net`, "remoteJid": "6287834993722-1621306547@g.us", "fromMe": false, "id": "3B64558B07848BD81108C1D14712018E" }, "message": { "requestPaymentMessage": { "currencyCodeIso4217": "USD", "amount1000": "100000", "requestFrom": "5218442114446@s.whatsapp.net", "noteMessage": { "extendedTextMessage": { "text": botname }}, "expiryTimestamp": "0", "amount": { "value": "100000", "offset": 1000, "currencyCode": "USD" }, "background": { "id": "BBB9307B17C17F928E57A7435E45033E", "fileLength": "94896", "width": 64, "height": 64, "mimetype": "image/webp", "placeholderArgb": 4288282521, "textArgb": 4278190080, "subtextArgb": 4288282521}}}}
   
@@ -327,70 +326,6 @@ delete this.suit[id]
 break
 
   
-  case 'aventura': {
-  let cooldown = 10000
-  let user = global.db.data.users[m.sender]
-  let timer = (cooldown - (new Date - user.lastadventure))
-  if (new Date() - user.lastadventure < 10000) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a aventurar*`
-  if (user.health < 80) return conn.reply(m.chat, `*estas herido*\npara poder aventurar necesitas minimo 80 de *salud* ♥️\ncompra pociones con ${prefix}buy potion y curate con ${prefix}health`, m)
-  let rewards = reward(user)
-  let txt = '*fuiste a una aventura peligrosa*\n*donde perdiste*'
-  for (let lost in rewards.lost) {
-  let total= rewards.lost[lost].getRandom()
-  user[lost] -= total * 1
-  if (total) txt += `\n*${global.rpg.emoticon(lost)}:* ${total}`
-  }
-  txt += '\n\nPero consigues'
-  for (let rewardItem in rewards.reward) {
-  let total = rewards.reward[rewardItem].getRandom()
-  user[rewardItem] += total * 1
-  if (total) txt += `\n*${global.rpg.emoticon(rewardItem)}:* ${total}`
-  }
-  m.reply(txt.trim())
-  user.lastadventure = new Date() * 1
-  
-  function reward(user = {}) { 
-     let rewards = { 
-         reward: { 
-             money: 201 + user.dog * 2000,
-             exp: 301 + user.dog * 2000,
-             trash: 101, 
-             potion: 2, 
-             rock: 2, 
-             wood: 2, 
-             string: 2, 
-             common: 2 * (user.dog && (user.dog > 2 ? 2 : user.dog) * 1.2 || 1), 
-             uncommon: [0, 0, 0, 1, 0].concat( 
-                 new Array(5 - ( 
-                     (user.dog > 2 && user.dog < 6 && user.dog) || (user.dog > 5 && 5) || 2 
-                 )).fill(0) 
-             ), 
-             mythic: [0, 0, 0, 0, 0, 1, 0, 0, 0].concat( 
-                 new Array(8 - ( 
-                     (user.dog > 5 && user.dog < 8 && user.dog) || (user.dog > 7 && 8) || 3 
-                 )).fill(0) 
-             ), 
-             legendary: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0].concat( 
-                 new Array(10 - ( 
-                     (user.dog > 8 && user.dog) || 4 
-                 )).fill(0) 
-             ), 
-             iron: [0, 0, 0, 1, 0, 0], 
-             gold: [0, 0, 0, 0, 0, 1, 0], 
-             diamond: [0, 0, 0, 0, 0, 0, 1, 0].concat( 
-                 new Array(5 - ( 
-                     (user.fox < 6 && user.fox) || (user.fox > 5 && 5) || 0 
-                 )).fill(0) 
-             ), 
-         }, 
-         lost: { 
-             health: 101 - user.cat * 4 
-         } 
-     } 
-     return rewards 
- }
- }
- break
   
   case 'minar': case 'minar': {
   let cooldown = 10000
@@ -772,86 +707,7 @@ conn.reply(m.sender, caption, fkontak)
 break
         
  
-case 'crear': case 'craft': {
-let repairs =  (args[0] || '').toLowerCase()
-let user = global.db.data.users[m.sender] 
-let caption = `
-*Por alguna razon tienes estas recetas*
-*(por un momento piensas crear una...)*
- 
- *❏ Recetas*
 
-*talvez un trabajo pida un hacha... nunca se sabe*
- ▧ Hacha 🪓
- 〉4 madera
- 〉3 hierro
- 
-*una buena decisión para conseguir materiales*
- ▧ Pico ⛏️ 
- 〉 10 roca
- 〉 5 Hierro 
- 〉 2 madera
-
-*necesitas pelear? esta es tu opcion*
- ▧ espada ⚔️ 
- 〉 10 madera
- 〉 15 hierro
- 
-*un poco de protección nunca viene mal*
- ▧ Armadura 🥼 
- 〉 30 diamantes
- `
- switch (repairs) {
-
- case 'hacha': {
- if (user.axe > 0) throw `*te sientes estupido al intentar crear una hacha cuando ya tienes una...*\n(talvez querías mejorarlo con ${prefix}mejorar)`
- if (user.wood < 4 || user.iron < 3) throw `*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`
- user.wood -= 4
- user.iron -= 3
- user.axe += 1
- user.axedurability = 70
- m.reply('*solo te cortaste una mano para tenér una fabulosa hacha 🪓*')
- }
- break
- 
- case 'pico': {
- if (user.pickaxe > 0) throw `*te sientes estupido al intentar crear un pico cuando ya tienes uno...*\n(talvez querías mejorarlo con ${prefix}mejorar)`
- if (user.rock < 10 || user.iron < 5 || user.wood < 2) throw `*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`
- user.rock -= 10
- user.iron -= 5
- user.wood -= 2
- user.pickaxe += 1
- user.pickaxedurability = 70
- m.reply('*crafteaste un pico ⚒️*')
- }
- break
- 
- case 'espada': {
- if (user.pickaxe > 0) throw `*te sientes estupido al intentar crear una espada cuando ya tienes una...*\n(talvez querías mejorarlo con ${prefix}mejorar)`
- if (user.wood < 10 || user.iron < 15) throw `*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`
- user.wood -= 10
- user.iron -= 15
- user.sword += 1
- user.sworddurability = 70
- m.reply('*con unas cuantas lesiones y cortaduras creaste una espada ⚔️*')
- }
- break
- 
- case 'armadura': {
- if (user.armor > 0) throw `*te sientes estupido al intentar crear una armadura cuando ya tienes una...*\n(talvez querías mejorarlo con ${prefix}mejorar)`
- if (user.diamond < 30) throw `*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`
- user.diamond -= 30
- user.armor += 1
- user.armordurability = 70
- m.reply('*como diablos hiciste una armadura con diaman.. da igual, lo bueno es que tienes ahora una armadura*')
- }
- break
- 
- default: 
- m.reply(caption)
- }
- }
- break
  
  
     
@@ -927,8 +783,8 @@ let caption = `
 ┠─╼━━━━━━━━⊱❖⊰━━━━━━━─┨
 ┃   🤖 *SERBOT* 🤖                
 ┠─╼━━━━━━━━⊱❖⊰━━━━━━━─┨
-┃   ⪩ ${prefix}serbot (no funcional)
-┃   ⪩ ${prefix}serbot --code (no funcional)
+┃   ⪩ ${prefix}serbot
+┃   ⪩ ${prefix}serbot --code 
 ┃   ⪩ ${prefix}bots              
 ┃   ⪩ ${prefix}public (modo publico)
 ┃   ⪩ ${prefix}self (modo privado)
@@ -1401,42 +1257,7 @@ await conn.sendMessage(m.chat, {
     
 
 
-    case 'public': {
-    if(_isBot !== m.sender) return conn.fakeReply(m.chat, 'este comando solo lo pueden usar bots o subbots', '0@s.whatsapp.net', '❌ No eres bot')
-      conn.public = true
-      m.reply('*ahora el bot es de uso publico*')
-      }
-      break
-  
-      case 'self':
-      if(_isBot !== m.sender) return conn.fakeReply(m.chat, 'este comando solo lo pueden usar bots o subbots', '0@s.whatsapp.net', '❌ No eres bot')
-      conn.public = false
-      m.reply('*ahora el bot es de uso privado*')
-      break
-  
-  
-      case 'serbot':  
-      if (m.isGroup) return m.reply(mess.priv) 
-      await jadibot(conn, m, command, args)
-      break 
-      case 'deljadibot':
-      killJadibot(conn, m, command)
-      break
-    case 'bots': { 
-    try {
-    let user = [... new Set([...global.listJadibot.filter(conn => conn.user).map(conn => conn.user)])];
-    te = "*lista de subbots*\n\n";
-    for (let i of user) {
-      y = await conn.decodeJid(i.id);
-      te += "Usuario: " + i.name + "\n";
-      te += "Numero: https://wa.me/+" + y.split("@")[0] + "?text=.estado\n\n";
-    }
-    conn.sendMessage(m.chat, { text: te }, { quoted: m });
-  } catch (err) {
-    m.reply(`*no hay subbots activos*`);
-  }
-  }
-    break;
+    
  
 
     case 'fake':
@@ -1452,23 +1273,7 @@ await conn.sendMessage(m.chat, {
     }
     break
     
-    case 'apk': {
-    let { search, download } = require('aptoide-scraper')
-    if (!text) throw '*❗Que vas a buscar*'
-      try {     
-     let searchA = await search(text); 
-     let data5 = await download(searchA[0].id); 
-     let response = `📲 *Descargador de Aptoide* 📲\n\n📌 *Nombre:* ${data5.name}\n📦 *Package:* ${data5.package}\n🕒 *Última actualización:* ${data5.lastup}\n📥 *Tamaño:* ${data5.size}` 
-     await conn.sendMessage(m.chat, {image: {url: data5.icon}, caption: response}, {quoted: m}); 
-     if (data5.size.includes('GB') || data5.size.replace(' MB', '') > 999) { 
-     return await conn.sendMessage(m.chat, {text: '*[ ⛔ ] El archivo es demasiado pesado por lo que no se enviará.*'}, {quoted: m}); 
-     } 
-     await conn.sendMessage(m.chat, {document: {url: data5.dllink}, mimetype: 'application/vnd.android.package-archive', fileName: data5.name + '.apk', caption: null}, {quoted: m}); 
-     } catch { 
-     throw `*[❗] Error, no se encontrarón resultados para su búsqueda.*`; 
-     }    
-     }
-     break
+    
     case 'levelup': {
     let name = await conn.getName(m.sender); 
     let user = global.db.data.users[m.sender]; 
@@ -1528,26 +1333,7 @@ await conn.sendMessage(m.chat, {
       break
   
             
-      case 'tiktokvideo':
-      case 'tiktok':
-    if (!text) return m.reply( `*Ejemplo: ${prefix + command} link`)
-    if (!q.includes('tiktok')) return m.reply(`*link invalido!*`)
-    m.reply(mess.wait)
-    require('./lib').Tiktok(m.text).then( data => {
-    conn.sendMessage(m.chat, { video: { url: data.nowm }}, { quoted: m })
-    })    
-    break
-    
-    
-    case 'tiktokmp3':
-    case 'tiktokaudio':
-    if (!text) return m.reply( `*Ejemplo: ${prefix + command} link*`)
-    if (!q.includes('tiktok')) return m.reply(`*link invalido!*`)
-    m.reply(mess.wait)
-    require('./lib').Tiktok(m.text).then( data => {
-    conn.sendMessage(m.chat, { audio: { url: data.audio }, mimetype: 'audio/mp4' }, { quoted: m })
-    })    
-    break
+      
             
     
          case 'ofuscar':
@@ -1830,63 +1616,7 @@ conn.sendMessage(m.chat, docAd, { quoted: m })
    }
    }
    break
-   case 'play': {
-   let { youtubedl, youtubedlv2 } = require('@bochilteam/scraper')
-   let { search } = require('./lib')
-   let enviando
-   let _limit1 = 100
-   let _limit2 = 400
-   if (!text) throw `*❗ Ingresa algo para buscar -_- *\n*Ejemplo: ${prefix + command} tsb combos*`
-   let yt_play = await search(args.join(' '))
-   let text1 = `*——⌈📽️ YOUTUBE PLAY 📽️⌋——*\n📌 *Titulo*: _${yt_play[0].title}_\n📆 *Publicado*: ${yt_play[0].ago}\n*🔗 Link*: ${yt_play[0].url}`
-   conn.sendMessage(m.chat, {image: {url: yt_play[0].thumbnail}, caption: text1 }, {quoted: m})
-   if (enviando) return
-   enviando = true
-   try {
-   let qu = '360'
-   let q = qu + 'p'
-   let v = yt_play[0].url
-   let yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v))
-   let _tetme = await yt.title
-   let size_api = await yt.size
-   let bochilDownload = await yt.video[q].download()
-   let sex = await getBuffer(bochilDownload)
-   let fileSizeInBytes = sex.byteLength; 
-   let fileSizeInKB = fileSizeInBytes / 1024; 
-   let fileSizeInMB = fileSizeInKB / 1024; 
-   let size = fileSizeInMB.toFixed(2);    
-    
-    if (size >= _limit2) {  
-    await conn.sendMessage(m.chat, {text: `*❗ el archivo es demasiado pesado*\nDescargue en: ${bochilDownload}`}, {quoted: m});
-    enviando = false  
-    return    
-    }    
-      
-    if (size >= _limit1 && size <= _limit2) {  
-    await conn.sendMessage(m.chat, {document: sex, caption: `*✅ Aqui tienes tu video*`, mimetype: 'video/mp4', fileName: _tetme + `.mp4`}, {quoted: m})
-    enviando = false 
-    return    
-    } else {
-    await conn.sendMessage(m.chat, {video: sex, caption: `*✅ Aqui tienes tu video*`, mimetype: 'video/mp4', fileName: _tetme + `.mp4`,  contextInfo: { externalAdReply: { 
-     title: _tetme, 
-     body: `00:00 ━━━━⬤─────── 04:05`, 
-     thumbnailUrl: yt_play[0].thumbnail,  
-     mediaType: 1, 
-     showAdAttribution: true, 
-     renderLargerThumbnail: false
-     }}} , { quoted: m })      
-    enviando = false            
-    return    
-    }
-      
-   } catch (error) {
-     enviando = false
-     console.log(error)
-     throw `*[❗] Error, no fue posible descargar el video.*`
-     throw new Error(error)
-  }
-  }
-  break
+   
   
 case 'play2': {
  let limit_a1 = 50
