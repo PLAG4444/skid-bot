@@ -134,7 +134,9 @@ global.numBot2 = conn.user.id
   try {
   let text = m.text
   cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName })
-  }}
+  } catch (e) {
+  m.reply(format(e))
+  }}}
   
   events.commands.map(async(command) => {
   if (body && command.on === "body") {
@@ -153,9 +155,7 @@ global.numBot2 = conn.user.id
   command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
   }
   })
-  } catch (e) {
-  m.reply(format(e))
-  }
+
 require('./main.js')(conn, m, chatUpdate, store)
 })
 
