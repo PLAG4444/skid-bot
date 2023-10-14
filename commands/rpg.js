@@ -3,11 +3,11 @@ const skid = require('../lib/commands.js')
 skid.cmd({
 pattern: "lb",
 desc: "muestra la leadboard",
-category: "rpgl",
+category: "rpg",
 filename: __filename,
 },
-async (conn, m, text, { args, participants }) => {
-args = args || []
+async (conn, m, text, { participants, body}) => {
+const args = body.trim().split(/ +/).slice(1) || []
  let member = participants.map(u => u.id) 
  let me = m.split 
  const users = Object.entries(global.db.data.users).map(([key, value]) => {
