@@ -32,7 +32,7 @@ category: 'downloaders',
 }, 
 async (conn, m, { text }) => { // ?
 let { youtubedl, youtubedlv2 } = require('@bochilteam/scraper')
-   let { search } = require('./lib')
+   let { search } = require('../lib')
    let enviando
    let _limit1 = 100
    let _limit2 = 400

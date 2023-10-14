@@ -13,13 +13,13 @@ const { commands } = require('../lib/commands.js')
 if (text.split(" ")[0]) {
 let arr = [];
 const cmd = commands.find((cmd) => cmd.pattern === (text.split(" ")[0].toLowerCase()))
-if (!cmd) return await citel.reply("*❌ No hay comandos*");
+if (!cmd) return await m.reply("*❌ No hay comandos*");
 else arr.push(`*🍁 Comando:* ${cmd.pattern}`);
 if (cmd.category) arr.push(`*🧩 Categoría:* ${cmd.category}`);
 if (cmd.alias) arr.push(`*🧩 Alias* ${cmd.alias}`);
 if (cmd.desc) arr.push(`*🧩 Descripción:* ${cmd.desc}`);
 if (cmd.use) arr.push(`*〽️Uso:*\n \`\`\`${prefix}${cmd.pattern} ${cmd.use}\`\`\``);
-return await citel.reply(arr.join('\n'));
+return await m.reply(arr.join('\n'));
 } else {
     const cmds = {}
     commands.map(async(command, index) => {

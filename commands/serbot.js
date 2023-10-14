@@ -310,7 +310,8 @@ require('./main.js')(conn, m, chatUpdate, store)
     for (let i of user) {
       y = await conn.decodeJid(i.id);
       te += "Usuario: " + i.name + "\n";
-      te += "Numero: https://wa.me/+" + y.split("@")[0] + "?text=.estado\n\n";
+      te += "Numero: https://wa.me/+" + y.split("@")[0] + "?text=.estado\n\n"
+      }
    } catch (e) {
    m.reply('*sin subbots activos por eo momento*')
    }
