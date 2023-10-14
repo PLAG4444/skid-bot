@@ -1,4 +1,4 @@
-const { cmd } = require('./lib')
+const { cmd } = require('../lib')
 const os = require('os')
 const moment = require("moment-timezone")
 const fs = require("fs")

@@ -1,4 +1,4 @@
-const skid = require('../lib/commands.js')
+const skid = require('./lib/commands.js')
 
 skid.cmd({
 pattern: "lb",
@@ -6,10 +6,9 @@ desc: "muestra la leadboard",
 category: "rpg",
 filename: __filename,
 },
-async (conn, m, text, { body }) => {
-const groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : ''
-const participants = m.isGroup ? await groupMetadata.participants : '' 
-const args = body.trim().split(/ +/).slice(1) || []
+async (conn, m, text, { participants }) => {
+var body = (typeof m.text == 'string' ? m.text : '') 
+const args = body.trim().split(/ +/).slice(1)  || []
  let member = participants.map(u => u.id) 
  let me = m.split 
  const users = Object.entries(global.db.data.users).map(([key, value]) => {
