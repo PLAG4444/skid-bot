@@ -41,7 +41,7 @@ const path = require('path')
    else global.listJadibot = []    
   
    cmd({
-   pattern: "serbot',
+   pattern: "serbot",
    desc: "Usa esto para convertirte en un subbot!!",
    category: "jadibots",
    use: "usa serbot --code para convertirte en subbot con un codigo!!\nusa serbot para escanear un qr y convertirte en subbot!!",
@@ -299,7 +299,7 @@ require('./main.js')(conn, m, chatUpdate, store)
    m.reply('*este bot ahora es de uso privado*\nsolo el bot podra usar sus comandos')
    })
    cmd({
-   pattern: "bots"
+   pattern: "bots",
    desc: "muestra los subbots activos",
    category: "jadibots",
    },
