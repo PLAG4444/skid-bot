@@ -13,7 +13,7 @@ const { commands } = require('./lib')
 if (m.text.split(" ")[0]) {
 let arr = []
 const cmd = commands.find((cmd) => cmd.pattern === (text.split(" ")[0].toLowerCase()))
-if (!cmd) return conn.reply(m.chat, '*❌No hay commandos disponibles*' m)
+if (!cmd) return conn.reply(m.chat, '*❌No hay commandos disponibles*', m)
 else arr.push(`⪩ *Comando:* ${cmd.pattern}`)
 if (cmd.category) arr.push(`⪩ *Categoría*: ${cmd.category}`)
 if (cmd.alias) arr.push('⪩ *Alias:* ${cmd.alias}`)
