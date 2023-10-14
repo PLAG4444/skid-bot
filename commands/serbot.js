@@ -74,7 +74,7 @@ const path = require('path')
      getMessage: async (key) => {  
      if (store) {  
      const msg = await store.loadMessage(key.remoteJid, key.id)  
-     return conn.chats[key.remoteJid] && conn.chats[key.remoteJid].messages[key.id] ? conn.chats[key.remoteJid].messages[key.id].message : undefined  
+     return skMods.chats[key.remoteJid] && skMods.chats[key.remoteJid].messages[key.id] ? skMods.chats[key.remoteJid].messages[key.id].message : undefined  
      }  
      return proto.Message.fromObject({}) 
      }, 
@@ -85,22 +85,27 @@ const path = require('path')
    * @type {import('@whiskeysockets/baileys').WASocket | import('@whiskeysockets/baileys').WALegacySocket | import('./lib/fuctions.js').makeWaSocket} 
    */ 
   
-   const conn = makeWaSocket(connectionSettings) 
-  
+   const skMods = makeWaSocket(connectionSettings) 
+   skMods.isInit = false
  async function connection(up) { 
  const { connection, lastDisconnect, isNewLogin, qr } = up 
-   if (isNewLogin) conn.isInit = false 
-   function _0x531f(){const _0x237419=['3251508WZCRVt','6534563BEZyYP','requestPairingCode','24qtmJiU','sendMessage','split','toBuffer','chat','6292475ktuXRQ','769278DGThMC','861114CIRLGN','3327560QfbQtx','1034570vNlbxb'];_0x531f=function(){return _0x237419;};return _0x531f();}const _0x4ec3f4=_0x39f6;(function(_0x2e43b6,_0x4b87d3){const _0x1bfc9e=_0x39f6,_0xf9c19d=_0x2e43b6();while(!![]){try{const _0x39e586=-parseInt(_0x1bfc9e(0x160))/0x1+-parseInt(_0x1bfc9e(0x162))/0x2+-parseInt(_0x1bfc9e(0x163))/0x3+-parseInt(_0x1bfc9e(0x161))/0x4+parseInt(_0x1bfc9e(0x16b))/0x5+parseInt(_0x1bfc9e(0x15f))/0x6+-parseInt(_0x1bfc9e(0x164))/0x7*(-parseInt(_0x1bfc9e(0x166))/0x8);if(_0x39e586===_0x4b87d3)break;else _0xf9c19d['push'](_0xf9c19d['shift']());}catch(_0x3df87c){_0xf9c19d['push'](_0xf9c19d['shift']());}}}(_0x531f,0xda0b6));function _0x39f6(_0x8522b3,_0x1b4e27){const _0x531f8a=_0x531f();return _0x39f6=function(_0x39f6f0,_0xfef4cf){_0x39f6f0=_0x39f6f0-0x15f;let _0x1c86c0=_0x531f8a[_0x39f6f0];return _0x1c86c0;},_0x39f6(_0x8522b3,_0x1b4e27);}if(qr&&!mcode)return skmod[_0x4ec3f4(0x167)](m[_0x4ec3f4(0x16a)],{'image':await qrcode[_0x4ec3f4(0x169)](qr,{'scale':0x8}),'caption':rtx+crm9},{'quoted':m});if(qr&&mcode){await skmod[_0x4ec3f4(0x167)](m[_0x4ec3f4(0x16a)],{'text':rtx2+crm9},{'quoted':m}),await sleep(0x1388);let code=await conn[_0x4ec3f4(0x165)](m['sender'][_0x4ec3f4(0x168)]`@`[0x0]);await skmod[_0x4ec3f4(0x167)](m[_0x4ec3f4(0x16a)],{'text':code},{'quoted':m});} 
+   if (isNewLogin) skMods.isInit = false 
+   function _0x531f(){const _0x237419=['3251508WZCRVt','6534563BEZyYP','requestPairingCode','24qtmJiU','sendMessage','split','toBuffer','chat','6292475ktuXRQ','769278DGThMC','861114CIRLGN','3327560QfbQtx','1034570vNlbxb'];_0x531f=function(){return _0x237419;};return _0x531f();}const _0x4ec3f4=_0x39f6;(function(_0x2e43b6,_0x4b87d3){const _0x1bfc9e=_0x39f6,_0xf9c19d=_0x2e43b6();while(!![]){try{const _0x39e586=-parseInt(_0x1bfc9e(0x160))/0x1+-parseInt(_0x1bfc9e(0x162))/0x2+-parseInt(_0x1bfc9e(0x163))/0x3+-parseInt(_0x1bfc9e(0x161))/0x4+parseInt(_0x1bfc9e(0x16b))/0x5+parseInt(_0x1bfc9e(0x15f))/0x6+-parseInt(_0x1bfc9e(0x164))/0x7*(-parseInt(_0x1bfc9e(0x166))/0x8);if(_0x39e586===_0x4b87d3)break;else _0xf9c19d['push'](_0xf9c19d['shift']());}catch(_0x3df87c){_0xf9c19d['push'](_0xf9c19d['shift']());}}}(_0x531f,0xda0b6));function _0x39f6(_0x8522b3,_0x1b4e27){const _0x531f8a=_0x531f();return _0x39f6=function(_0x39f6f0,_0xfef4cf){_0x39f6f0=_0x39f6f0-0x15f;let _0x1c86c0=_0x531f8a[_0x39f6f0];return _0x1c86c0;},_0x39f6(_0x8522b3,_0x1b4e27);}if(qr&&!mcode)return skmod[_0x4ec3f4(0x167)](m[_0x4ec3f4(0x16a)],{'image':await qrcode[_0x4ec3f4(0x169)](qr,{'scale':0x8}),'caption':rtx+crm9},{'quoted':m});if(qr&&mcode){await skmod[_0x4ec3f4(0x167)](m[_0x4ec3f4(0x16a)],{'text':rtx2+crm9},{'quoted':m}),await sleep(0x1388);let code=await skMods[_0x4ec3f4(0x165)](m['sender'][_0x4ec3f4(0x168)]`@`[0x0]);await skmod[_0x4ec3f4(0x167)](m[_0x4ec3f4(0x16a)],{'text':code},{'quoted':m});} 
     if (connection == "open") {    
-    global.listJadibot.push(conn)    
-    let userId = await conn.user.jid 
-    global.jadibotConn = conn.user.jid 
+    global.listJadibot.push(skMods)    
+    let userId = await skMods.user.jid 
+    global.jadibotConn = skMods.user.jid 
     await  skmod.sendMessage(m.chat, { text: args ? "*✅ Reconectado con exito*" : `*✅ Conectado con exito*\n*Si tu bot fue desconectado usa ${prefix + command}*` }, { quoted: m }) 
     } 
     if (connection === 'open') { 
     await skmod.sendMessage(m.chat, { text: args ?  `*✅ Reconexion Exitosa*\n*tus mensajes se estan cargando*` : `*✅ Jadibot Conectado*\n*se te enviara un codigo para volver a conectarte*` }, { quoted: m }) 
     await sleep(5000) 
-    if (!args) skmod.sendMessage(m.chat, { text: `${prefix + command } ` + Buffer.from(fs.readFileSync(`./jadibot/${m.sender.split("@")[0]}/creds.json`), "utf-8").toString("base64") }, { quoted: m }) 
+    if (!args) skmod.sendMessage(m.chat, { text: `${prefix + command } ` + Buffer.from(fs.readFileSync(`./jadibot/${m.sender.split("@")[0]}/creds.json`), "utf-8").toString("base64") }, { quoted: m })
+    fs.readdirSync(__dirname + "/commands").forEach((plugin) => {
+    if (path.extname(plugin).toLowerCase() == ".js") {
+    require(__dirname + "/commands/" + plugin);
+    }
+    })
     } 
     const reason = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode 
     if (connection === 'close') { 
@@ -140,33 +145,33 @@ const path = require('path')
     } 
    } 
    setInterval(async () => { 
-     if (!conn.user) { 
-       try { conn.ws.close() } catch { } 
-       conn.ev.removeAllListeners() 
+     if (!skMods.user) { 
+       try { skMods.ws.close() } catch { } 
+       skMods.ev.removeAllListeners() 
   
-     let i = global.listJadibot.indexOf(conn) 
+     let i = global.listJadibot.indexOf(skMods) 
   
       if (i < 0) return 
        delete global.conns[i] 
        global.listJadibot.splice(i, 1) 
      }}, 60000) 
   
- conn.ev.on("messages.upsert", async (chatUpdate) => { 
- conn.pushMessage(chatUpdate.messages).catch(console.error)
+ skMods.ev.on("messages.upsert", async (chatUpdate) => { 
+ skMods.pushMessage(chatUpdate.messages).catch(console.error)
  let m = chatUpdate.messages[chatUpdate.messages.length - 1]
-  m = smsg(conn, m) || m
+  m = smsg(skMods, m) || m
   if (!m) return
   if (m.isBaileys) return
   if (!chatUpdate) return
-  if (!conn.public && !m.key.fromMe && chatUpdate.type === 'notify') return
+  if (!skMods.public && !m.key.fromMe && chatUpdate.type === 'notify') return
   if (global.db.data == null) await loadDatabase()
   var body = (typeof m.text == 'string' ? m.text : '') 
   const prefix = new RegExp('^[' + ('/i!#$%+£¢€¥^°=¶∆×÷π√✓©®:;?&.\\-').replace(/[|\\{}()[\]^$+*?.\-\^]/g, '\\$&') + ']')
   const isCmd = body ? prefix.test(body) : false
   const args = body.trim().split(/ +/).slice(1) 
   const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(m.sender) 
-  const isBot = conn.user?.jid
-  const groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : ''
+  const isBot = skMods.user?.jid
+  const groupMetadata = m.isGroup ? await skMods.groupMetadata(m.chat) : ''
   const groupName = m.isGroup ? groupMetadata.subject : '' 
   const participants = m.isGroup ? await groupMetadata.participants : '' 
   const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : '' 
@@ -174,6 +179,7 @@ const path = require('path')
   const isBotAdmins = m.isGroup ? groupAdmins.includes(isBot) : false  
   const isGroupAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false 
   const cmdName = isCmd ? body.slice(1).trim().split(" ")[0].toLowerCase() : false
+  const conn = skMods
   if (isCmd) {
   const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
   if (cmd) {
@@ -204,38 +210,38 @@ const path = require('path')
 
 require('./main.js')(conn, m, chatUpdate, store)
  }) 
- conn.ev.on("call", async (fuckedcall) => { 
- const anticall = global.db.data.settings[conn.user.jid].antiCall 
+ skMods.ev.on("call", async (fuckedcall) => { 
+ const anticall = global.db.data.settings[skMods.user.jid].antiCall 
  if (!anticall) return 
  for (let fucker of fuckedcall) { 
  if (fucker.isGroup == false) { 
- const callmsg = await conn.reply(fucker.from, `*${conn.user.name} no recibe ${fucker.isVideo ? `videollamadas` : `llamadas` }*\n*@${fucker.from.split('@')[0]} serás bloqueado.*\n*Si accidentalmente llamaste, comunícate con el propietario para que lo desbloquee.*`, false, {mentions: [fucker.from]}) 
+ const callmsg = await skMods.reply(fucker.from, `*${skMods.user.name} no recibe ${fucker.isVideo ? `videollamadas` : `llamadas` }*\n*@${fucker.from.split('@')[0]} serás bloqueado.*\n*Si accidentalmente llamaste, comunícate con el propietario para que lo desbloquee.*`, false, {mentions: [fucker.from]}) 
  const vcard = `BEGIN:VCARD\nVERSION:3.0\nN:SKID CREADOR ✨\nSKID CREADOR ✨\nORG:GITHUB\nTITLE:\nitem1.TELwaid=5218442114446:+521 844 211 4446\nitem1.X-ABLabel:SKID CREADOR ✨\nX-WA-BIZ-DESCRIPTION:[❗] ᴄᴏɴᴛᴀᴄᴛᴀ ᴀ ᴇsᴛᴇ ɴᴜᴍ ᴘᴀʀᴀ ᴄᴏsᴀs ɪᴍᴘᴏʀᴛᴀɴᴛᴇs.\nX-WA-BIZ-NAME:SKID CREADOR ✨nEND:VCARD` 
- await conn.sendMessage(fucker.from, {contacts: {displayName: 'SKID CREADOR ✨', contacts: [{vcard}]}}, {quoted: callmsg}) 
- await conn.updateBlockStatus(fucker.from, 'block') 
+ await skMods.sendMessage(fucker.from, {contacts: {displayName: 'SKID CREADOR ✨', contacts: [{vcard}]}}, {quoted: callmsg}) 
+ await skMods.updateBlockStatus(fucker.from, 'block') 
  }} 
  }) 
- conn.ev.on('group-participants.update', async ({id, participants, action}) => { 
+ skMods.ev.on('group-participants.update', async ({id, participants, action}) => { 
  const chat = global.db.data.chats[id] || {} 
- const botTt = global.db.data.settings[conn?.user?.jid] || {} 
+ const botTt = global.db.data.settings[skMods?.user?.jid] || {} 
  let text = '' 
  switch (action) { 
  case 'add': 
  case 'remove': 
  if (chat.welcome) { 
- const groupMetadata = await conn.groupMetadata(id) || (conn.chats[id] || {}).metadata 
+ const groupMetadata = await skMods.groupMetadata(id) || (skMods.chats[id] || {}).metadata 
  for (const user of participants) { 
  let pp = global.noperfil 
  try { 
- pp = await conn.profilePictureUrl(user, 'image') 
+ pp = await skMods.profilePictureUrl(user, 'image') 
  } catch (e) { 
  } finally { 
- const api = await conn.getFile(pp) 
- const bot = groupMetadata.participants.find((u) => conn.decodeJid(u.id) == conn.user.jid) || {} 
+ const api = await skMods.getFile(pp) 
+ const bot = groupMetadata.participants.find((u) => skMods.decodeJid(u.id) == skMods.user.jid) || {} 
  const isBotAdmin = bot?.admin === 'admin' || false 
- text = (action === 'add' ? (chat.sWelcome || conn.welcome || conn.welcome || 'Welcome, @user!').replace('@subject', await conn.getName(id)).replace('@desc', groupMetadata.desc?.toString() || '*sin descripción :(*') : 
+ text = (action === 'add' ? (chat.sWelcome || conn.welcome || conn.welcome || 'Welcome, @user!').replace('@subject', await skMods.getName(id)).replace('@desc', groupMetadata.desc?.toString() || '*sin descripción :(*') : 
  (chat.sBye || conn.bye || conn.bye || 'Bye, @user!')).replace('@user', '@' + user.split('@')[0]) 
- conn.sendFile(id, api.data, 'pp.jpg', text, null, false, { mentions: [user] }) 
+ skMods.sendFile(id, api.data, 'pp.jpg', text, null, false, { mentions: [user] }) 
  }}} 
  break 
  case 'promote': 
@@ -250,13 +256,13 @@ require('./main.js')(conn, m, chatUpdate, store)
  } 
  text = text.replace('@user', '@' + participants[0].split('@')[0]) 
  if (chat.detect) { 
- conn.sendNyanCat(id, text, api.data, 'Dejaste de ser admin!!', '-_-') 
+ skMods.sendNyanCat(id, text, api.data, 'Dejaste de ser admin!!', '-_-') 
  } 
  break 
  }}) 
-   conn.connection = connection.bind(conn) 
-   conn.ev.on('connection.update', conn.connection) 
-   conn.ev.on('creds.update', saveCreds) 
+   skMods.connection = connection.bind(conn) 
+   skMods.ev.on('connection.update', skMods.connection) 
+   skMods.ev.on('creds.update', saveCreds) 
    } 
    jadibts() 
    })
