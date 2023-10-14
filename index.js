@@ -139,7 +139,7 @@ var body = (typeof m.text == 'string' ? m.text : '')
   }}}
   events.commands.map(async(command) => {
   if (body && command.on === "body") {
-  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
+  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, body });
   } else if (m.text && command.on === "text") {
   command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
   } else if (
