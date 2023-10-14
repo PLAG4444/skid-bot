@@ -1,4 +1,4 @@
-const { cmd } = require('./lib')
+const { cmd } = require('../lib')
 const os = require('os')
 const moment = require("moment-timezone")
 const fs = require("fs")
@@ -8,18 +8,9 @@ alias: ["help"],
 desc: "comandos del bot",
 filename: __filename
 },
-async(conn, m) => {
-const { commands } = require('./lib')
-if (m.text.split(" ")[0]) {
-let arr = []
-const cmd = commands.find((cmd) => cmd.pattern === (text.split(" ")[0].toLowerCase()))
-if (!cmd) return conn.reply(m.chat, '*❌No hay commandos disponibles*', m)
-else arr.push(`⪩ *Comando:* ${cmd.pattern}`)
-if (cmd.category) arr.push(`⪩ *Categoría*: ${cmd.category}`)
-if (cmd.alias) arr.push(`⪩ *Alias:* ${cmd.alias}`)
-if (cmd.desc) arr.push(`⪩ *uso*: ${global.prefix}${cmd.pattern} ${cmd.use}`)
-return m.reply(arr.join("\n"))
-    } else {
+async(conn, m ) => {
+const { commands } = require('../lib/commands.js') 
+
     const cmds = {}
     commands.map(async(command, index) => {
     if (command.dontAddCommandList === false && command.pattern !== undefined) {
@@ -43,17 +34,22 @@ str += `│ ╭──────────────◆
 `
 for (const category in cmds) {
 str += `╭────❏ *${category}* ❏\n` ;
-if(text.toLowerCase() == category.toLowerCase()){ str = `╭─────❏ *${tiny(category)}* ❏\n` ;      
-for (const plugins of cmds[category]) { str += `│ ${fancytext(plugins,1)}\n` ; }
+if (m.text.toLowerCase() == category.toLowerCase()) {
+str = `╭─────❏ *${category}* ❏\n` ;      
+for (const plugins of cmds[category]) { 
+str += `│ ${plugins, 1}\n` 
+}
 str += `╰━━━━━━━━━━━━━──⊷\n`  ;
 break ;
+} else {
+for (const plugins of cmds[category]) {
+str += `│ ${plugins, 1}\n`
 }
-else { for (const plugins of cmds[category]) { str += `│ ${fancytext(plugins,1)}\n` ; }
 str += `╰━━━━━━━━━━━━━━──⊷\n`  ; 
 }}
-}
-str += `🌟 *Pro tip*: usa ${global.prefix}help para ver el uso de algun commando`
-conn.sendMessage(m.chat, {   
+
+str += `🌟 *Pro tip*: usa ${global.prefix}serbot para convertirte en bot`
+await conn.sendMessage(m.chat, {   
     text: str,  
     contextInfo:{  
     forwardingScore: 9999999,  
@@ -73,4 +69,5 @@ conn.sendMessage(m.chat, {
     }
     }  
     }, { quoted: m})
+    await conn.sendNyanCat(m.chat, '*ATENCION*\n*durante esta semana se estara mejorando al bot, por lo que habra muchos reinicios*', global.menu3, '[ I N F O ]', 'nueva update!!', m)
     })
