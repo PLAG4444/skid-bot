@@ -1,4 +1,4 @@
-const skid = require('./lib/commands.js')
+const skid = require('../lib/commands.js')
 
 skid.cmd({
 pattern: "lb",
@@ -50,7 +50,7 @@ args = args || []
   
  *⚔️ ${randomAdventurePhrase} ⚔️*`.trim(); 
    conn.sendTextWithMentions(m.chat, texto, m)
- }; 
+ })
 
 
 
@@ -70,4 +70,4 @@ args = args || []
  function enumGetKey(a) { 
    return a.jid; 
  }
-})
+
