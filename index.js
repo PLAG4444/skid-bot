@@ -134,8 +134,7 @@ global.numBot2 = conn.user.id
   try {
   let text = m.text
   cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName })
-  
-  conn.logger.error('\n❗ Error Critico\n Reporte del fallo!!\n' + e)
+  }}
   
   events.commands.map(async(command) => {
   if (body && command.on === "body") {
