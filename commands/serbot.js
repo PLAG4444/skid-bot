@@ -208,7 +208,7 @@ const path = require('path')
   }
   })
 
-require('./main.js')(conn, m, chatUpdate, store)
+require('../main.js')(conn, m, chatUpdate, store)
  }) 
  skMods.ev.on("call", async (fuckedcall) => { 
  const anticall = global.db.data.settings[skMods.user.jid].antiCall 
