@@ -9,7 +9,7 @@ desc: "comandos del bot",
 filename: __filename
 },
 async(conn, m) => {
-const { commands } = require('./lib')
+const { commands } = require('../lib')
 if (m.text.split(" ")[0]) {
 let arr = []
 const cmd = commands.find((cmd) => cmd.pattern === (text.split(" ")[0].toLowerCase()))

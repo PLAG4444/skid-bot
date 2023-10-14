@@ -1,4 +1,4 @@
-const skid = require('./lib/commands.js')
+const skid = require('../lib/commands.js')
 
 skid.cmd({
 pattern: "lb",
