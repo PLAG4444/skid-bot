@@ -4,7 +4,7 @@ const { cmd } = require('../lib')
 cmd({
 pattern: 'apk',
 desc: 'descargar y buscar aplicaciónes de aptoide',
-use: '.apk whatsapp'
+use: '.apk whatsapp',
 category: 'downloaders',
 }, 
 async (conn, m, { text }) => {
@@ -26,8 +26,8 @@ throw `*[❗] Error, no se encontrarón resultados para su búsqueda.*`;
 
 cmd({
 pattern: 'play',
-desc: 'Descarga de videos de YouTube'
-use: '.play tsb'
+desc: 'Descarga de videos de YouTube',
+use: '.play tsb',
 category: 'downloaders',
 }, 
 async (conn, m, { text }) => { // ?
@@ -90,7 +90,7 @@ cmd({
 pattern: "tiktok",
 alias: ["tiktokvideo"],
 desc: "descargar videos de tiktok",
-use: "tiktok >link<"
+use: "tiktok >link<",
 category: "downloaders"
 }, 
 async (conn, m, { text }) => {
@@ -106,8 +106,8 @@ cmd({
 pattern: "tiktokmp3",
 alias: ["tiktokaudio", "tiktokaudios"],
 desc: "descargar audios de tiktok",
-use: "tiktok >link<"
-category: "downloaders"
+use: "tiktok >link<",
+category: "downloaders",
 }, 
 async (conn, m, { text }) => {
     if (!text) return m.reply(`*Ejemplo de uso*\n${global.prefix}${cmd.use}`)
