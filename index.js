@@ -17,6 +17,7 @@ const yargs = require('yargs/yargs')
 const ws = require('ws')
 const _ = require('lodash')
 const NodeCache = require('node-cache')
+const { format } = require('util')
 const pino = require('pino')
 const store = require('./lib')
 protoType()
@@ -113,8 +114,7 @@ if (!conn.public && !m.key.fromMe && chatUpdate.type === 'notify') return
 if (global.db.data == null) await loadDatabase()
 var body = (typeof m.text == 'string' ? m.text : '') 
 global.numBot = conn.user.jid
-global.numBot2 = conn.user.id    
-var body = (typeof m.text == 'string' ? m.text : '') 
+global.numBot2 = conn.user.id
   const prefix = new RegExp('^[' + ('/i!#$%+£¢€¥^°=¶∆×÷π√✓©®:;?&.\\-').replace(/[|\\{}()[\]^$+*?.\-\^]/g, '\\$&') + ']')
   const isCmd = body ? prefix.test(body) : false
   const args = body.trim().split(/ +/).slice(1) 
@@ -134,9 +134,9 @@ var body = (typeof m.text == 'string' ? m.text : '')
   try {
   let text = m.text
   cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName })
-  } catch (e) {
+  
   conn.logger.error('\n❗ Error Critico\n Reporte del fallo!!\n' + e)
-  }}}
+  
   events.commands.map(async(command) => {
   if (body && command.on === "body") {
   command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, body });
@@ -154,6 +154,9 @@ var body = (typeof m.text == 'string' ? m.text : '')
   command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
   }
   })
+  } catch (e) {
+  m.reply(format(e))
+  }
 require('./main.js')(conn, m, chatUpdate, store)
 })
 
