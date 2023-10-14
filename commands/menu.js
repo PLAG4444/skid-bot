@@ -28,7 +28,8 @@ return m.reply(arr.join("\n"))
     }
     })
     
-    const time = moment(moment()).format('HH:mm:ss')moment.tz.setDefault('Asia/KOLKATA').locale('id')
+    const time = moment(moment()).format('HH:mm:ss')
+    moment.tz.setDefault('Asia/KOLKATA').locale('id')
     const date = moment.tz('Asia/Kolkata').format('DD/MM/YYYY')
     let str = `╭────《 ` + global.botname + ` 》─────⊷\n`
 str += `│ ╭──────────────◆
