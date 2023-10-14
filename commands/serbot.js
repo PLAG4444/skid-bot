@@ -280,7 +280,7 @@ require('./main.js')(conn, m, chatUpdate, store)
    })
    cmd({
    pattern: "public",
-   desc: "pone al bot en uso publico..."
+   desc: "pone al bot en uso publico...",
    category: "jadibots",
    }, 
    async (conn, m, { isBot }) => {
@@ -290,7 +290,7 @@ require('./main.js')(conn, m, chatUpdate, store)
    })
    cmd({
    pattern: "self",
-   desc: "pone al bot en uso privado..."
+   desc: "pone al bot en uso privado...",
    category: "jadibots",
    }, 
    async (conn, m, { isBot }) => {
