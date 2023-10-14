@@ -30,7 +30,7 @@ desc: 'Descarga de videos de YouTube',
 use: '.play tsb',
 category: 'downloaders',
 }, 
-async (conn, m, { text }) => { // ?
+async (conn, m, { text, args }) => { // ?
 let { youtubedl, youtubedlv2 } = require('@bochilteam/scraper')
    let { search } = require('../lib')
    let enviando

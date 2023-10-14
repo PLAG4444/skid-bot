@@ -101,9 +101,9 @@ const path = require('path')
     await skmod.sendMessage(m.chat, { text: args ?  `*✅ Reconexion Exitosa*\n*tus mensajes se estan cargando*` : `*✅ Jadibot Conectado*\n*se te enviara un codigo para volver a conectarte*` }, { quoted: m }) 
     await sleep(5000) 
     if (!args) skmod.sendMessage(m.chat, { text: `${prefix + command } ` + Buffer.from(fs.readFileSync(`./jadibot/${m.sender.split("@")[0]}/creds.json`), "utf-8").toString("base64") }, { quoted: m })
-    fs.readdirSync(__dirname + "/commands").forEach((plugin) => {
+    fs.readdirSync("../commands").forEach((plugin) => {
     if (path.extname(plugin).toLowerCase() == ".js") {
-    require(__dirname + "/commands/" + plugin);
+    require("../commands/" + plugin);
     }
     })
     } 
