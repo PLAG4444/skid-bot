@@ -313,6 +313,6 @@ require('./main.js')(conn, m, chatUpdate, store)
       te += "Numero: https://wa.me/+" + y.split("@")[0] + "?text=.estado\n\n"
       }
    } catch (e) {
-   m.reply('*sin subbots activos por eo momento*')
+   m.reply('*sin subbots activos por el momento*')
    }
    })
