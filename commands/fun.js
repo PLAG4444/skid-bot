@@ -83,7 +83,8 @@ let coger = `🥵 te acabas acabas de coger a ${text}!🥵
    ${text} ¡te han cogido! 😏 
   `
    conn.sendTextWithMentions(m.chat, coger, m)
-}
+})
+
 cmd({
 pattern: "bot",
 alias: ["simi"],
