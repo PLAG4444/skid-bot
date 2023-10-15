@@ -607,6 +607,69 @@ txt += `*+${rewards[reward]}* ${global.rpg.emoticon(reward)}\n`
 conn.reply(m.chat, '*HAS CONSEGUIDO 🥳*\n' + txt, global.fkontak)
 user.lastclaim = new Date() * 1
 })
+cmd({
+pattern: "transfer",
+alias: ["transferir", "dar"],
+desc: "transfiere a la gente",
+category: "rpg",
+use: "@user",
+},
+async (conn, m, { text, body } => {
+let items = ['money', 'exp', 'limit', 'potion']
+    this.confirm = this.confirm ? this.confirm : {}
+    if (this.confirm[m.sender]) return conn.sendText(m.chat, `*❗ Aun hay una tranferencia, Espera a que acabe esa transferencia*`, m)
+    let user = global.db.data.users[m.sender]
+    let item = items.filter((v) => v in user && typeof user[v] == 'number')
+    let lol = `*Creo que no sabes usar bien este comando -_-*\n*te dare un ejemplo porque me caes bien ^w^*\n${prefix + command} exp 100 @0\n📍 Algunos articulos *Disponibles son*:\nexp\nmoney\nlimit\npotion`
+    let type = (args[0] || '').toLowerCase()
+    if (!item.includes(type)) return conn.sendTextWithMentions(m.chat, lol, m)
+    let count = Math.min(Number.MAX_SAFE_INTEGER, Math.max(1, (isNumber(args[1]) ? parseInt(args[1]) : 1))) * 1
+    let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : args[2] ? (args[2].replace(/[@ .+-]/g, '') + '@s.whatsapp.net') : ''
+    if (!(who in global.db.data.users)) throw '*El usuario no esta registrado en mi base de datos :(*'
+    if (user[type] * 1 < count) throw `no tienes suficiente *${type}*`
+    let confirm = `*estas seguro de transferir ${count}?*\ntienes solamente *60 segundos*\nelige una opción\nsi = transferir ${count}\nno = cancelar`
+    await m.reply(confirm)
+    this.confirm[m.sender] = {
+    sender: m.sender,
+    to: who,
+    message: m, type, count,
+    timeout: setTimeout(() => (m.reply(`*❗ se acabo el tiempo*\n*la transacción se canceló 😓*`), delete this.confirm[m.sender]), 60 * 1000)
+    }
+})   
+cmd({ on: "text" }, async (conn, m, { text, body } => {
+this.confirm = this.confirm ? this.confirm : {}
+  if (this.confirm[m.sender]) {
+  let { timeout, sender, message, to, type, count } = this.confirm[m.sender]
+  let user = global.db.data.users[sender]
+  let _user = global.db.data.users[to]
+  if (/^No|no$/i.test(body)) {
+  clearTimeout(timeout)
+  delete this.confirm[sender]
+  return this.sendTextWithMentions(m.chat, `@${sender.split("@")[0]} *cancelo la transferencia*`, m)
+  }
+
+  if (/^Si|si$/i.test(m.text)) { 
+   let previous = user[type] * 1
+   let _previous = _user[type] * 1
+   user[type] -= count * 1
+   _user[type] += count * 1
+   if (previous > user[type] * 1 && _previous < _user[type] * 1) {
+   conn.sendMessage(m.chat, {text: `*[❗] Se transfirierón correctamente ${count} ${type} a @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m}); 
+     } else { 
+       user[type] = previous; 
+       _user[type] = _previous; 
+       conn.sendMessage(m.chat, {text: `*[❗] Error al transferir ${count} ${type} a @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m}); 
+     } 
+     clearTimeout(timeout); 
+     delete this.confirm[sender]; 
+   }
+  }
+})
+
+
+
+
+
 
  function toNumber(property, _default = 0) { 
    if (property) { 
@@ -619,4 +682,7 @@ user.lastclaim = new Date() * 1
  function enumGetKey(a) { 
    return a.jid; 
  }
+function isNumber(x) { 
+    return !isNaN(x); 
+    }
 

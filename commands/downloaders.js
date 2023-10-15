@@ -1,5 +1,6 @@
 require('../settings.js')
-const { cmd, getBuffer } = require('../lib')
+const { cmd, getBuffer, pickRandom } = require('../lib')
+const yts = require("youtube-yts")
 
 cmd({
 pattern: 'apk',
@@ -106,7 +107,7 @@ cmd({
 pattern: "tiktokmp3",
 alias: ["tiktokaudio", "tiktokaudios"],
 desc: "descargar audios de tiktok",
-use: "tiktok >link<",
+use: "<link>",
 category: "downloaders",
 }, 
 async (conn, m, { text }) => {
@@ -117,3 +118,72 @@ async (conn, m, { text }) => {
     conn.sendMessage(m.chat, { audio: { url: data.audio }, mimetype: 'audio/mp4' }, { quoted: m })
     })
     })
+
+
+cmd({
+pattern: "play2",
+desc: "descarga audios de YouTube",
+category: "downloaders",
+use: "tsb",
+},
+async (conn, m, { text, args }) => {
+ let limit_a1 = 50
+ let limit_a2 = 400
+ if (!text) throw `*❗No hay cancion o texto para buscar*\n*ejemplo: ${prefix + command} everyone wants to rule the world*`
+ try { 
+ let { search } = require('./lib')
+ let { youtubedl, youtubedlv2 } = require('@bochilteam/scraper')
+ let yt_play = await search(args.join(' '))
+ let text1 = `*——⌈🔊 YOUTUBE PLAY 🔊⌋——*\n📌 *Titulo*: _${yt_play[0].title}_\n📆 *Publicado*: ${yt_play[0].ago}\n*🔗 Link*: ${yt_play[0].url}`
+ conn.sendMessage(m.chat, {image: {url: yt_play[0].thumbnail}, caption: text1 }, {quoted: m})
+ let q = '128kbps'
+ let v = yt_play[0].url
+ let yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v))
+ let _tetme = await yt.title
+ let size_api = await yt.size
+ let bochilDownload = await yt.audio[q].download()
+ let sex = await getBuffer(bochilDownload)
+ let fileSizeInBytes = sex.byteLength; 
+ let fileSizeInKB = fileSizeInBytes / 1024; 
+ let fileSizeInMB = fileSizeInKB / 1024; 
+ let size = fileSizeInMB.toFixed(2);    
+     if (size >= limit_a2) {   
+     await conn.sendMessage(m.chat, {text: `*[ ✔ ] Descargue su audio en ${bochilDownload}*`}, {quoted: m}); 
+     return     
+     }      
+     if (size >= limit_a1 && size <= limit_a2) {   
+     await conn.sendMessage(m.chat, {document: sex, mimetype: 'audio/mpeg', fileName: _tetme+ `.mp3`}, {quoted: m});    
+     return 
+     } else { 
+     await conn.sendMessage(m.chat, {audio: sex, mimetype: 'audio/mpeg', fileName: _tetme + `.mp3`, contextInfo: { externalAdReply: { 
+     title: _tetme, 
+     body: "", 
+     thumbnailUrl: yt_play[0].thumbnail,  
+     mediaType: 1, 
+     showAdAttribution: true, 
+     renderLargerThumbnail: true 
+     }}} , { quoted: m })
+     return     
+     }       
+ } catch (error) {
+ throw `*❗ Hubo un error al descargar música*\n` + error
+ }
+ })
+cmd({
+pattern: "yts",
+alias: ["ytsearch", "yt"],
+desc: "buscar videos de youtube",
+category: "downloaders"
+},
+async (conn, m, { text, body, args }) => {
+    if (!text) throw `Ejemplo: ${prefix + comand} historia wa anime`;   
+     const search = await yts(text);   
+     let teks = 'Búsqueda en YouTube\n\nResultados de ' + text + '\n\n';   
+     let no = 1;   
+     let themeemoji = pickRandom(["🌐", "🌟", "✨", "📍", "🚩"])
+     for (let i of search.all) {   
+       teks += `${themeemoji} No: ${no++}\n${themeemoji} Tipo: ${i.type}\n${themeemoji} ID del Video: ${i.videoId}\n${themeemoji} Título: ${i.title}\n${themeemoji} Vistas: ${i.views}\n${themeemoji} Duración: ${i.timestamp}\n${themeemoji} Subido: ${i.ago}\n${themeemoji} URL: ${i.url}\n\n━━━━━━━━━━━━\n\n`;   
+     }   
+     await conn.sendMessage(m.chat, { image: { url: search.all[0].thumbnail }, caption: teks }, { quoted: global.fkontak });   
+
+})
