@@ -44,9 +44,9 @@
   */  
   module.exports = conn = async (conn, m, chatUpdate, store) => {  
   var body = (typeof m.text == 'string' ? m.text : '')
-  var _prefix = new RegExp('^[' + ('/i!#$%+£¢€¥^°=¶∆×÷π√✓©®:;?&.\\-').replace(/[|\\{}()[\]^$+*?.\-\^]/g, '\\$&') + ']')
+  var _prefix = /^[°•÷×™+✓_=|~!?@#%^.©^]/gi.test(body) ? body.match(/^[°•÷×™+✓_=|~!?@#%^.©^]/gi)[0] : ""
   global.prefix = _prefix
-  const isCmd = body ? prefix.test(body) : false
+  const isCmd = body.startsWith(prefix)   
   const command = isCmd ? body.slice(1).trim().split(/ +/).shift().toLocaleLowerCase() : null
   const args = body.trim().split(/ +/).slice(1) 
   
@@ -1365,16 +1365,6 @@ break
                 m.reply('*✅ Hecho*')
                 }
             break
-            
-
-
-    
-  
-  case 'ping':  
-    var timestamp = speed();  
-    var latensi = speed() - timestamp  
-    conn.sendMessage(m.chat, { text: `*Pong 🏓  ${latensi.toFixed(4)}*` }, { quoted: m});  
-    break  
   
           case 'update':  
             if (!isCreator) return conn.sendMessage(m.chat, { text: mess.owner }, { quoted: m});  
