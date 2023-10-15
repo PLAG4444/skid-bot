@@ -2,8 +2,8 @@ const { cmd } = require('../lib')
 
 cmd({
 pattern: "hidetag",
-desc: "taguea a todos los usuarios"
-category: 'grupos'
+desc: "taguea a todos los usuarios",
+category: 'grupos',
 }, 
 async (conn, m) => {
     if (!m.isGroup) return m.reply(mess.group)

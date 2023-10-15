@@ -184,7 +184,7 @@ const path = require('path')
   const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
   if (cmd) {
   try {
-  let text = m.text
+  const text = m.text
   cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName })
   } catch (e) {
   m.reply(format(e))
