@@ -132,7 +132,7 @@ global.numBot2 = conn.user.id
   const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
   if (cmd) {
   try {
-  let text = m.text
+  const text = m.text
   cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName })
   } catch (e) {
   m.reply(format(e))
@@ -295,7 +295,5 @@ await clearTmp()
 await conn.logger?.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ ✅ Eliminando archivos temporales\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
 }, 180000)
 }
-process.on('uncaughtException', console.log)
-process.on('unhandledRejection', console.log)
-process.on('RefenceError', console.log)
+process.on('uncaughtException', console.error);
 startBot()
