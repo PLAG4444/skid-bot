@@ -586,7 +586,7 @@ alias: ["reclamar"],
 desc: "reclama tu recompensa diaria",
 category: "rpg",
 },
-async (conn, m) {
+async (conn, m) => {
 let user = global.db.data.users[m.sender]
 let rewards = {
 exp: 9999 + user.dog * 1000,
