@@ -42,7 +42,6 @@ const mime = (m.quoted.msg || m.quoted).mimetype || ''
       } else {  
           m.reply(`*Envía una imagen/video con ${prefix + command}*\n_*(La duración del video solo puede ser de 10 segundos)*_`)  
           }  
-      }
 })
 cmd({
 pattern: "ia",

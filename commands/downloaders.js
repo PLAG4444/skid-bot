@@ -131,7 +131,7 @@ async (conn, m, { text, args }) => {
  let limit_a2 = 400
  if (!text) throw `*❗No hay cancion o texto para buscar*\n*ejemplo: ${prefix + command} everyone wants to rule the world*`
  try { 
- let { search } = require('./lib')
+ let { search } = require('../lib')
  let { youtubedl, youtubedlv2 } = require('@bochilteam/scraper')
  let yt_play = await search(args.join(' '))
  let text1 = `*——⌈🔊 YOUTUBE PLAY 🔊⌋——*\n📌 *Titulo*: _${yt_play[0].title}_\n📆 *Publicado*: ${yt_play[0].ago}\n*🔗 Link*: ${yt_play[0].url}`
