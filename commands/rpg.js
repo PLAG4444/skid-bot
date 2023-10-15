@@ -283,7 +283,7 @@ cmd({
 pattern: "inventario",
 alias: ["inv", "inventory"],
 desc: "checar el inventario",
-category: "fun",
+category: "rpg",
 },
 async (conn, m) => {
 let inventory = { 
@@ -620,7 +620,7 @@ let items = ['money', 'exp', 'limit', 'potion']
     if (this.confirm[m.sender]) return conn.sendText(m.chat, `*❗ Aun hay una tranferencia, Espera a que acabe esa transferencia*`, m)
     let user = global.db.data.users[m.sender]
     let item = items.filter((v) => v in user && typeof user[v] == 'number')
-    let lol = `*Creo que no sabes usar bien este comando -_-*\n*te dare un ejemplo porque me caes bien ^w^*\n${prefix + command} exp 100 @0\n📍 Algunos articulos *Disponibles son*:\nexp\nmoney\nlimit\npotion`
+    let lol = `*Creo que no sabes usar bien este comando -_-*\n*te dare un ejemplo porque me caes bien ^w^*\n${global.prefix + cmd.pattern} exp 100 @0\n📍 Algunos articulos *Disponibles son*:\nexp\nmoney\nlimit\npotion`
     let type = (args[0] || '').toLowerCase()
     if (!item.includes(type)) return conn.sendTextWithMentions(m.chat, lol, m)
     let count = Math.min(Number.MAX_SAFE_INTEGER, Math.max(1, (isNumber(args[1]) ? parseInt(args[1]) : 1))) * 1

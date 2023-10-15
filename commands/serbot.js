@@ -152,20 +152,21 @@ const path = require('path')
      let i = global.listJadibot.indexOf(skMods) 
   
       if (i < 0) return 
-       delete global.conns[i] 
+       delete global.listJadibot[i] 
        global.listJadibot.splice(i, 1) 
      }}, 60000) 
   
- skMods.ev.on("messages.upsert", async (chatUpdate) => { 
- skMods.pushMessage(chatUpdate.messages).catch(console.error)
- let m = chatUpdate.messages[chatUpdate.messages.length - 1]
-  m = smsg(skMods, m) || m
-  if (!m) return
-  if (m.isBaileys) return
-  if (!chatUpdate) return
-  if (!skMods.public && !m.key.fromMe && chatUpdate.type === 'notify') return
-  if (global.db.data == null) await loadDatabase()
-  var body = (typeof m.text == 'string' ? m.text : '') 
+ skMods.ev.on("messages.upsert", async (chatUpdate) => {
+skMods.pushMessage(chatUpdate.messages).catch(console.error)
+let m = chatUpdate.messages[chatUpdate.messages.length - 1]
+m = smsg(skMods, m) || m
+if (!m) return
+if (m.isBaileys) return
+if (!chatUpdate) return
+if (!skMods.public && !m.key.fromMe && chatUpdate.type === 'notify') return
+if (global.db.data == null) await loadDatabase()
+var body = (typeof m.text == 'string' ? m.text : '') 
+
   const prefix = new RegExp('^[' + ('/i!#$%+£¢€¥^°=¶∆×÷π√✓©®:;?&.\\-').replace(/[|\\{}()[\]^$+*?.\-\^]/g, '\\$&') + ']')
   const isCmd = body ? prefix.test(body) : false
   const args = body.trim().split(/ +/).slice(1) 
@@ -179,12 +180,12 @@ const path = require('path')
   const isBotAdmins = m.isGroup ? groupAdmins.includes(isBot) : false  
   const isGroupAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false 
   const cmdName = isCmd ? body.slice(1).trim().split(" ")[0].toLowerCase() : false
+  const text = m.text
   const conn = skMods
   if (isCmd) {
   const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
   if (cmd) {
   try {
-  const text = m.text
   cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName })
   } catch (e) {
   m.reply(format(e))
@@ -208,8 +209,8 @@ const path = require('path')
   }
   })
 
-require('../main.js')(conn, m, chatUpdate, store)
- }) 
+require('./main.js')(skMods, m, chatUpdate, store)
+})
  skMods.ev.on("call", async (fuckedcall) => { 
  const anticall = global.db.data.settings[skMods.user.jid].antiCall 
  if (!anticall) return 

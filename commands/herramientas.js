@@ -7,7 +7,7 @@ desc: "convierte stickers en imagenes",
 category: "herramientas",
 },
 async (conn, m, { text, args }) => {
-const mime = (m.quoted.msg || m.quoted).mimetype || '' 
+const mime = (m.quoted).mimetype || '' 
 if (!m.quoted) throw '*uhh... puedes responder a un sticker ಠ⁠_⁠ಠ*'
   if (!/webp/.test(mime)) throw '*uhh... puedes responder a un sticker ಠ⁠_⁠ಠ*'
   let media = await conn.downloadAndSaveMediaMessage(m.quoted)
@@ -27,7 +27,7 @@ desc: "simplemente un creador de stickers",
 category: "stickers",
 },
 async (conn, m, { args }) => {
-const mime = (m.quoted.msg || m.quoted).mimetype || '' 
+const mime = (m.quoted).mimetype || '' 
           if (/image/.test(mime)) {  
           m.reply(mess.wait)  
           media = await quoted.download()  
@@ -66,7 +66,7 @@ desc: "convierte imágenes a links",
 category: 'herramientas',
 },
 async (conn, m, { text, args }) => {
-const mime = (m.quoted.msg || m.quoted).mimetype || '' 
+const mime = (m.quoted).mimetype || '' 
 if (/image/.test(mime)) {
    _miMedia = await conn.downloadAndSaveMediaMessage(m.quoted)
    _upload = await TelegraPh(_miMedia)
@@ -83,7 +83,7 @@ desc: "convierte imágenes a anime",
 category: 'herramientas',
 },
 async (conn, m, { text, args }) => {
-const mime = (m.quoted.msg || m.quoted).mimetype || '' 
+const mime = (m.quoted).mimetype || '' 
 if (/image/.test(mime)) {
    let _miMedia = await conn.downloadAndSaveMediaMessage(m.quoted)
    let _upload = await TelegraPh(_miMedia)
@@ -143,7 +143,7 @@ desc: "convertir videos a mp3",
 category: "herramientas",
 },
 async (conn, m, { body, args, text }) => {
-const mime = (m.quoted.msg || m.quoted).mimetype || '' 
+const mime = (m.quoted).mimetype || '' 
 if (!/video/.test(mime) && !/audio/.test(mime)) throw `*❗ Etiqueta un audio con ${prefix + command}*`
                   if (!quoted) throw `*❗ Etiqueta un video con ${prefix + command}*`
                   let { toAudio } = require('../lib')
