@@ -83,33 +83,7 @@
   
   const sendImageAsUrl = ( url, caption ) => { conn.sendMessage(m.chat, { image:  {url: url }, caption: caption }, { quoted: m })}  
 
-  this.confirm = this.confirm ? this.confirm : {}
-  if (this.confirm[m.sender]) {
-  let { timeout, sender, message, to, type, count } = this.confirm[m.sender]
-  let user = global.db.data.users[sender]
-  let _user = global.db.data.users[to]
-  if (/^No|no$/i.test(body)) {
-  clearTimeout(timeout)
-  delete this.confirm[sender]
-  return this.sendTextWithMentions(m.chat, `@${sender.split("@")[0]} *cancelo la transferencia*`, m)
-  }
-
-  if (/^Si|si$/i.test(m.text)) { 
-   let previous = user[type] * 1
-   let _previous = _user[type] * 1
-   user[type] -= count * 1
-   _user[type] += count * 1
-   if (previous > user[type] * 1 && _previous < _user[type] * 1) {
-   conn.sendMessage(m.chat, {text: `*[❗] Se transfirierón correctamente ${count} ${type} a @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m}); 
-     } else { 
-       user[type] = previous; 
-       _user[type] = _previous; 
-       conn.sendMessage(m.chat, {text: `*[❗] Error al transferir ${count} ${type} a @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m}); 
-     } 
-     clearTimeout(timeout); 
-     delete this.confirm[sender]; 
-   }
-  }
+  
   this.bet = this.bet ? this.bet : {}
   if (m.sender in this.bet) {
      if (m.isBaileys) return 
@@ -336,52 +310,8 @@ break
   break
   
   
-  case 'toimg': {
-  if (!m.quoted) throw '*uhh... puedes responder a un sticker ಠ⁠_⁠ಠ*'
-  if (!/webp/.test(mime)) throw '*uhh... puedes responder a un sticker ಠ⁠_⁠ಠ*'
-  let media = await conn.downloadAndSaveMediaMessage(m.quoted)
-  let ran = await getRandom('sk.png')
-  exec(`ffmpeg -i ${media} ${ran}`, (err) => {
-  fs.unlinkSync(media)
-  if (err) throw err
-  let buffer = fs.readFileSync(ran)
-  conn.sendMessage(m.chat, { image: buffer }, { quoted: m})
-  fs.unlinkSync(ran)
-  })
-  }
+  
   break
-
-
-    case 'transfer': {
-    let items = ['money', 'exp', 'limit', 'potion']
-    this.confirm = this.confirm ? this.confirm : {}
-    if (this.confirm[m.sender]) return conn.sendText(m.chat, `*❗ Aun hay una tranferencia, Espera a que acabe esa transferencia*`, m)
-    let user = global.db.data.users[m.sender]
-    let item = items.filter((v) => v in user && typeof user[v] == 'number')
-    let lol = `*Creo que no sabes usar bien este comando -_-*\n*te dare un ejemplo porque me caes bien ^w^*\n${prefix + command} exp 100 @0\n📍 Algunos articulos *Disponibles son*:\nexp\nmoney\nlimit\npotion`
-    let type = (args[0] || '').toLowerCase()
-    if (!item.includes(type)) return conn.sendTextWithMentions(m.chat, lol, m)
-    let count = Math.min(Number.MAX_SAFE_INTEGER, Math.max(1, (isNumber(args[1]) ? parseInt(args[1]) : 1))) * 1
-    let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : args[2] ? (args[2].replace(/[@ .+-]/g, '') + '@s.whatsapp.net') : ''
-    if (!(who in global.db.data.users)) throw '*El usuario no esta registrado en mi base de datos :(*'
-    if (user[type] * 1 < count) throw `no tienes suficiente *${type}*`
-    let confirm = `*estas seguro de transferir ${count}?*\ntienes solamente *60 segundos*\nelige una opción\nsi = transferir ${count}\nno = cancelar`
-    await m.reply(confirm)
-    this.confirm[m.sender] = {
-    sender: m.sender,
-    to: who,
-    message: m, type, count,
-    timeout: setTimeout(() => (m.reply(`*❗ se acabo el tiempo*\n*la transacción se canceló 😓*`), delete this.confirm[m.sender]), 60 * 1000)
-    }
-    function isNumber(x) { 
-    return !isNaN(x); 
-    }
-    }
-    break
-
- 
-   
- 
  
    case 'menu': {
    let user = global.db.data.users[m.sender]
@@ -898,32 +828,7 @@ await conn.sendMessage(m.chat, {
  //conn.sendMessage(m.chat, { image: image, caption: str }, {quoted: m})
  }    
  }
- break
-    
-    
-      case 's':  
-      case 'sticker': {  
-          if (/image/.test(mime)) {  
-          m.reply(mess.wait)  
-          media = await quoted.download()  
-          let encmedia = await conn.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author })  
-          await fs.unlinkSync(encmedia)  
-        } else if (/video/.test(mime)) {  
-          if ((quoted.msg || quoted).seconds > 40) return m.reply('¡Máximo 40 segundos!')  
-          media = await quoted.download()  
-          let encmedia = await conn.sendVideoAsSticker(m.chat, media, m, { packname: packname, author: author })  
-          await new Promise((resolve) => setTimeout(resolve, 2000));   
-          await fs.unlinkSync(encmedia)  
-      } else {  
-          m.reply(`*Envía una imagen/video con ${prefix + command}*\n_*(La duración del video solo puede ser de 10 segundos)*_`)  
-          }  
-      }  
-      break
-  
-            
-      
-            
-    
+ break    
          case 'ofuscar':
        if (!text) return m.reply("*Ingresa el codigo que vas a ofuscar.*"); 
          function obfuscateCode(code) { 
@@ -973,17 +878,7 @@ await conn.sendMessage(m.chat, {
     conn.sendMessage(m.chat, { sticker: { url: link } }, { quoted: fkontak })  
     break  
   
-  case 'yts':  
-    if (!text) throw `Ejemplo: ${prefix + comand} historia wa anime`;  
-    const search = await yts(text);  
-    let teks = 'Búsqueda en YouTube\n\nResultados de ' + text + '\n\n';  
-    let no = 1;  
-    let themeemoji = "✨";  
-    for (let i of search.all) {  
-      teks += `${themeemoji} No: ${no++}\n${themeemoji} Tipo: ${i.type}\n${themeemoji} ID del Video: ${i.videoId}\n${themeemoji} Título: ${i.title}\n${themeemoji} Vistas: ${i.views}\n${themeemoji} Duración: ${i.timestamp}\n${themeemoji} Subido: ${i.ago}\n${themeemoji} URL: ${i.url}\n\n━━━━━━━━━━━━\n\n`;  
-    }  
-    await conn.sendMessage(m.chat, { image: { url: search.all[0].thumbnail }, caption: teks }, { quoted: fkontak });  
-    break  
+  
   
   
   case 'leave': {  
@@ -1035,14 +930,6 @@ await conn.sendMessage(m.chat, {
   }
   break		
   
-  case 'hidetag':  
-    if (!m.isGroup) return m.reply(mess.group)
-    if (!isGroupAdmins) return m.reply(mess.admin)
-    if (isGroupAdmins || isCreator || !m.quoted ) {  
-      conn.sendMessage(m.chat, { text: text ? text : "", mentions: participants.map((a) => a.id) }, { quoted: m })  
-    }
-    if (m.quoted) return conn.sendMessage(m.chat, { forward: m.quoted.fakeObj, mentions: participants.map(a => a.id) }, { quoted: m }) // Mario is going to steal it
-    break;  
   
   case 'tagall': {  
     if (!m.isGroup) return m.reply(mess.group);  
@@ -1073,34 +960,7 @@ await conn.sendMessage(m.chat, {
    let _img = _res[Math.floor(Math.random() * _res.length)]
    conn.sendMessage(m.chat, { image: { url: _img }, caption: `*✨ Aqui tienes tu wallpaper de ${text}*`}, { quoted: fgif })
    break
-   case 'anime': {
-   if (/image/.test(mime)) {
-   let _miMedia = await conn.downloadAndSaveMediaMessage(quoted)
-   let _upload = await TelegraPh(_miMedia)
-   try {
-   let anime = await `https://api.lolhuman.xyz/api/imagetoanime?apikey=${lolkeysapi}&img=${_upload}`
-   await m.reply(mess.wait)
-   await conn.sendFile(m.chat, anime, 'error.jpg', null, m) 
-   } catch (e) {
-   throw '❗ *Hubo un error*\n*Responde solo a imagenes que tengas caras visibles* (⁠-⁠_⁠-⁠;⁠)'
-   }
-   } else { 
-   m.reply(`*❗ responde a una imagen unu*`)
-   }
-   }
-   break
-   case 'tolink': case 'tourl': {
-   if (/image/.test(mime)) {
-   _miMedia = await conn.downloadAndSaveMediaMessage(quoted)
-   _upload = await TelegraPh(_miMedia)
-   m.reply(mess.wait)
-   sleep(1000)
-   m.reply(_upload)
-   } else { 
-   m.reply(`*❗ responde a una imagen *`)
-   }
-   }
-   break
+   
    
    
    case 'removebg': case 'removerfondo': {
@@ -1114,52 +974,6 @@ await conn.sendMessage(m.chat, {
    }
    }
    break
-   
-  
-case 'play2': {
- let limit_a1 = 50
- let limit_a2 = 400
- if (!text) throw `*❗No hay cancion o texto para buscar*\n*ejemplo: ${prefix + command} everyone wants to rule the world*`
- try { 
- let { search } = require('./lib')
- let { youtubedl, youtubedlv2 } = require('@bochilteam/scraper')
- let yt_play = await search(args.join(' '))
- let text1 = `*——⌈🔊 YOUTUBE PLAY 🔊⌋——*\n📌 *Titulo*: _${yt_play[0].title}_\n📆 *Publicado*: ${yt_play[0].ago}\n*🔗 Link*: ${yt_play[0].url}`
- conn.sendMessage(m.chat, {image: {url: yt_play[0].thumbnail}, caption: text1 }, {quoted: m})
- let q = '128kbps'
- let v = yt_play[0].url
- let yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v))
- let _tetme = await yt.title
- let size_api = await yt.size
- let bochilDownload = await yt.audio[q].download()
- let sex = await getBuffer(bochilDownload)
- let fileSizeInBytes = sex.byteLength; 
- let fileSizeInKB = fileSizeInBytes / 1024; 
- let fileSizeInMB = fileSizeInKB / 1024; 
- let size = fileSizeInMB.toFixed(2);    
-     if (size >= limit_a2) {   
-     await conn.sendMessage(m.chat, {text: `*[ ✔ ] Descargue su audio en ${bochilDownload}*`}, {quoted: m}); 
-     return     
-     }      
-     if (size >= limit_a1 && size <= limit_a2) {   
-     await conn.sendMessage(m.chat, {document: sex, mimetype: 'audio/mpeg', fileName: _tetme+ `.mp3`}, {quoted: m});    
-     return 
-     } else { 
-     await conn.sendMessage(m.chat, {audio: sex, mimetype: 'audio/mpeg', fileName: _tetme + `.mp3`, contextInfo: { externalAdReply: { 
-     title: _tetme, 
-     body: "", 
-     thumbnailUrl: yt_play[0].thumbnail,  
-     mediaType: 1, 
-     showAdAttribution: true, 
-     renderLargerThumbnail: true 
-     }}} , { quoted: m })
-     return     
-     }       
- } catch (error) {
- throw `*❗ Hubo un error al descargar música*\n` + error
- }
- }
- break
 
  /* case 'code': {
   let usedCode = new Set()
@@ -1379,19 +1193,7 @@ break
   
          
   
-          case 'ia': {
-          if (!text) return m.reply(`*ingresa un texto para hablar con chatgpt ♡*`)
-          try {     
-         let tioress = await fetch(`https://api.lolhuman.xyz/api/openai-turbo?apikey=${lolkeysapi}&text=${text}`) 
-         let hasill = await tioress.json() 
-         m.reply(`${hasill.result}`.trim())    
-         } catch {
-         let mygpt = await fetch(`https://vihangayt.me/tools/chatgpt4?q=${text}`)
-         let _result = await mygpt.json()
-         m.reply(`${_result.data}`)
-        }
-        }
-         break
+          
          
          case 'whatmusic': {
          let acrcloud = require('acrcloud')
@@ -1841,46 +1643,7 @@ break
 			}
 			} 
 			break
-			
-
-    
-			
-
-            case 'inspeccionar': case 'vergrupo': {
-    let linkRegex = args.join(" ")
-    let textt = ``
-    let coded = linkRegex.split("https://chat.whatsapp.com/")[1]
-    if (!coded) return m.reply("Link Invalid")
-    conn.query({
-    tag: "iq",
-    attrs: {
-    type: "get",
-    xmlns: "w:g2",
-    to: "@g.us"
-    },
-    content: [{ tag: "invite", attrs: { code: coded } }]
-    }).then(async(res) => { 
-    textt = `「 inspector de grupos」
-▸ Nombre del grupo: ${res.content[0].attrs.subject ? res.content[0].attrs.subject : "undefined"}
-
-▸ Descripción: ${res.content[0].attrs.s_t ? moment(res.content[0].attrs.s_t *1000).tz("Asia/Jakarta").format("DD-MM-YYYY, HH:mm:ss") : "undefined"}
-▸ Creador del grupo: ${res.content[0].attrs.creator ? "@" + res.content[0].attrs.creator.split("@")[0] : "undefined"}
-▸ Grupo creado: ${res.content[0].attrs.creation ? moment(res.content[0].attrs.creation * 1000).tz("Asia/Jakarta").format("DD-MM-YYYY, HH:mm:ss") : "undefined"}
-▸ Miembros: ${res.content[0].attrs.size ? res.content[0].attrs.size : "undefined"} Miembros
-
-▸ ID: ${res.content[0].attrs.id ? res.content[0].attrs.id : "undefined"}
-
-${botname}`
-    try {
-    pp = await conn.profilePictureUrl(res.content[0].attrs.id + "@g.us", "image")
-    } catch {
-    pp = "https://tse2.mm.bing.net/th?id=OIP.n1C1oxOvYLLyDIavrBFoNQHaHa&pid=Api&P=0&w=153&h=153"
-    }
-    conn.sendMessage(m.chat, { text: textt }, { quoted: m })
-    })
-    }
-    break
-    
+		
     case 'casino': {
     this.slots = this.slots ? this.slots :{}
     if (m.chat in this.slots) {
@@ -2002,263 +1765,7 @@ break
                   }  
               }
          
-     if (/^hola$/i.test(m.text)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Hola.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   }
-  
-   if (body.match(/(anadieleimporta|a nadie le importa)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/dylan1.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(araara|ara ara)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Ara.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(miarda de bot|mierda de bot|mearda de bot|Miarda de Bot|Mierda de Bot|Mearda de Bot)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/insultar.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(bañate|Bañate)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Banate.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(baneado|Baneado)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/baneado.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(bebito fiu fiu|bff|Bebito Fiu Fiu|Bff)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/bff.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(buenas noches|Buenas noches|Boanoite|boanoite)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/boanoite.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(buenas tardes|Buenas tardes|boatarde|Boatarde)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/boatarde.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(buenos dias|Buenos dias|buenos dias|Buenos dias)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Buenos-dias-2.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(chica lgante|Chica lgante|Chicalgante|chicalgante|chical gante|Chical gante)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/chica lgante.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(giagnosticadocongay|diagnosticado con gay|diagnosticado gay|te diagnÃ³stico con gay|diagnÃ³stico gay|te diagnostico con gay|te diagnÃ³stico con gay|te diagnosticÃ³ con gay|te diagnostico con gay)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/DiagnosticadoConGay.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(es puto|eeesss putoo|es putoo|esputoo)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Es putoo.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(feliz cumpleaños|felizcumpleaños|happy birthday)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Feliz cumple.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(Fiesta del admin|fiesta del admin)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/admin.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(fiesta del administrador)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/fiesta.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(fiesta del admin 3|atencion grupo|atencion grupo|aviso importante|fiestadeladmin3)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Fiesta1.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(gemidos|gemime|gime|gemime|gemi2)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/gemi2.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(audio hentai|Audio hentai|audiohentai|Audiohentai)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/hentai.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(sexo|Sexo|Hora de sexo|hora de sexo)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/maau1.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(laoracion|La biblia|La oracion|La biblia|La oracion|la biblia|La Biblia)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/ora.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(Marica tu|cancion1|Marica quien)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/cancion.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(MuriÃ³ el grupo|Murio el grupo|murio el grupo|muriò el grupo|Grupo muerto|grupo muerto)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Murio.m4a'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(Feliz navidad|feliz navidad|Merry Christmas|merry chritmas)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/navidad.m4a'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(noche de paz|Noche de paz|Noche de amor|noche de amor|Noche de Paz)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Noche.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(Nyapasu|Nyanpasu|nyapasu|Nyapasu|Gambure|Yabure)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/otaku.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(ho me vengo|oh me vengo|o me vengo|Ho me vengo|Oh me vengo|O me vengo)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/vengo.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(oni-chan|onichan|o-onichan)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Onichan.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(Pasa pack|vendes tu nudes|pasa video hot|pasa tu pack|pasa fotos hot|vendes tu pack|Vendes tu pack|Vendes tu pack?|vendes tu pack|Pasa Pack Bot|pasa pack Bot|pasa tu pack Bot|PÃ¡same tus fotos desnudas|pÃ¡same tu pack|me pasas tu pak|me pasas tu pack|pasa pack)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Elmo.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(QuiÃ©n es tu senpai botsito 7u7|Quien es tu senpai botsito 7u7|QuiÃ©n es tu sempai botsito 7u7|Quien es tu sempai botsito 7u7|QuiÃ©n es tu senpai botsito 7w7|Quien es tu senpai botsito 7w7|quiÃ©n es tu senpai botsito 7u7|quien es tu senpai botsito 7u7|QuiÃ©n es tu sempai botsito 7w7|Quien es tu sempai botsito 7w7|QuiÃ©n es tu senpai botsito|Quien es tu senpai botsito|QuiÃ©n es tu sempai botsito|Quien es tu sempai botsito|QuiÃ©n es tu senpai botsito|Quien es tu senpai botsito|quiÃ©n es tu senpai botsito|quien es tu senpai botsito|QuiÃ©n es tu sempai botsito|Quien es tu sempai botsito)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Tu.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(rawr|Rawr|RAWR|raawwr|rraawr|rawwr)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/rawr.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(siu|siiuu|ssiiuu|siuuu|siiuuu|siiiuuuu|siuuuu|siiiiuuuuu|siu|SIIIIUUU)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/siu.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(te amo|teamo)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Te-amo.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(ooo tio|tio que rico)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/oh_tio.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(un Pato| un pato|un pato que va caminando alegremente|Un pato|Un Pato)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/pato.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(UwU|uwu|Uwu|uwU|UWU)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/UwU.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(vetealavrg|vete a la vrg|vete a la verga)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/vete a la verga.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(fiesta viernes|viernes|Viernes|viernes fiesta)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/viernes.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(vivan!!|vivan los novios|vivanlosnovios)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/vivan.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(Yamete|yamete|Yamete kudasai|yamete kudasai)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Yamete-kudasai.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(epico|esto va a ser epico)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/Epico.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(shitpost)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/shitpost.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   } 
-  
-   if (body.match(/(no digas eso papu)/gi)) { 
-     if (!global.db.data.chats[m.chat].audios) return; 
-     const vn = './audios/nopapu.mp3'; 
-     conn.sendAudio(m.chat, vn, m)
-   }
+     
               
    if (body.startsWith('k')) { 
  if (!isCreator) return 
