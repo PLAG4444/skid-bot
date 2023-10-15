@@ -37,13 +37,13 @@ str += `╭────❏ *${category}* ❏\n` ;
 if (m.text.toLowerCase() == category.toLowerCase()) {
 str = `╭─────❏ *${category}* ❏\n` ;      
 for (const plugins of cmds[category]) { 
-str += `│ ${plugins, 1}\n` 
+str += `│ ${plugins}\n` 
 }
 str += `╰━━━━━━━━━━━━━──⊷\n`  ;
 break ;
 } else {
 for (const plugins of cmds[category]) {
-str += `│ ${plugins, 1}\n`
+str += `│ ${plugins}\n`
 }
 str += `╰━━━━━━━━━━━━━━──⊷\n`  ; 
 }}
@@ -71,3 +71,5 @@ await conn.sendMessage(m.chat, {
     }, { quoted: m})
     await conn.sendNyanCat(m.chat, '*ATENCION*\n*durante esta semana se estara mejorando al bot, por lo que habra muchos reinicios*', global.menu3, '[ I N F O ]', 'nueva update!!', m)
     })
+    
+    
