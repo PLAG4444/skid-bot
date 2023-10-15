@@ -128,11 +128,11 @@ global.numBot2 = conn.user.id
   const isBotAdmins = m.isGroup ? groupAdmins.includes(isBot) : false  
   const isGroupAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false 
   const cmdName = isCmd ? body.slice(1).trim().split(" ")[0].toLowerCase() : false
+  const text = m.text
   if (isCmd) {
   const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
   if (cmd) {
   try {
-  const text = m.text
   cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName })
   } catch (e) {
   m.reply(format(e))
