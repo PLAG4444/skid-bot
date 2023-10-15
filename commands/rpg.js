@@ -1,4 +1,4 @@
-const { cmd, msToTime, pickRandom }= require('../lib/commands.js')
+const { cmd, msToTime, pickRandom, getRandom }= require('../lib/commands.js')
 
 cmd({
 pattern: "lb",
@@ -207,12 +207,407 @@ let caption = `
  m.reply(caption)
  }
  })
+cmd({
+pattern: "minar",
+alias: ["mineria"],
+desc: "minar como un malnacido por premios",
+category: "rpg",
+},
+async (conn, m, { text }) => {
+let cooldown = 10000
+  let user = global.db.data.users[m.sender]
+  let timer = (cooldown - (new Date - user.lastmining))
+  if (user.health < 80) return conn.reply(m.chat, `*estas herido*\npara poder minar necesitas minimo 80 de *salud* ♥️\ncompra pociones con ${prefix}buy potion y curate con ${prefix}health`, m)
+  if (user.pickaxe == 0) return m.reply('*quieres minar sin pico 💀*')
+  if (user.pickaxedurability < 30) throw '*tu pico esta roto*'
+  if (new Date() - user.lastmining < 10000) throw `*estas demasiado cansado*\n*espera ${msToTime(cooldown - new Date())} para volver a minar*`
+  let rewards = reward(user)
+  let txt = '*minaste demasiado*\n*pero a costa perdiste'
+  for (let lost in rewards.lost) if (user[lost]) {
+  let total= rewards.lost[lost].getRandom()
+  user[lost] -= total * 1
+  if (total) txt += `\n*${global.rpg.emoticon(lost)}:* ${total}`
+  }
+  txt += '\n\nPero consigues'
+  for (let rewardItem in rewards.reward) if (rewardItem in user) {
+  let total = rewards.reward[rewardItem].getRandom()
+  user[rewardItem] += total * 1
+  if (total) txt += `\n*${global.rpg.emoticon(rewardItem)}:* ${total}`
+  }
+  m.reply(txt.trim())
+  user.lastmining = new Date * 1
+  
+  function reward(user = {}) {
+  let rewards = {
+  reward: {
+  exp: 702 + user.level * 5000,
+  trash: 103,
+  string: 25,
+  rock: 30,
+  iron: 25,
+  diamond: 5,
+  emerald: 5,
+  common: 2 * (user.dog && (user.dog > 2 ? 2 : user.dog) * 1.2 || 1), 
+  uncommon: [0, 0, 0, 1, 0].concat(new Array(5 - ((user.dog > 2 && user.dog < 6 && user.dog) || (user.dog > 5 && 5) || 2 )).fill(0)), 
+  },
+  lost: {
+  health: 80 - user.cat * 4,
+  pickaxedurability: 30 - user.fox * 3
+  }
+  }
+  return rewards
+  }
+})
+cmd({
+pattern: "health",
+alias: ["curar", "curarme"],
+desc: "curate de los daños de las aventuras",
+category: "rpg",
+}, 
+async (conn, m) => {
+  let user = global.db.data.users[m.sender]
+  if (user.health >= 100) throw '*Tu salud esta llena ♥️*'
+  let heal = 40 + user.cat * 4
+  let count = Math.max(1, Math.min(Number.MAX_SAFE_INTEGER, (isNumber(args[0]) && parseInt(args[0])) || Math.round((90 - user.health) / heal))) * 1
+  if (user.potion < count) return m.reply(`*❌ No tienes pociónes*\n*necesitas ${count - user.potion} pocion para curarte*\n*Solo tienes ${user.potion}!!*`)
+  user.potion -= count * 1 //1 potion = count (1) 
+  user.health += heal * count
+  m.reply(`*Tu salud esta completa ✅*\n*usaste ${count} pociones para curarte*\n*Nueva salud: ${user.health} ♥️*`)  
+  function isNumber(number) { 
+   if (!number) return number; 
+   number = parseInt(number); 
+   return typeof number == "number" && !isNaN(number); 
+  }
+})
+cmd({
+pattern: "inventario",
+alias: ["inv", "inventory"],
+desc: "checar el inventario",
+category: "fun",
+},
+async (conn, m) => {
+let inventory = { 
+   others: { 
+     health: true, 
+     money: true, 
+     exp: true, 
+     limit: true, 
+     level: true, 
+     role: true, 
+   }, 
+   items: { 
+     potion: true, 
+     trash: true, 
+     wood: true, 
+     rock: true, 
+     string: true, 
+     emerald: true, 
+     diamond: true, 
+     gold: true, 
+     iron: true, 
+     upgrader: true, 
+     pet: true, 
+   }, 
+   durabi: { 
+     sworddurability: true, 
+     pickaxedurability: true, 
+     axedurability: true,
+     fishingroddurability: true, 
+     armordurability: true,
+   }, 
+   tools: { 
+     armor: { 
+       '0': 'ropa desgastada', 
+       '1': 'ropa comun', 
+       '2': 'traje policial', 
+       '3': 'traje militar', 
+       '4': 'armadura antidisturbios', 
+       '5': 'traje mecánico', 
+       '6': 'traje legendario', 
+       '7': 'armadura mejorada', 
+       '8': 'armadura reforzada', 
+       '9': 'armadura antimounstros', 
+     }, 
+     sword: { 
+       '0': 'no tiene', 
+       '1': 'espada inservible', 
+       '2': 'espada desgastada',
+       '3': 'espada de hierro',
+       '4': 'doble espada afilada',
+       '5': 'espada de oro', 
+       '6': 'espada de oro reforzado', 
+       '7': 'espada cazadora de mounstros',
+     }, 
+     pickaxe: { 
+       '0': 'no tiene', 
+       '1': 'pico quebradizo', 
+       '2': 'pico desgastado', 
+       '3': 'pico normal', 
+       '4': 'pico de oro', 
+       '5': 'pico de oro reforzado',
+       '6': 'pico de diamante', 
+       '7': 'pico de cristal'
+     },
+     axe: {
+     '0': 'hacha normal',
+     '1': 'hacha reforzada'
+     },
+     
+     fishingrod: true, 
+  
+   }, 
+   crates: { 
+     common: true, 
+     uncommon: true, 
+     mythic: true, 
+     legendary: true, 
+   }, 
+   pets: { 
+     horse: 10, 
+     cat: 10, 
+     fox: 10, 
+     dog: 10, 
+   }
+   } 
+  let user = global.db.data.users[m.sender] 
+  let tools = Object.keys(inventory.tools).map(v => user[v] && `${global.rpg.emoticon(v)} : ${typeof inventory.tools[v] === 'object' ? inventory.tools[v][user[v]?.toString()] : `nivel ${user[v]}`}`).filter(v => v).join('\n').trim() 
+  let items = Object.keys(inventory.items).map(v => user[v] && `${global.rpg.emoticon(v)} : ${user[v]}`).filter(v => v).join('\n').trim() //`
+  let dura = Object.keys(inventory.durabi).map(v => user[v] && `${global.rpg.emoticon(v)} : ${user[v]}`).filter(v => v).join('\n').trim() 
+  let crates = Object.keys(inventory.crates).map(v => user[v] && `${global.rpg.emoticon(v)} : ${user[v]}`).filter(v => v).join('\n').trim() 
+  let pets = Object.keys(inventory.pets).map(v => user[v] && `${global.rpg.emoticon(v)} : ${user[v] >= inventory.pets[v] ? 'nivel maximo' : `nivel ${user[v]}`}`).filter(v => v).join('\n').trim() //`
+  let txt = `
+👤 Nombre: ${await conn.getName(m.sender)}
+🛡️ Rol ${user.role}
 
+${Object.keys(inventory.others).map(v => user[v] && `➔ ${global.rpg.emoticon(v)} : ${user[v]}`).filter(v => v).join('\n')}${tools ? `
+* Herramientas ⚔️*
+
+${tools}` : ''}${dura ?`
+${dura}` : ''}${items ? `
+
+* Items ♦️*
+${items}
+Items totales: ${Object.keys(inventory.items).map(v => user[v]).reduce((a, b) => a + b, 0)} Items` : ''}${crates ? `
+
+* Cajas 📦*
+${crates}
+
+Cajas totales:  ${Object.keys(inventory.crates).map(v => user[v]).reduce((a, b) => a + b, 0)} Cajas` : ''}${pets || user.petFood ? ` 
+
+${pets ? pets + '\n' : ''}${user.petFood ? '🍖 comida para mascotas: ' + user.petFood : ''}` : ''}`.trim() // `
+m.reply(txt)
+})
  function sort(property, ascending = true) { 
    if (property) return (...args) => args[ascending & 1][property] - args[!ascending & 1][property]; 
    else return (...args) => args[ascending & 1] - args[!ascending & 1]; 
- } 
-  
+ }
+ cmd({
+ pattern: "work",
+ alias: ["chambear", "jalar", "trabajar"]
+ desc: "trabaja por el sueldo mínimo!!"
+ category: "rpg",
+ },
+ async (conn, m, { args }) => {
+ let works = (args[0] || '').toLowerCase()
+ let txt = `
+*Hola ${await conn.getName(m.sender)}*
+
+*Aqui tienes una lista de trabajos donde puedes ser contratado*
+
+ *Cajero 🏧*
+- No necesitas nada para que te contraten el el cajero
+- paga miserable 
+- sin bonus exp
+
+ *Leñador 🪵*
+- necesitas un hacha (crafteable)
+- paga buena
+- bonus exp
+
+ *Repartidor 🚚* (próximamente)
+- Nivel 45 requerido
+- Coche requerido
+- Cada pedido 500 dolares
+- Bonus xp
+- Bonus items
+`
+switch (works) {
+
+case 'cajero': {
+let user = global.db.data.users[m.sender] 
+let time = global.db.data.users[m.sender].lastwork + 600000  
+if (new Date - global.db.data.users[m.sender].lastwork < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(time - new Date())} para volver a trabajar!!*`)
+let pay = Math.floor(Math.random() * 300)
+user.money += pay + user.dog * 1000
+user.lastwork = new Date() * 1
+let work = pickRandom(['los ruidos de lo clientes molestos no te dejan en paz, sin embargo tu paga fue de', 'fue una noche tranquila...\nganaste', 'porque elegiste este trabajo\n*esta pregunta retumba en tu cabeza*, sin embargo ganaste tu miseria de paga de'])
+m.reply(`${work} ${pay} dólares 💵`)
+}
+break
+case 'leñador': { 
+let user = global.db.data.users[m.sender] 
+let time = global.db.data.users[m.sender].lastwork + 600000  
+if (new Date - global.db.data.users[m.sender].lastwork < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(time - new Date())} para volver a trabajar!!*`)
+if (user.axe == 0) throw '*no fuistes contratado por la simple razon de que no tienes un hacha, subnormal*'
+if (user.axedurability < 50) throw `tu hacha puede *romperse* en esas condiciones sin aviso\npuedes reparar tu hacha con *${prefix}repair hacha*`
+let pay = pickRandom([900, 300, 700, 999])
+let bonus = Math.floor(Math.random() * 3000)
+let lost = Math.floor(Math.random() * 80)
+user.money += pay + user.dog * 1000
+user.exp += bonus + user.dog * 1000
+user.lastwork = new Date() * 1
+user.axedurability -= lost - user.fox * 4
+let work = pickRandom(['este trabajo es demasiado bueno pero agotador, asi que este esfuerzo es recompensado por', '*piensas en cortar 20 troncos mas pero tu trabajo es tan bueno que ganas*'])
+m.reply(`${work} ${pay + user.dog * 1000} dolares 💵\n*a costa de este trabajo ganaste ${bonus + user.dog * 1000} XP*\n*pero tu hacha perdio ${lost - user.fox * 4} de durabilidad*`)
+}
+break
+default:
+
+m.reply(txt)
+
+}
+})
+
+cmd({
+pattern: "petshop",
+desc: "compra mascotas para tener habilidades especiales",
+category: "rpg",
+},
+async (conn, m, { args }) => {
+let shop = (args[0] || '').toLowerCase()
+let user = global.db.data.users[m.sender] 
+let hdog = 5000
+let hcat = 5000
+let hfox = 20000
+let hpetfood = 1
+let txt = `
+*compra una mascota hoy...*
+
+ 🐈 • *Gato:*
+ ➞ ${hcat} dolares
+ ➞ 4% mas salud en cualquier accion
+ 
+ 
+ 🐕 • *Perro:* 
+ ➞ ${hdog} dolares
+ ➞ Bonus extra en dolares y xp (%400)
+ 
+ 
+ 🦊 • *Zorro:*  (próximamente)
+ ➞ ${hfox} dolares
+ ➞ bonus en ataques 
+ ➞ Los cooldown se rebajan 30 segundos
+ 
+ 🍖 • *Comida para mascotas*:
+  ➞ ${hpetfood} Pet token
+  ➞ Sube de nivel tus mascotas
+`
+
+switch (shop) {
+case 'gato': {
+if (user.cat) throw 'ya tienes esa mascota!!'
+if (user.money < hdog) throw 'te falta dinero!!'
+user.money -= hdog
+user.cat += 1
+m.reply('*gracias por comprar a este lindo gatito*\n*(la curacion de vida sube un %4)*')
+}
+break
+case 'perro': {
+if (user.dog) throw 'ya tienes esa mascota!!'
+if (user.money < hdog) throw 'te falta dinero!!'
+user.money -= hdog
+user.dog += 1
+m.reply('*gracias por adoptar a un lindo perro*\n*(desde ahora las ganancias se duplicaran)*')
+}
+break
+case 'zorro': {
+if (user.fox) throw 'ya tienes esa mascota!!'
+if (user.money < hfox) throw 'te falta dinero!!'
+user.money -= hfox
+user.fox += 1
+m.reply('*gracias por adoptar a un zorro*\n*(bonus de ataque, cooldowns reducidos)*')
+}
+break
+default: 
+m.reply(txt)
+}})
+
+cmd({
+pattern: "reparar",
+alias: ["repair"]
+desc: "reparar tus items",
+category: "rpg",
+},
+async (conn, m, { args }) => {
+let repairs =  (args[0] || '').toLowerCase()
+let user = global.db.data.users[m.sender] 
+let caption = `
+*una hoja arrugada con recetas para reparar*
+
+ *❏ Recetas*
+ 
+*estas simples dos piedras y un poco de hierro*
+*afilara tu hacha*
+ ▧ Hacha 🪓
+ 〉2 roca
+ 〉2 hierro
+ 
+ *un poco de hierro y madera hacen la diferencia*
+ ▧ Pico ⛏️ 
+ 〉2 madera
+ 〉2 hierro
+`
+
+switch (repairs) {
+case 'hacha': {
+ if (user.axe < 0) throw '*primero crea un hacha, genio*'
+ if (user.rock < 2|| user.iron < 2)  return conn.sendNyanCat(m.chat, '*te faltan materiales para craftear esto*', global.menu2, '[ I N F O ]', 'SIN MATERIALES', m)
+ user.rock -= 2
+ user.iron -= 2
+ user.axedurability = 100
+ m.reply('*porque puedes reparar esto...*\n*la logica vale verga porque acabas de reparar tu hacha!!*')
+ }
+ break
+ 
+ case 'pico': {
+ if (user.pickaxe < 0) throw '*primero crea un pico, genio*'
+ if (user.iron < 5 || user.wood < 2) return conn.sendNyanCat(m.chat, '*te faltan materiales para craftear esto*', global.menu2, '[ I N F O ]', 'SIN MATERIALES', m)
+ user.pickaxedurability = 100
+ m.reply('*Bien, te acabas de reparar tu pico a madrazos. dejandolo como nuevo ⚒️*')
+ }
+ break
+default:
+conn.reply(m.sender, caption, fkontak)
+}
+})
+cmd({
+pattern: "claim",
+alias: ["reclamar"],
+desc: "reclama tu recompensa diaria",
+category: "rpg",
+}
+async (conn, m) {
+let user = global.db.data.users[m.sender]
+let rewards = {
+exp: 9999 + user.dog * 1000,
+money: 3000 + user.dog * 2000,
+potion: 5 + user.cat * 4,
+wood: 10,
+diamond: 9,
+iron: 12
+} 
+let cooldown = user.lastclaim + 86400000 - user.fox * 30
+if (new Date - user.lastclaim < 86400000) throw `*❗ Ya reclamaste tu cofre diario*\n*espera ${msToTime(cooldown - new Date())} para volver a reclamar este cofre*`
+let txt = ''
+for (let reward of Object.keys(rewards)) {
+if (!(reward in user)) continue
+user[reward] += rewards[reward]
+txt += `*+${rewards[reward]}* ${global.rpg.emoticon(reward)}\n`
+}
+conn.reply(m.chat, '*HAS CONSEGUIDO 🥳*\n' + txt, global.fkontak)
+user.lastclaim = new Date() * 1
+})
+
  function toNumber(property, _default = 0) { 
    if (property) { 
      return (a, i, b) => { 

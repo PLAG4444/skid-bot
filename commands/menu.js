@@ -1,5 +1,6 @@
-const { cmd } = require('../lib')
+const { cmd, pickRandom } = require('../lib')
 const os = require('os')
+const diskusage = require('diskusage')
 const moment = require("moment-timezone")
 const fs = require("fs")
 cmd({
@@ -47,8 +48,9 @@ str += `│ ${plugins}\n`
 }
 str += `╰━━━━━━━━━━━━━━──⊷\n`  ; 
 }}
-
-str += `🌟 *Pro tip*: usa ${global.prefix}serbot para convertirte en bot`
+let lol = pickRandom(["🌐", "🌟", "✨", "📍", "🚩"])
+let proTip = pickRandom([`usa ${global.prefix}serbot para convertirte en bot`, `Unete al grupo oficial si hay algun cambio`, "cansado de que el bot este saturado? Dona a zipponodes.com a nombre de skid!!", "tienes un host? descarga a skid bot desde *github*"])
+str += `${lol} *Pro tip*: ${proTip}`
 await conn.sendMessage(m.chat, {   
     text: str,  
     contextInfo:{  
@@ -71,5 +73,64 @@ await conn.sendMessage(m.chat, {
     }, { quoted: m})
     await conn.sendNyanCat(m.chat, '*ATENCION*\n*durante esta semana se estara mejorando al bot, por lo que habra muchos reinicios*', global.menu3, '[ I N F O ]', 'nueva update!!', m)
     })
+    cmd({
+        pattern: "ping",
+        desc: "verificar el ping",
+        category: "info",
+        filename: __filename,
+    },
+    async(conn, m) => {
+        var inital = new Date().getTime();
+        const { key } = await conn.sendMessage(m.chat, {text: '```Ping!!!```'});
+        var final = new Date().getTime();
+       return await conn.sendMessage(m.chat, {text: '*Pong*\n *' + (final - inital) + ' ms* ', edit: key});
+    })
+    cmd({
+    pattern: "estado",
+    alias: ["status", "checkbot"],
+    desc: "checar el estado del bot",
+    category: "info",
+    }, 
+    async (conn, m) => {
+     let cpuInfo = os.cpus() 
+ let Cores = cpuInfo.length 
+ let Model = cpuInfo[0].model 
+ let arch = os.arch() 
+ let memory = os.totalmem() 
+ let skidCheck = '/' 
+ let getGroups = await conn.groupFetchAllParticipating() 
+ let groups = Object.entries(getGroups).slice(0).map(entry => entry[1]) 
+ let anu = groups.map(v => v.id) 
+ let usedRam = process.memoryUsage() 
+ diskusage.check(skidCheck, (err, info) => { 
+     if (err) { 
+         console.error(err) 
+         return 
+     } 
+  
+     let totalUwu = info.total 
+     let freee = info.free 
+     let txtt = ` 
+     🌐 Estado del Sistema 🌐 
+  
+ ➤ Sistema Operativo: ${os.platform()} 
+ ➤ Arquitectura: ${arch} 
+ ➤ CPU: ${Model} 
+ ➤ Núcleos: ${Cores} 
+ ➤ Memoria RAM: ${formatByte(memory)}/${formatByte(usedRam.rss)} 
+ ➤ Espacio en Disco Usado: ${formatByte(totalUwu)} 
+ ➤ Espacio Total en Disco: ${formatByte(freee)} 
+      
+   
+     🌀 Estado del Bot 🌀
+  
+ ➤ Jadibots: ${listJadibot.length} 
+ ➤ Chats: ${anu.length}  
+ ➤ Usuarios: ${Object.keys(global.db.data.users).length} 
+ ➤ Estado: released
+ `
+ m.reply(txtt, global.fkontak)
+ })
     
+    })
     

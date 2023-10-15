@@ -1,5 +1,5 @@
 require('../settings.js')
-const { cmd } = require('../lib')
+const { cmd, getBuffer } = require('../lib')
 
 cmd({
 pattern: 'apk',
