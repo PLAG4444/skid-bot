@@ -30,12 +30,12 @@ async (conn, m, { args }) => {
 const mime = (m.quoted).mimetype || '' 
           if (/image/.test(mime)) {  
           m.reply(mess.wait)  
-          media = await quoted.download()  
+          media = await m.quoted.download()  
           let encmedia = await conn.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author })  
           await fs.unlinkSync(encmedia)  
         } else if (/video/.test(mime)) {  
-          if ((quoted.msg || quoted).seconds > 40) return m.reply('¡Máximo 40 segundos!')  
-          media = await quoted.download()  
+          if ((m.quoted).seconds > 40) return m.reply('¡Máximo 40 segundos!')  
+          media = await m.quoted.download()  
           let encmedia = await conn.sendVideoAsSticker(m.chat, media, m, { packname: packname, author: author })  
           await new Promise((resolve) => setTimeout(resolve, 2000));   
           await fs.unlinkSync(encmedia)  
