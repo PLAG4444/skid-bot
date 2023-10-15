@@ -585,7 +585,7 @@ pattern: "claim",
 alias: ["reclamar"],
 desc: "reclama tu recompensa diaria",
 category: "rpg",
-}
+},
 async (conn, m) {
 let user = global.db.data.users[m.sender]
 let rewards = {
