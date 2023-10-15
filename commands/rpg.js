@@ -614,7 +614,7 @@ desc: "transfiere a la gente",
 category: "rpg",
 use: "@user",
 },
-async (conn, m, { text, body } => {
+async (conn, m, { text, body }) => {
 let items = ['money', 'exp', 'limit', 'potion']
     this.confirm = this.confirm ? this.confirm : {}
     if (this.confirm[m.sender]) return conn.sendText(m.chat, `*❗ Aun hay una tranferencia, Espera a que acabe esa transferencia*`, m)
@@ -636,7 +636,7 @@ let items = ['money', 'exp', 'limit', 'potion']
     timeout: setTimeout(() => (m.reply(`*❗ se acabo el tiempo*\n*la transacción se canceló 😓*`), delete this.confirm[m.sender]), 60 * 1000)
     }
 })   
-cmd({ on: "text" }, async (conn, m, { text, body } => {
+cmd({ on: "text" }, async (conn, m, { text, body }) => {
 this.confirm = this.confirm ? this.confirm : {}
   if (this.confirm[m.sender]) {
   let { timeout, sender, message, to, type, count } = this.confirm[m.sender]
