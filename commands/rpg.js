@@ -403,8 +403,8 @@ m.reply(txt)
  }
  cmd({
  pattern: "work",
- alias: ["chambear", "jalar", "trabajar"]
- desc: "trabaja por el sueldo mínimo!!"
+ alias: ["chambear", "jalar", "trabajar"],
+ desc: "trabaja por el sueldo mínimo!!",
  category: "rpg",
  },
  async (conn, m, { args }) => {
@@ -534,7 +534,7 @@ m.reply(txt)
 
 cmd({
 pattern: "reparar",
-alias: ["repair"]
+alias: ["repair"],
 desc: "reparar tus items",
 category: "rpg",
 },
