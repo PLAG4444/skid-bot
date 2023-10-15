@@ -22,7 +22,7 @@ if (!m.quoted) throw '*uhh... puedes responder a un sticker ಠ⁠_⁠ಠ*'
 })
 cmd({
 pattern: "s",
-alias: ["crearsticker", "sticker", "tosticker"]
+alias: ["crearsticker", "sticker", "tosticker"],
 desc: "simplemente un creador de stickers",
 category: "stickers",
 },
@@ -46,7 +46,7 @@ const mime = (m.quoted.msg || m.quoted).mimetype || ''
 })
 cmd({
 pattern: "ia",
-desc: "habla con chatgpt :v"
+desc: "habla con chatgpt :v",
 category: "herramientas",
 },
 async (conn, m, { text }) => {
