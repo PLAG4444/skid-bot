@@ -71,6 +71,18 @@ function clearTmp() {
   return false
   })
 }
+function clearTmp2() {
+  const tmp = [tmpdir(), join(__dirname, './lib/temp')]
+  const filename = [] 
+  tmp.forEach((dirname) => readdirSync(dirname).forEach((file) => filename.push(join(dirname, file))))  
+  return filename.map((file) => {
+  const stats = statSync(file)    
+  if (stats.isFile() && (Date.now() - stats.mtimeMs >= 1000 * 60 * 3)) {
+  return unlinkSync(file) // 3 minutes
+  }    
+  return false
+  })
+}
 
 async function startBot() {
 console.info = () => {}
@@ -288,10 +300,7 @@ async function _quickTest() {
 
 setInterval(async () => {
 await clearTmp()
-await conn.logger?.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ ✅ Eliminando archivos temporales\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
-}, 180000)
-setInterval(async () => {
-await clearTmp()
+await clearTmp2()
 await conn.logger?.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊ ✅ Eliminando archivos temporales\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
 }, 180000)
 }
