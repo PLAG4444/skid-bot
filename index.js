@@ -151,6 +151,32 @@ global.numBot2 = conn.user.id
   }}}
   
   events.commands.map(async(command) => {
+  if (command.owner && !isCreator) {
+  const aa = {quoted: m, userJid: conn.user.jid};
+  const prep = generateWAMessageFromContent(m.chat, {extendedTextMessage: {text: mess.owner, contextInfo: {externalAdReply: {title: '```Aviso```', body: global.botname, thumbnail: global.menu3, sourceUrl: 'https://github.com/Skidy89/skid-bot'}}}}, aa);
+  return conn.relayMessage(m.chat, prep.message, {messageId: prep.key.id});  
+  }
+  if (command.botAdmin && !isBotAdmins) {
+  const aa = {quoted: m, userJid: conn.user.jid};
+  const prep = generateWAMessageFromContent(m.chat, {extendedTextMessage: {text: mess.botAdmin, contextInfo: {externalAdReply: {title: '```Aviso```', body: global.botname, thumbnail: global.menu3, sourceUrl: 'https://github.com/Skidy89/skid-bot'}}}}, aa);
+  return conn.relayMessage(m.chat, prep.message, {messageId: prep.key.id});
+  }
+  if (command.admin && !isGroupAdmins) {
+  const aa = {quoted: m, userJid: conn.user.jid};
+  const prep = generateWAMessageFromContent(m.chat, {extendedTextMessage: {text: mess.admin, contextInfo: {externalAdReply: {title: '```Aviso```', body: global.botname, thumbnail: global.menu3, sourceUrl: 'https://github.com/Skidy89/skid-bot'}}}}, aa);
+  return conn.relayMessage(m.chat, prep.message, {messageId: prep.key.id});  
+  }
+  if(command.group && !m.isGroup) {
+  const aa = {quoted: m, userJid: conn.user.jid};
+  const prep = generateWAMessageFromContent(m.chat, {extendedTextMessage: {text: mess.group, contextInfo: {externalAdReply: {title: '```Aviso```', body: global.botname, thumbnail: global.menu3, sourceUrl: 'https://github.com/Skidy89/skid-bot'}}}}, aa);
+  return conn.relayMessage(m.chat, prep.message, {messageId: prep.key.id})
+  }
+  if (command.restrict && global.db.data.chats[m.chat].restrict) {
+  const aa = {quoted: m, userJid: conn.user.jid};
+  const prep = generateWAMessageFromContent(m.chat, {extendedTextMessage: {text: mess.restrict, contextInfo: {externalAdReply: {title: '```Aviso```', body: global.botname, thumbnail: global.menu3, sourceUrl: 'https://github.com/Skidy89/skid-bot'}}}}, aa);
+  return conn.relayMessage(m.chat, prep.message, {messageId: prep.key.id});  
+  }
+
   if (body && command.on === "body") {
   command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, body });
   } else if (m.text && command.on === "text") {

@@ -8,7 +8,7 @@
   require("./settings")
   const { WaMessageStubType, areJidsSameUser, downloadContentFromMessage, generateWAMessageContent, generateWAMessageFromContent, generateWAMessage, prepareWAMessageMedia, relayMessage} = require('@whiskeysockets/baileys'); 
   const moment = require('moment-timezone')  
-  const yts = require("youtube-yts")
+  
   const gradient = require('gradient-string')
   const { execSync, exec, spawn  } = require('child_process') 
   const chalk = require('chalk')   
@@ -184,79 +184,7 @@
   }
   
   
-this.suit = this.suit ? this.suit : {}
-let roof = Object.values(this.suit).find(roof => roof.id && roof.status && [roof.p, roof.p2].includes(m.sender))
 
-if (roof) {
-let win = ''
-let tie = false
-if (m.sender == roof.p2 && /^(Acepto|aceptar|si|Si|acepto)/i.test(m.text) && m.isGroup && roof.status == 'wait') {
-if (/^(NO|no|No|despues)/i.test(m.text)) {
-conn.sendTextWithMentions(m.chat, `@${roof.p2.split`@`[0]} *no acepto tu juego -_-*\n*juego cancelado*`, m)
-delete this.suit[roof.id]
-return !0
-}
-roof.status = 'play'
-roof.asal = m.chat
-clearTimeout(roof.waktu)
-//delete roof[roof.id].waktu
-conn.sendText(m.chat, `
-*🎮 El juego empezo 🎮*
-
-@${roof.p.split`@`[0]} Reto a
-@${roof.p2.split`@`[0]}
-
-*por favor vayan al privado del bot*
-https://wa.me/${conn.user.jid.split`@`[0]}`, m, { mentions: [roof.p, roof.p2] })
-if (!roof.pilih) conn.sendText(roof.p, `*elige* \n\nPiedra🗿\nPapel📄\nTijeras✂️`, m)
-if (!roof.pilih2) conn.sendText(roof.p2, `*elige* \n\nPiedra🗿\nPapel📄\nTijeras✂️`, m)
-roof.waktu_milih = setTimeout(() => {
-if (!roof.pilih && !roof.pilih2) conn.sendText(m.chat, `*ambos jugadores no quieren jugar\nGame over`, m)
-else if (!roof.pilih || !roof.pilih2) {
-win = !roof.pilih ? roof.p2 : roof.p
-conn.sendTextWithMentions(m.chat, `@${(roof.pilih ? roof.p2 : roof.p).split`@`[0]} *no eligio*\nJuego terminado`, m)
-}
-delete this.suit[roof.id]
-return !0
-}, roof.timeout)
-}
-let jwb = m.sender == roof.p
-let jwb2 = m.sender == roof.p2
-let g = /Tijeras/i
-let b = /Piedra/i
-let k = /Papel/i
-let reg = /^(Tijeras|Piedra|Papel)/i
-if (jwb && reg.test(m.text) && !roof.pilih && !m.isGroup) {
-roof.pilih = reg.exec(m.text.toLowerCase())[0]
-roof.text = m.text
-m.reply(`Has elegido ${m.text} ${!roof.pilih2 ? `\nEsperando al otro jugador` : ''}`)
-if (!roof.pilih2) conn.sendText(roof.p2, '_Tu oponente ha elegido_\nAhora es tu turno', 0)
-}
-if (jwb2 && reg.test(m.text) && !roof.pilih2 && !m.isGroup) {
-roof.pilih2 = reg.exec(m.text.toLowerCase())[0]
-roof.text2 = m.text
-m.reply(`Has elegido ${m.text} ${!roof.pilih2 ? `\nEsperando al otro jugador` : ''}`)
-if (!roof.pilih) conn.sendText(roof.p, '_Tu oponente ha elegido_\nAhora es tu turno', 0)
-}
-let stage = roof.pilih
-let stage2 = roof.pilih2
-if (roof.pilih && roof.pilih2) {
-clearTimeout(roof.waktu_milih)
-if (b.test(stage) && g.test(stage2)) win = roof.p
-else if (b.test(stage) && k.test(stage2)) win = roof.p2
-else if (g.test(stage) && k.test(stage2)) win = roof.p
-else if (g.test(stage) && b.test(stage2)) win = roof.p2
-else if (k.test(stage) && b.test(stage2)) win = roof.p
-else if (k.test(stage) && g.test(stage2)) win = roof.p2
-else if (stage == stage2) tie = true
-conn.sendText(roof.asal, `_*PVP*_${tie ? '\n Empate' : ''}
-
-@${roof.p.split`@`[0]} (${roof.text}) ${tie ? '' : roof.p == win ? ` Gano \n` : ` perdio \n`}
-@${roof.p2.split`@`[0]} (${roof.text2}) ${tie ? '' : roof.p2 == win ? ` Gano \n` : ` perdio \n`}
-`.trim(), m, { mentions: [roof.p, roof.p2] })
-delete this.suit[roof.id]
-}
-}
  if (m.message) { 
  conn.logger.info(chalk.bold.white(`\n▣────────────···\n│${botname} ${conn.user.id == global.numBot2 ? '' : '(jadibot)'}`),  
  chalk.bold.white('\n│📑TIPO (SMS): ') + chalk.yellowBright(`${m.mtype}`),  
@@ -268,37 +196,6 @@ delete this.suit[roof.id]
  
   try {  
   switch (command) {
-  
-  case 'pvp': case 'suitpvp': {
-  this.suit = this.suit ? this.suit : {}
-let poin = 10
-let poin_lose = 10
-let timeout = 60000
-if (Object.values(this.suit).find(roof => roof.id.startsWith('suit') && [roof.p, roof.p2].includes(m.sender))) m.reply(`Selesaikan suit mu yang sebelumnya`)
-if (m.mentionedJid[0] === m.sender) return m.reply(`acaso eres idiota\nno puedes jugar contigo!`)
-if (!m.mentionedJid[0]) return m.reply(`con quien quieres jugar?\netiqueta a alguien...\n\nejemplo : ${prefix}suit @0`, m.chat, { mentions: ['0@s.whatsapp.net'] })
-if (Object.values(this.suit).find(roof => roof.id.startsWith('suit') && [roof.p, roof.p2].includes(m.mentionedJid[0]))) throw `La persona a la que estás desafiando está jugando con otra persona :(`
-let id = 'suit_' + new Date() * 1
-let caption = `_*PVP*_
-
-@${m.sender.split`@`[0]} desafío a @${m.mentionedJid[0].split`@`[0]} 
-
-Por favor @${m.mentionedJid[0].split`@`[0]} Por favor escriba aceptar/rechazar`
-this.suit[id] = {
-chat: await conn.sendText(m.chat, caption, m, { mentions: parseMention(caption) }),
-id: id,
-p: m.sender,
-p2: m.mentionedJid[0],
-status: 'wait',
-waktu: setTimeout(() => {
-if (this.suit[id]) conn.sendText(m.chat, `_se acabo el tiempo_`, m)
-delete this.suit[id]
-}, 60000), poin, poin_lose, timeout
-}
-}
-break
-  
-
    
   case 'acortar': {
   if (!text) return m.reply(`*[❗] INFO [❗]*\n*Ingresa un link para acortar!!*`)
@@ -1131,19 +1028,7 @@ break
    break
    
    
- case 'lyrics':
- if (!text) throw `*⚠️ que música quieres ${conn.getName(m.sender)}?*\n*ejempo: ${prefix + command} say with me*`
- const { lyrics, lyricsv2 } = require('@bochilteam/scraper')
- const resu = await lyricsv2(text).catch(async _ => await lyrics(text))
- m.reply(`*Titulo: ${resu.title}*\n*Autor: ${resu.author}*\n*link: ${resu.link}*\n*lyrics: ${resu.lyrics}*`)
- break
- case 'image': case 'imagen':
- let { googleImage } = require('@bochilteam/scraper')
- let res = await googleImage(text)
- image = res[Math.floor(Math.random() * res.length)];
- ulr = image
- conn.sendMessage(m.chat, { image: { url: ulr }, caption: botname }, { quoted: fkontak })
- break
+ 
  
  
  case 'setcmd':  case 'addcmd': {
@@ -1367,22 +1252,6 @@ break
                   m.reply(`hubo un error... ${e}`)  
                   }  
                   break    
-                  case 'toaudio': case 'tomp3': {
-                  if (!/video/.test(mime) && !/audio/.test(mime)) throw `*❗ Etiqueta un audio con ${prefix + command}*`
-                  if (!quoted) throw `*❗ Etiqueta un video con ${prefix + command}*`
-                  let { toAudio } = require('./lib')
-                  let media  = await conn.downloadMediaMessage(quoted)
-                  let audio = await toAudio(media, 'mp4')
-                  await conn.sendMessage(m.chat, {audio: audio, mimetype: 'audio/mpeg', contextInfo:{  externalAdReply: { showAdAttribution: true,
-                  mediaType:  1,
-                  mediaUrl: 'https://github.com/Skidy89',
-                  title: global.botname,
-                  sourceUrl: `https://github.com/Skidy89`, 
-                  thumbnail: global.success
-                  }}}, { quoted: m })
-                  }
-                  break
-       
 		
 		
 		
@@ -1643,96 +1512,6 @@ break
 			}
 			} 
 			break
-		
-    case 'casino': {
-    this.slots = this.slots ? this.slots :{}
-    if (m.chat in this.slots) {
-    m.reply('*Todavía hay gente jugando al casino aquí, espera hasta que termine* -_-')
-    } else {
-    this.slots[m.chat] = true
-    }
-    try {
-    
-        if (args.length < 1) return m.reply(`*Creo que no sabes usar el comando* -_-\n*Te dare un ejemplo*\n*${prefix + command} 10*`)
-        let count = args[0]
-        if (global.db.data.users[m.sender].money > count) { 
-        let _spin1 = pickRandom(['1', '2', '3', '4', '5']) 
-        let _spin2 = pickRandom(['1', '2', '3', '4', '5'])
-        let _spin3 = pickRandom(['1', '2', '3', '4', '5'])
-        let _spin4 = pickRandom(['1', '2', '3', '4', '5'])
-        let _spin5 = pickRandom(['1', '2', '3', '4', '5'])
-        let _spin6 = pickRandom(['1', '2', '3', '4', '5'])
-        let _spin7 = pickRandom(['1', '2', '3', '4', '5'])
-        let _spin8 = pickRandom(['1', '2', '3', '4', '5'])
-        let _spin9 = pickRandom(['1', '2', '3', '4', '5'])
-        let spin1 = (_spin1 * 1)
-        let spin2 = (_spin2 * 1)
-        let spin3 = (_spin3 * 1)
-        let spin4 = (_spin4 * 1)
-        let spin5 = (_spin5 * 1)
-        let spin6 = (_spin6 * 1)
-        let spin7 = (_spin7 * 1)
-        let spin8 = (_spin8 * 1)
-        let spin9 = (_spin9 * 1)
-        let spins1 = (spin1 == 1 ? '🍊' : spin1 == 2 ? '🍇' : spin1 == 3 ? '🍉' : spin1 == 4 ? '🍌' : spin1 == 5 ? '🍍' : '')
-        let spins2 = (spin2 == 1 ? '🍊' : spin2 == 2 ? '🍇' : spin2 == 3 ? '🍉' : spin2 == 4 ? '🍌' : spin2 == 5 ? '🍍' : '')
-        let spins3 = (spin3 == 1 ? '🍊' : spin3 == 2 ? '🍇' : spin3 == 3 ? '🍉' : spin3 == 4 ? '🍌' : spin3 == 5 ? '🍍' : '')
-        let spins4 = (spin4 == 1 ? '🍊' : spin4 == 2 ? '🍇' : spin4 == 3 ? '🍉' : spin4 == 4 ? '🍌' : spin4 == 5 ? '🍍' : '')
-        let spins5 = (spin5 == 1 ? '🍊' : spin5 == 2 ? '🍇' : spin5 == 3 ? '🍉' : spin5 == 4 ? '🍌' : spin5 == 5 ? '🍍' : '')
-        let spins6 = (spin6 == 1 ? '🍊' : spin6 == 2 ? '🍇' : spin6 == 3 ? '🍉' : spin6 == 4 ? '🍌' : spin6 == 5 ? '🍍' : '')
-        let spins7 = (spin7 == 1 ? '🍊' : spin7 == 2 ? '🍇' : spin7 == 3 ? '🍉' : spin7 == 4 ? '🍌' : spin7 == 5 ? '🍍' : '')
-        let spins8 = (spin8 == 1 ? '🍊' : spin8 == 2 ? '🍇' : spin8 == 3 ? '🍉' : spin8 == 4 ? '🍌' : spin8 == 5 ? '🍍' : '')
-        let spins9 = (spin9 == 1 ? '🍊' : spin9 == 2 ? '🍇' : spin9 == 3 ? '🍉' : spin9 == 4 ? '🍌' : spin9 == 5 ? '🍍' : '' )
-        let user = global.db.data.users[m.sender]
-        let WinOrLose, money
-        if (spin1 == spin2 && spin2 == spin3 && spin3 == spin4 && spin4 == spin5 && spin5 == spin6 && spin6 == spin7 && spin7 == spin8 && spin8 == spin9) {
-            WinOrLose = '*Gran JACKPOT🥳🥳*'
-            money = `+${Math.ceil(count * 4)}`
-            user.money += Math.ceil(count * 4)
-        } else if (spin4 == spin5 && spin5  == spin6) {
-           WinOrLose = '*JACKPOT🥳*' 
-           money = `+${Math.ceil(count * 2)}`
-           user.money += Math.ceil(count * 2)
-        } else if ((spin1 == spin2 && spin2 == spin3) || (spin7 == spin8 && spin8 == spin9)) {  
-            money = `-${Math.ceil(count * 1)}`
-            WinOrLose = '*UN POCO MÁS!!*'
-        } else {
-             money = `-${Math.ceil(count * 1)}`
-             WinOrLose = '*Perdiste* T_T'
-             user.money -= Math.ceil(count * 1)
-        } 
-        conn.sendText(m.chat, `
-       *casino*
-
-${spins1}|${spins2}|${spins3}
-${spins4}|${spins5}|${spins6}
-${spins7}|${spins8}|${spins9}
-
-${WinOrLose} dinero *${money}*
-`, m)
-} else { 
-m.reply(`*No tienes ${count} para apostar en el casino*`)
-}
-    } catch (e) {
-        console.log(e)
-        m.reply(`${e}`)
-    } finally {
-        delete this.slots[m.chat]
-    }
-    function pickRandom(list) {
-    return list[Math.floor(Math.random() * list.length)]
-  }
-  
-}
-break
-
-
-
-    
-
-// case?
-
-
 
     
           default: 
