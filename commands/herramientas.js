@@ -238,7 +238,7 @@ desc: "buscar letras de canciones",
 use: "gawr gura",
 category: "herramientas",
 },
-async (conn, m, { text } => {
+async (conn, m, { text }) => {
  let { googleImage } = require('@bochilteam/scraper')
  let res = await googleImage(text)
  image = res[Math.floor(Math.random() * res.length)];
