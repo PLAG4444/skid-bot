@@ -134,9 +134,9 @@ delete this.suit[id]
 }
 })
 cmd({
-on: "text",
+on: "text"
 },
-aysnc (conn, m, { text, args }) => {
+async (conn, m, { text, args, participants }) => {
 this.suit = this.suit ? this.suit : {}
 let roof = Object.values(this.suit).find(roof => roof.id && roof.status && [roof.p, roof.p2].includes(m.sender))
 if (roof) {
