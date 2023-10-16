@@ -14,7 +14,7 @@ const { commands } = require('../lib')
 let arr = []
 const cmd = commands.find((cmd) => cmd.pattern.toLowerCase() === text.split(" ")[0].toLowerCase())
 if (!cmd) return await m.reply("*❌ este comando no existe.*")
-else arr.push(`\`\`\`comando encontrado`\`\`\n🚩 Comando: ${cmd.pattern}`)
+else arr.push(`🚩 Comando: ${cmd.pattern}`)
 if (cmd.category) arr.push(`*🌟 Categoría* ${cmd.category}`)
 if (cmd.alias) arr.push(`*🔅 Alias:* ${cmd.alias}`)
 if (cmd.desc) arr.push(`*🧩 descripción:* ${cmd.desc}`)
