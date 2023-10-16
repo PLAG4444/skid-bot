@@ -209,7 +209,7 @@ var body = (typeof m.text == 'string' ? m.text : '')
   }
   })
 
-require('./main.js')(skMods, m, chatUpdate, store)
+require('../main.js')(skMods, m, chatUpdate, store)
 })
  skMods.ev.on("call", async (fuckedcall) => { 
  const anticall = global.db.data.settings[skMods.user.jid].antiCall 
