@@ -1,6 +1,8 @@
 const { cmd, getRandom, fetchJson, TelegraPh } = require('../lib')
 const mimetype = require("mime-types")
 require('../settings.js')
+const fs = require("fs")
+
 
 cmd({
 pattern: "toimg",
@@ -10,13 +12,13 @@ category: "herramientas",
 },
 async (conn, m, { text, args }) => {
 const mime = (m.quoted).mimetype || '' 
-if (!m.quoted) throw '*uhh... puedes responder a un sticker ಠ⁠_⁠ಠ*'
-  if (!/webp/.test(mime)) throw '*uhh... puedes responder a un sticker ಠ⁠_⁠ಠ*'
+if (!m.quoted) m.reply('*uhh... puedes responder a un sticker ಠ⁠_⁠ಠ*')
+  if (!/webp/.test(mime)) m.reply('*uhh... puedes responder a un sticker ಠ⁠_⁠ಠ*')
   let media = await conn.downloadAndSaveMediaMessage(m.quoted)
   let ran = await getRandom('sk.png')
   exec(`ffmpeg -i ${media} ${ran}`, (err) => {
   fs.unlinkSync(media)
-  if (err) throw err
+  if (err) m.reply(err)
   let buffer = fs.readFileSync(ran)
   conn.sendMessage(m.chat, { image: buffer }, { quoted: m})
   fs.unlinkSync(ran)
@@ -29,15 +31,16 @@ desc: "simplemente un creador de stickers",
 category: "stickers",
 },
 async (conn, m, { args }) => {
+const quoted = m.quoted ? m.quoted : m 
 const mime = (quoted.msg || quoted).mimetype || ''  
           if (/image/.test(mime)) {  
           m.reply(global.mess.wait)  
-          media = await m.quoted.download()  
+          media = await quoted.download()  
           let encmedia = await conn.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author })  
           await fs.unlinkSync(encmedia)  
         } else if (/video/.test(mime)) {  
           if ((m.quoted).seconds > 40) return m.reply('¡Máximo 40 segundos!')  
-          media = await m.quoted.download()  
+          media = await quoted.download()  
           let encmedia = await conn.sendVideoAsSticker(m.chat, media, m, { packname: packname, author: author })  
           await new Promise((resolve) => setTimeout(resolve, 2000));   
           await fs.unlinkSync(encmedia)  
@@ -94,7 +97,7 @@ if (/image/.test(mime)) {
    await m.reply(mess.wait)
    await conn.sendFile(m.chat, anime, 'error.jpg', null, m) 
    } catch (e) {
-   throw '❗ *Hubo un error*\n*Responde solo a imagenes que tengas caras visibles* (⁠-⁠_⁠-⁠;⁠)'
+   m.reply('❗ *Hubo un error*\n*Responde solo a imagenes que tengas caras visibles* (⁠-⁠_⁠-⁠;⁠)')
    }
    } else { 
    m.reply(`*❗ responde a una imagen unu*`)
@@ -145,9 +148,10 @@ desc: "convertir videos a mp3",
 category: "herramientas",
 },
 async (conn, m, { body, args, text }) => {
+const quoted = m.quoted ? m.quoted : m 
 const mime = (m.quoted).mimetype || '' 
-if (!/video/.test(mime) && !/audio/.test(mime)) throw `*❗ Etiqueta un audio con ${prefix + command}*`
-                  if (!quoted) throw `*❗ Etiqueta un video con ${prefix + command}*`
+if (!/video/.test(mime) && !/audio/.test(mime)) m.reply(`*❗ Etiqueta un audio con ${global.prefix + cmd.pattern}*`)
+                  if (!quoted) m.reply(`*❗ Etiqueta un video con ${global.prefix + cmd.pattern}*`)
                   let { toAudio } = require('../lib')
                   let media  = await conn.downloadMediaMessage(quoted)
                   let audio = await toAudio(media, 'mp4')
@@ -160,3 +164,11 @@ if (!/video/.test(mime) && !/audio/.test(mime)) throw `*❗ Etiqueta un audio co
                   }}}, { quoted: m })
 })
 
+
+let file = require.resolve(__filename)  
+  fs.watchFile(file, () => {  
+  fs.unwatchFile(file)  
+  console.log(`Update ${__filename}`)
+  delete require.cache[file]  
+  require(file)  
+  })

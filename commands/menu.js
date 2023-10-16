@@ -3,24 +3,7 @@ const os = require('os')
 const diskusage = require('diskusage')
 const moment = require("moment-timezone")
 const fs = require("fs")
-cmd({
-pattern: "help",
-desc: "buscar comandos del bot",
-category: "help",
-use: "commando",
-},
-async (conn, m, { text }) => {
-const { commands } = require('../lib')
-let arr = []
-const cmd = commands.find((cmd) => cmd.pattern === (text.split(" ")[0].toLowerCase()))
-if (!cmd) return await m.reply("*❌ este comando no existe.*")
-else arr.push(`🚩 Comando: ${cmd.pattern}`)
-if (cmd.category) arr.push(`*🌟 Categoría* ${cmd.category}`)
-if (cmd.alias) arr.push(`*🔅 Alias:* ${cmd.alias}`)
-if (cmd.desc) arr.push(`*🧩 descripción:* ${cmd.desc}`)
-if (cmd.use) arr.push(`*〽️ uso:*\n \`\`\`${global.prefix}${cmd.pattern} ${cmd.use}\`\`\``)
-return await m.reply(arr.join('\n'))
-})
+
 cmd({
 pattern: "menu",
 desc: "comandos del bot",
@@ -150,5 +133,13 @@ await conn.sendMessage(m.chat, {
  m.reply(txtt, global.fkontak)
  })
     
-    })
-    
+})
+
+
+let file = require.resolve(__filename)  
+  fs.watchFile(file, () => {  
+  fs.unwatchFile(file)  
+  console.log(`Update ${__filename}`)
+  delete require.cache[file]  
+  require(file)  
+  })

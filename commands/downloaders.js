@@ -10,7 +10,7 @@ category: 'downloaders',
 }, 
 async (conn, m, { text }) => {
 let { search, download } = require('aptoide-scraper')
-if (!text) throw '*❗Que vas a buscar*'
+if (!text) m.reply('*❗Que vas a buscar*')
 try {     
 let searchA = await search(text); 
 let data5 = await download(searchA[0].id); 
@@ -21,7 +21,7 @@ return await conn.sendMessage(m.chat, {text: '*[ ⛔ ] El archivo es demasiado p
 } 
 await conn.sendMessage(m.chat, {document: {url: data5.dllink}, mimetype: 'application/vnd.android.package-archive', fileName: data5.name + '.apk', caption: null}, {quoted: m}); 
 } catch { 
-throw `*[❗] Error, no se encontrarón resultados para su búsqueda.*`; 
+m.reply(`*[❗] Error, no se encontrarón resultados para su búsqueda.*`)
 }    
 })
 
@@ -37,7 +37,7 @@ let { youtubedl, youtubedlv2 } = require('@bochilteam/scraper')
    let enviando
    let _limit1 = 100
    let _limit2 = 400
-   if (!text) throw `*❗ Ingresa algo para buscar -_- *\n*Ejemplo: ${prefix + command} tsb combos*`
+   if (!text) m.reply(`*❗ Ingresa algo para buscar -_- *\n*Ejemplo: ${prefix + command} tsb combos*`)
    let yt_play = await search(args.join(' '))
    let text1 = `*——⌈📽️ YOUTUBE PLAY 📽️⌋——*\n📌 *Titulo*: _${yt_play[0].title}_\n📆 *Publicado*: ${yt_play[0].ago}\n*🔗 Link*: ${yt_play[0].url}`
    conn.sendMessage(m.chat, {image: {url: yt_play[0].thumbnail}, caption: text1 }, {quoted: m})
@@ -83,8 +83,8 @@ let { youtubedl, youtubedlv2 } = require('@bochilteam/scraper')
    } catch (error) {
      enviando = false
      console.log(error)
-     throw `*[❗] Error, no fue posible descargar el video.*`
-     throw new Error(error)
+     m.reply(`*[❗] Error, no fue posible descargar el video.*`)
+     m.reply(new Error(error))
   }
 })
 cmd({
@@ -129,7 +129,7 @@ use: "tsb",
 async (conn, m, { text, args }) => {
  let limit_a1 = 50
  let limit_a2 = 400
- if (!text) throw `*❗No hay cancion o texto para buscar*\n*ejemplo: ${prefix + command} everyone wants to rule the world*`
+ if (!text) m.reply(`*❗No hay cancion o texto para buscar*\n*ejemplo: ${prefix + command} everyone wants to rule the world*`)
  try { 
  let { search } = require('../lib')
  let { youtubedl, youtubedlv2 } = require('@bochilteam/scraper')
@@ -166,7 +166,7 @@ async (conn, m, { text, args }) => {
      return     
      }       
  } catch (error) {
- throw `*❗ Hubo un error al descargar música*\n` + error
+ m.reply(`*❗ Hubo un error al descargar música*\n` + error)
  }
  })
 cmd({
@@ -177,7 +177,7 @@ category: "downloaders",
 use: "shitpost",
 },
 async (conn, m, { text, body, args }) => {
-    if (!text) throw `Ejemplo: ${prefix + comand} historia wa anime`;   
+    if (!text) m.reply(`Ejemplo: ${prefix + comand} historia wa anime`;   
      const search = await yts(text);   
      let teks = 'Búsqueda en YouTube\n\nResultados de ' + text + '\n\n';   
      let no = 1;   
@@ -188,3 +188,11 @@ async (conn, m, { text, body, args }) => {
      await conn.sendMessage(m.chat, { image: { url: search.all[0].thumbnail }, caption: teks }, { quoted: global.fkontak });   
 
 })
+
+let file = require.resolve(__filename)  
+  fs.watchFile(file, () => {  
+  fs.unwatchFile(file)  
+  console.log(`Update ${__filename}`)
+  delete require.cache[file]  
+  require(file)  
+  })
