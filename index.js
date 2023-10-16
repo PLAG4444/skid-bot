@@ -242,7 +242,7 @@ conn.logger.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\
 fs.readdirSync(__dirname + "/commands").forEach((plugin) => {
 if (path.extname(plugin).toLowerCase() == ".js") {
 require(__dirname + "/commands/" + plugin)
-
+}
 })
 }})
 conn.ev.on('creds.update', saveCreds)
