@@ -2,6 +2,7 @@ const { cmd, getRandom, fetchJson, TelegraPh } = require('../lib')
 const mimetype = require("mime-types")
 require('../settings.js')
 const fs = require("fs")
+const { Sticker, createSticker, StickerTypes } = require("wa-sticker-formatter");
 
 
 cmd({
@@ -48,6 +49,58 @@ const mime = (quoted.msg || quoted).mimetype || ''
           m.reply(`*Envía una imagen/video con ${prefix + command}*\n_*(La duración del video solo puede ser de 10 segundos)*_`)  
           }  
 })
+cmd({
+        pattern: "stickerround",
+        alias: ["roundstic","roundsticker"],
+        desc: "crea un sticker en forma de redonda.",
+        category: "sticker",
+filename: __filename,
+        use: '<responde a una imagen/video.>'
+    },
+    async(conn, m, text) => {
+        if (!m.quoted) return m.reply('responde a una imagen qwq')
+        let mime = m.quoted.mtype
+        pack = packname
+        author = author
+       if (mime =="imageMessage" || mime =="stickerMessage") {
+            let media = await m.quoted.download()
+            let sticker = new Sticker(media, {
+                pack: pack, // The pack name
+                author: author, // The author name
+                type: StickerTypes.ROUNDED ,
+                categories: ["🤩", "🎉"], // The sticker category
+                id: "12345", // The sticker id
+                quality: 75, // The quality of the output file
+            });
+            const buffer = await sticker.toBuffer();
+            return conn.sendMessage(m.chat, {sticker: buffer}, {quoted: m });
+        } else return m.reply(`${cmd.use}`)})
+cmd({
+        pattern: "stickercrop",
+        alias: ["scrop","cropsticker"],
+        desc: "crea un sticker cortado.",
+        category: "sticker",
+filename: __filename,
+        use: '<responde a una imagen/video.>'
+    },
+    async(conn, m, text) => {
+        if (!m.quoted) return m.reply('responde a una imagen qwq')
+        let mime = m.quoted.mtype
+        pack = packname
+        author = author
+       if (mime =="imageMessage" || mime =="stickerMessage") {
+            let media = await m.quoted.download()
+            let sticker = new Sticker(media, {
+                pack: pack, // The pack name
+                author: author, // The author name
+                type: StickerTypes.CIRCLE ,
+                categories: ["🤩", "🎉"], // The sticker category
+                id: "12345", // The sticker id
+                quality: 75, // The quality of the output file
+            });
+            const buffer = await sticker.toBuffer();
+            return conn.sendMessage(m.chat, {sticker: buffer}, {quoted: m });
+        } else return m.reply(`${cmd.use}`)})
 cmd({
 pattern: "ia",
 desc: "habla con chatgpt :v",
@@ -163,6 +216,37 @@ if (!/video/.test(mime) && !/audio/.test(mime)) m.reply(`*❗ Etiqueta un audio 
                   thumbnail: global.success
                   }}}, { quoted: m })
 })
+
+cmd({
+pattern: "lyrics",
+alias: ["findlyrics", "findLyrics"],
+desc: "buscar letras de canciones",
+use: "everyone wants to rule the world",
+category: "herramientas",
+},
+async (conn, m, { text } => {
+ if (!text) throw `*⚠️ que música quieres ${conn.getName(m.sender)}?*\n*ejempo: ${prefix + command} say with me*`
+ const { lyrics, lyricsv2 } = require('@bochilteam/scraper')
+ const resu = await lyricsv2(text).catch(async _ => await lyrics(text))
+ m.reply(`*Titulo: ${resu.title}*\n*Autor: ${resu.author}*\n*link: ${resu.link}*\n*lyrics: ${resu.lyrics}*`)
+})
+
+cmd({
+pattern: "imagen",
+alias: ["image", "google"],
+desc: "buscar letras de canciones",
+use: "gawr gura",
+category: "herramientas",
+},
+async (conn, m, { text } => {
+ let { googleImage } = require('@bochilteam/scraper')
+ let res = await googleImage(text)
+ image = res[Math.floor(Math.random() * res.length)];
+ ulr = image
+ conn.sendMessage(m.chat, { image: { url: ulr }, caption: global.botname }, { quoted: global.fkontak })
+})
+
+
 
 
 let file = require.resolve(__filename)  

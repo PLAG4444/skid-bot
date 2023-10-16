@@ -292,7 +292,7 @@ require('../main.js')(skMods, m, chatUpdate, store)
    }, 
    async (conn, m, { isBot }) => {
    if (isBot !== m.sender) return conn.fakeReply(m.chat, 'este comando solo lo pueden usar bots o subbots', '0@s.whatsapp.net', '❌ No eres bot')
-   conn.public = false
+   conn.public = true
    m.reply('*este bot ahora es de uso publico*\ntodos podran usar sus comandos')
    })
    cmd({

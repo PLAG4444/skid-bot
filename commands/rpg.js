@@ -127,7 +127,7 @@ pattern: "craft",
 desc: "craftea varias herramientas con este comando",
 category: 'rpg',
 },
-async (conn, m) => {
+async (conn, m, { args }) => {
 let repairs =  (args[0] || '').toLowerCase()
 let user = global.db.data.users[m.sender] 
 let caption = `
@@ -212,7 +212,7 @@ alias: ["mineria"],
 desc: "minar como un malnacido por premios",
 category: "rpg",
 },
-async (conn, m, { text }) => {
+async (conn, m, { text, args }) => {
 let cooldown = 10000
   let user = global.db.data.users[m.sender]
   let timer = (cooldown - (new Date - user.lastmining))
