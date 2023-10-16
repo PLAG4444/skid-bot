@@ -242,15 +242,7 @@ conn.logger.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\
 fs.readdirSync(__dirname + "/commands").forEach((plugin) => {
 if (path.extname(plugin).toLowerCase() == ".js") {
 require(__dirname + "/commands/" + plugin)
-for (const plugins of plugin) {
-let file = require.resolve(__dirname + "/commands/" + plugins)  
-  fs.watchFile(file, () => {  
-  fs.unwatchFile(file)  
-  conn.logger?.info(`\nUpdate ${__filename}`)
-  delete require.cache[file]  
-  require(file)  
-  })}
-}
+
 })
 }})
 conn.ev.on('creds.update', saveCreds)
