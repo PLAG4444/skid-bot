@@ -1,4 +1,6 @@
 const { cmd, getRandom, fetchJson, TelegraPh } = require('../lib')
+const mimetype = require("mime-types")
+require('../settings.js')
 
 cmd({
 pattern: "toimg",
@@ -27,9 +29,9 @@ desc: "simplemente un creador de stickers",
 category: "stickers",
 },
 async (conn, m, { args }) => {
-const mime = (m.quoted).mimetype || '' 
+const mime = (quoted.msg || quoted).mimetype || ''  
           if (/image/.test(mime)) {  
-          m.reply(mess.wait)  
+          m.reply(global.mess.wait)  
           media = await m.quoted.download()  
           let encmedia = await conn.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author })  
           await fs.unlinkSync(encmedia)  

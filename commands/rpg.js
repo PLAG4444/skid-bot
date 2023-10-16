@@ -6,9 +6,8 @@ desc: "muestra la leadboard",
 category: "rpg",
 filename: __filename,
 },
-async (conn, m, { participants }) => {
-var body = (typeof m.text == 'string' ? m.text : '') 
-const args = body.trim().split(/ +/).slice(1)  || []
+async (conn, m, { participants, args}) => {
+
  let member = participants.map(u => u.id) 
  let me = m.split 
  const users = Object.entries(global.db.data.users).map(([key, value]) => {
@@ -264,7 +263,7 @@ alias: ["curar", "curarme"],
 desc: "curate de los daños de las aventuras",
 category: "rpg",
 }, 
-async (conn, m) => {
+async (conn, m, { args }) => {
   let user = global.db.data.users[m.sender]
   if (user.health >= 100) throw '*Tu salud esta llena ♥️*'
   let heal = 40 + user.cat * 4
@@ -587,6 +586,7 @@ desc: "reclama tu recompensa diaria",
 category: "rpg",
 },
 async (conn, m) => {
+let { msToTime } = require('../lib')
 let user = global.db.data.users[m.sender]
 let rewards = {
 exp: 9999 + user.dog * 1000,
@@ -614,7 +614,7 @@ desc: "transfiere a la gente",
 category: "rpg",
 use: "@user",
 },
-async (conn, m, { text, body }) => {
+async (conn, m, { text, body, args}) => {
 let items = ['money', 'exp', 'limit', 'potion']
     this.confirm = this.confirm ? this.confirm : {}
     if (this.confirm[m.sender]) return conn.sendText(m.chat, `*❗ Aun hay una tranferencia, Espera a que acabe esa transferencia*`, m)

@@ -4,10 +4,28 @@ const diskusage = require('diskusage')
 const moment = require("moment-timezone")
 const fs = require("fs")
 cmd({
+pattern: "help",
+desc: "buscar comandos del bot",
+category: "help",
+use: "commando",
+},
+async (conn, m, { text }) => {
+const { commands } = require('../lib')
+let arr = []
+const cmd = commands.find((cmd) => cmd.pattern.toLowerCase() === text.split(" ")[0].toLowerCase())
+if (!cmd) return await m.reply("*❌ este comando no existe.*")
+else arr.push(`\`\`\`comando encontrado`\`\`\n🚩 Comando: ${cmd.pattern}`)
+if (cmd.category) arr.push(`*🌟 Categoría* ${cmd.category}`)
+if (cmd.alias) arr.push(`*🔅 Alias:* ${cmd.alias}`)
+if (cmd.desc) arr.push(`*🧩 descripción:* ${cmd.desc}`)
+if (cmd.use) arr.push(`*〽️ uso:*\n \`\`\`${global.prefix}${cmd.pattern} ${cmd.use}\`\`\``)
+return await m.reply(arr.join('\n'))
+})
+cmd({
 pattern: "menu",
-alias: ["help"],
 desc: "comandos del bot",
-filename: __filename
+filename: __filename,
+category: "help",
 },
 async(conn, m ) => {
 const { commands } = require('../lib/commands.js') 
@@ -34,19 +52,19 @@ str += `│ ╭──────────────◆
 ╰───────────────⊷\n
 `
 for (const category in cmds) {
-str += `╭────❏ *${category}* ❏\n` ;
+str += `╭────❏ *${category}* ❏\n` 
 if (m.text.toLowerCase() == category.toLowerCase()) {
-str = `╭─────❏ *${category}* ❏\n` ;      
+str = `╭─────❏ *${category}* ❏\n`       
 for (const plugins of cmds[category]) { 
 str += `│ ${plugins}\n` 
 }
-str += `╰━━━━━━━━━━━━━──⊷\n`  ;
-break ;
+str += `╰━━━━━━━━━━━━━──⊷\n`  
+break 
 } else {
 for (const plugins of cmds[category]) {
 str += `│ ${plugins}\n`
 }
-str += `╰━━━━━━━━━━━━━━──⊷\n`  ; 
+str += `╰━━━━━━━━━━━━━━──⊷\n`   
 }}
 let lol = pickRandom(["🌐", "🌟", "✨", "📍", "🚩"])
 let proTip = pickRandom([`usa ${global.prefix}serbot para convertirte en bot`, `Unete al grupo oficial si hay algun cambio`, "tienes alguna idea de comando? cuentame desde el *grupo oficial*", "tienes un host? descarga a skid bot desde *github*"])
@@ -80,10 +98,10 @@ await conn.sendMessage(m.chat, {
         filename: __filename,
     },
     async(conn, m) => {
-        var inital = new Date().getTime();
-        const { key } = await conn.sendMessage(m.chat, {text: '```Ping!!!```'});
-        var final = new Date().getTime();
-       return await conn.sendMessage(m.chat, {text: '*Pong*\n *' + (final - inital) + ' ms* ', edit: key});
+        var inital = new Date().getTime()
+        const { key } = await conn.sendMessage(m.chat, {text: '```Ping!!!```'})
+        var final = new Date().getTime()
+       return await conn.sendMessage(m.chat, {text: '*Pong*\n *' + (final - inital) + ' ms* ', edit: key})
     })
     cmd({
     pattern: "estado",

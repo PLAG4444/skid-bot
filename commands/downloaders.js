@@ -5,7 +5,7 @@ const yts = require("youtube-yts")
 cmd({
 pattern: 'apk',
 desc: 'descargar y buscar aplicaciónes de aptoide',
-use: '.apk whatsapp',
+use: 'whatsapp',
 category: 'downloaders',
 }, 
 async (conn, m, { text }) => {
@@ -28,7 +28,7 @@ throw `*[❗] Error, no se encontrarón resultados para su búsqueda.*`;
 cmd({
 pattern: 'play',
 desc: 'Descarga de videos de YouTube',
-use: '.play tsb',
+use: 'tsb',
 category: 'downloaders',
 }, 
 async (conn, m, { text, args }) => { // ?
@@ -91,7 +91,7 @@ cmd({
 pattern: "tiktok",
 alias: ["tiktokvideo"],
 desc: "descargar videos de tiktok",
-use: "tiktok >link<",
+use: ">link<",
 category: "downloaders"
 }, 
 async (conn, m, { text }) => {
@@ -173,7 +173,8 @@ cmd({
 pattern: "yts",
 alias: ["ytsearch", "yt"],
 desc: "buscar videos de youtube",
-category: "downloaders"
+category: "downloaders",
+use: "shitpost",
 },
 async (conn, m, { text, body, args }) => {
     if (!text) throw `Ejemplo: ${prefix + comand} historia wa anime`;   

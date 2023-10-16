@@ -4,7 +4,7 @@ cmd({
 pattern: "gay",
 category: "fun",
 desc: "Foto de gay tageado",
-use: "gay @tag",
+use: "@tag",
 },
 async (conn, m) => {
 const who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
@@ -16,7 +16,7 @@ cmd({
 pattern: "horny",
 category: "fun",
 desc: "Foto horny de tageado",
-use: "horny @tag",
+use: "@tag",
 },
 async (conn, m) => {
 const who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
@@ -28,7 +28,7 @@ cmd({
 pattern: "simp",
 category: "fun",
 desc: "Foto simp de tageado",
-use: "simp @tag",
+use: "@tag",
 },
 async (conn, m) => {
 const who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
@@ -37,10 +37,10 @@ conn.sendMessage(m.chat, { image: { url: global.API('https://some-random-api.com
    })}, caption: `*🗿 @${who.split("@")[0]} tu religión es ser un simp!!*`, mentions: [who] }, { quoted: m })
 })
 cmd({
-pattern: "simp",
+pattern: "comment",
 category: "fun",
-desc: "Foto simp de tageado",
-use: "simp @tag",
+desc: "comentar",
+use: "@tag",
 },
 async (conn, m, { text }) => {
 const who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
@@ -55,7 +55,7 @@ cmd({
 pattern: "fake",
 category: "fun",
 desc: "un tag falso de la gente :v",
-use: "fake @tag",
+use: "@tag",
 },
 async (conn, m) => {
 var gh = body.slice(11);
@@ -73,7 +73,8 @@ cmd({
 pattern: "follar",
 alias: ["coger", "violar", "fuck"],
 desc: "follate a alguien XD",
-use: ".follar @tag",
+use: "@tag",
+category: "fun",
 },
 async (conn, m) => {
 let coger = `🥵 te acabas acabas de coger a ${text}!🥵  
@@ -89,7 +90,7 @@ cmd({
 pattern: "bot",
 alias: ["simi"],
 desc: "hablar con simi (no friends?)",
-use: "simi hola uwu <= no tengo amigos"
+use: "hola uwu <= no tengo amigos"
 },
 async (conn, m, { text }) => {
 if (!text) return conn.sendMessage(m.chat, { text: `*Dime algo para hablar contigo (sim simi) ♡*` }, { quoted: m});  
