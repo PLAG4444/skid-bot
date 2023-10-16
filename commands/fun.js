@@ -101,7 +101,7 @@ m.reply(res)
 })
 cmd({
 pattern: "suitpvp",
-alias: ["pvp", "suit"]
+alias: ["pvp", "suit"],
 desc: "juega contra un usuario",
 use: "@tag",
 category: "games",
