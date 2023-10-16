@@ -49,7 +49,7 @@ const path = require('path')
    async(conn, m, { args }) => {
    const skmod = conn
    if (!global.db.data.settings[skmod.user.jid].jadibot) return m.reply(`*[❗] este comando fue desabilitado por el creador*`) 
-   if (skmod.user.jid !== global.numBot) return m.reply(`*[❗] Este comando solo puede ser usado en el Bot principal!!*\n\n*—◉ Da click aquí para ir:*\n*◉* https://api.whatsapp.com/send/?phone=${global.numBot.split`@`[0]}&text=${prefix + command}&type=phone_number&app_absent=0`) 
+   if (skmod.user.jid !== global.numBot) return m.reply(`*[❗] Este comando solo puede ser usado en el Bot principal!!*\n\n*—◉ Da click aquí para ir:*\n*◉* https://api.whatsapp.com/send/?phone=${global.numBot.split`@`[0]}&text=${global.prefix + cmd.pattern}&type=phone_number&app_absent=0`) 
    const { state, saveCreds, saveState } = await useMultiFileAuthState(path.join(__dirname, `./jadibot/${m.sender.split("@")[0]}`), pino({ level: "silent" })) 
   
    async function jadibts() { 
@@ -95,12 +95,12 @@ const path = require('path')
     global.listJadibot.push(skMods)    
     let userId = await skMods.user.jid 
     global.jadibotConn = skMods.user.jid 
-    await  skmod.sendMessage(m.chat, { text: args ? "*✅ Reconectado con exito*" : `*✅ Conectado con exito*\n*Si tu bot fue desconectado usa ${prefix + command}*` }, { quoted: m }) 
+    await  skmod.sendMessage(m.chat, { text: args ? "*✅ Reconectado con exito*" : `*✅ Conectado con exito*\n*Si tu bot fue desconectado usa ${global.prefix + cmd.pattern}*` }, { quoted: m }) 
     } 
     if (connection === 'open') { 
     await skmod.sendMessage(m.chat, { text: args ?  `*✅ Reconexion Exitosa*\n*tus mensajes se estan cargando*` : `*✅ Jadibot Conectado*\n*se te enviara un codigo para volver a conectarte*` }, { quoted: m }) 
     await sleep(5000) 
-    if (!args) skmod.sendMessage(m.chat, { text: `${prefix + command } ` + Buffer.from(fs.readFileSync(`./jadibot/${m.sender.split("@")[0]}/creds.json`), "utf-8").toString("base64") }, { quoted: m })
+    if (!args) skmod.sendMessage(m.chat, { text: `${global.prefix + cmd.pattern } ` + Buffer.from(fs.readFileSync(`./jadibot/${m.sender.split("@")[0]}/creds.json`), "utf-8").toString("base64") }, { quoted: m })
     fs.readdirSync("../commands").forEach((plugin) => {
     if (path.extname(plugin).toLowerCase() == ".js") {
     require("../commands/" + plugin);
@@ -209,7 +209,7 @@ var body = (typeof m.text == 'string' ? m.text : '')
   }
   })
 
-require('../main.js')(skMods, m, chatUpdate, store)
+require('./main.js')(skMods, m, chatUpdate, store)
 })
  skMods.ev.on("call", async (fuckedcall) => { 
  const anticall = global.db.data.settings[skMods.user.jid].antiCall 
