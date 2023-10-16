@@ -54,7 +54,7 @@ admin: true,
 botAdmin: true,
 group: true,
 }, 
-async (conn, m, { text, args ) => {
+async (conn, m, { text, args }) => {
     let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net';  
     conn.groupParticipantsUpdate(m.chat, [users], 'remove')
 })
