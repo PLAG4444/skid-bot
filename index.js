@@ -1,7 +1,7 @@
 require('./settings.js')
 const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins, clockString }= require('./lib')
 const events = require('./lib/commands')
-const { useMultiFileAuthState, DisconnectReason, proto, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion } = require("@whiskeysockets/baileys")
+const { useMultiFileAuthState, DisconnectReason, proto, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, generateWAMessageFromContent, relayMessage } = require("@whiskeysockets/baileys")
 const gradient = require('gradient-string')
 const fs = require('fs')
 const { watchFile, unwatchFile } = require('fs')
