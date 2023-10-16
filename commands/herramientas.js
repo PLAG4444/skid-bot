@@ -224,7 +224,7 @@ desc: "buscar letras de canciones",
 use: "everyone wants to rule the world",
 category: "herramientas",
 },
-async (conn, m, { text } => {
+async (conn, m, { text }) => {
  if (!text) throw `*⚠️ que música quieres ${conn.getName(m.sender)}?*\n*ejempo: ${prefix + command} say with me*`
  const { lyrics, lyricsv2 } = require('@bochilteam/scraper')
  const resu = await lyricsv2(text).catch(async _ => await lyrics(text))
