@@ -177,7 +177,7 @@ category: "downloaders",
 use: "shitpost",
 },
 async (conn, m, { text, body, args }) => {
-    if (!text) m.reply(`Ejemplo: ${prefix + comand} historia wa anime`;   
+    if (!text) m.reply(`Ejemplo: ${prefix + comand} historia wa anime`)
      const search = await yts(text);   
      let teks = 'Búsqueda en YouTube\n\nResultados de ' + text + '\n\n';   
      let no = 1;   
