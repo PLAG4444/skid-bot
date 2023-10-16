@@ -1,6 +1,7 @@
 require('../settings.js')
 const { cmd, getBuffer, pickRandom } = require('../lib')
 const yts = require("youtube-yts")
+const fs = require('fs')
 
 cmd({
 pattern: 'apk',

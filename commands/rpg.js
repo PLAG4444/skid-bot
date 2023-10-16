@@ -1,5 +1,5 @@
 const { cmd, msToTime, pickRandom, getRandom }= require('../lib/commands.js')
-
+const fs = require('fs')
 cmd({
 pattern: "lb",
 desc: "muestra la leadboard",

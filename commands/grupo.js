@@ -1,6 +1,6 @@
 const { cmd } = require('../lib')
 require('../settings.js')
-
+const fs = require("fs")
 cmd({
 pattern: "hidetag",
 desc: "taguea a todos los usuarios",
