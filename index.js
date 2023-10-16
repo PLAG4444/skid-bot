@@ -249,7 +249,7 @@ let file = require.resolve(__dirname + "/commands/" + plugins)
   conn.logger?.info(`\nUpdate ${__filename}`)
   delete require.cache[file]  
   require(file)  
-  })
+  })}
 }
 })
 }})
