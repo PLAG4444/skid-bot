@@ -57,7 +57,7 @@ category: "fun",
 desc: "un tag falso de la gente :v",
 use: "@tag",
 },
-async (conn, m) => {
+async (conn, m, { body }) => {
 var gh = body.slice(11);
     var mentioned = m.message.extendedTextMessage && m.message.extendedTextMessage.contextInfo && m.message.extendedTextMessage.contextInfo.mentionedJid ? m.message.extendedTextMessage.contextInfo.mentionedJid[0] : null;
     var replace = gh.split("|")[0];
