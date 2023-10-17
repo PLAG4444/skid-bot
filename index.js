@@ -182,6 +182,11 @@ global.numBot2 = conn.user.id
   m.mtype === "stickerMessage"
   ) {
   command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
+  } else if (
+  command.on === "all" &&
+  m.mtype &&
+  m.message) {
+  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
   }
   })
 
