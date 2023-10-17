@@ -245,6 +245,64 @@ async (conn, m, { text }) => {
  ulr = image
  conn.sendMessage(m.chat, { image: { url: ulr }, caption: global.botname }, { quoted: global.fkontak })
 })
+cmd({
+pattern: "qc",
+category: "sticker",
+},
+async (conn, m, { args, text }) => {
+if (!args[0] && !m.quoted) return m.reply('pon un texto')
+    let userPfp
+    if (m.quoted) {
+      try {
+        userPfp = await conn.profilePictureUrl(m.quoted.sender, "image")
+      } catch (e) {
+        userPfp = noperfil
+      }
+    } else {
+      try {
+        userPfp = await conn.profilePictureUrl(m.sender, "image")
+      } catch (e) {
+        userPfp = noperfil
+      }
+    }
+    const waUserName = m.pushName
+    const quoteText = m.quoted ? m.quoted.body : args.join(" ")
+    const quoteJson = {
+      type: "quote",
+      format: "png",
+      backgroundColor: "#FFFFFF",
+      width: 700,
+      height: 580,
+      scale: 2,
+      messages: [
+        {
+          entities: [],
+          avatar: true,
+          from: {
+            id: 1,
+            name: waUserName,
+            photo: {
+              url: userPfp,
+            },
+          },
+          text: quoteText,
+          replyMessage: {},
+        },
+      ],
+    }
+    try {
+      const quoteResponse = await axios.post("https://bot.lyo.su/quote/generate", quoteJson, {
+        headers: { "Content-Type": "application/json" },
+      })
+      const buffer = Buffer.from(quoteResponse.data.result.image, "base64")
+      conn.sendImageAsSticker(m.chat, buffer, m, {
+        packname: packname,
+        author: author,
+      })
+    } catch (error) {
+      console.error(error)
+    }
+})
 
 
 

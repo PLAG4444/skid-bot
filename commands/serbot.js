@@ -186,6 +186,21 @@ var body = (typeof m.text == 'string' ? m.text : '')
   const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
   if (cmd) {
   try {
+  if (cmd.owner && !isCreator) {
+  return conn.sendNyanCat(m.chat, mess.owner, global.menu2, 'aviso', 'alerta', m)
+  }
+  if (cmd.botAdmin && !isBotAdmins) {
+  return conn.sendNyanCat(m.chat, mess.botAdmin, global.menu2, 'aviso', 'alerta', m)
+  }
+  if (cmd.admin && !isGroupAdmins) {
+  return conn.sendNyanCat(m.chat, mess.admin, global.menu2, 'aviso', 'alerta', m)
+  }
+  if(cmd.group && !m.isGroup) {
+  return conn.sendNyanCat(m.chat, mess.group, global.menu2, 'aviso', 'alerta', m)
+  }
+  if (cmd.restrict && global.db.data.chats[m.chat].restrict) {
+  return conn.sendNyanCat(m.chat, mess.restrict, global.menu2, 'aviso', 'alerta', m)
+  }
   cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName })
   } catch (e) {
   m.reply(format(e))

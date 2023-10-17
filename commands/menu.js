@@ -49,8 +49,31 @@ str += `│ ${plugins}\n`
 }
 str += `╰━━━━━━━━━━━━━━──⊷\n`   
 }}
+
+
 let lol = pickRandom(["🌐", "🌟", "✨", "📍", "🚩"])
 let proTip = pickRandom([`usa ${global.prefix}serbot para convertirte en bot`, `Unete al grupo oficial si hay algun cambio`, "tienes alguna idea de comando? cuentame desde el *grupo oficial*", "tienes un host? descarga a skid bot desde *github*"])
+str += `╭─────❏ *audios* ❏\n`
+str += '│a'
+str += '│uwu'
+str += '│epico'
+str += '│rawr'
+str += '│shitpost'
+str += '│epico'
+str += '│siuuu'
+str += '│mierda de bot'
+str += '│onichan'
+str += '│la biblia'
+str += '│es puto'
+str += '│bañate'
+str += '│yamete'
+str += '│te amo'
+str += '│un pato'
+str += '│sexo'
+str += '│baneado'
+str += '│viernes'
+str += '│baneado'
+str += `╰━━━━━━━━━━━━━━──⊷\n`
 str += `${lol} *Pro tip*: ${proTip}`
 await conn.sendMessage(m.chat, {   
     text: str,  
