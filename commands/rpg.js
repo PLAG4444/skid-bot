@@ -407,6 +407,7 @@ m.reply(txt)
  category: "rpg",
  },
  async (conn, m, { args }) => {
+ const { pickRandom } = require('./lib')
  let works = (args[0] || '').toLowerCase()
  let txt = `
 *Hola ${await conn.getName(m.sender)}*
