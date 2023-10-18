@@ -407,7 +407,7 @@ m.reply(txt)
  category: "rpg",
  },
  async (conn, m, { args }) => {
- const { pickRandom } = require('./lib')
+ const { pickRandom } = require('../lib')
  let works = (args[0] || '').toLowerCase()
  let txt = `
 *Hola ${await conn.getName(m.sender)}*
@@ -433,7 +433,7 @@ m.reply(txt)
 `
 switch (works) {
 
-case 'cajero': {
+case 'cajero': 
 let user = global.db.data.users[m.sender] 
 let time = global.db.data.users[m.sender].lastwork + 600000  
 if (new Date - global.db.data.users[m.sender].lastwork < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(time - new Date())} para volver a trabajar!!*`)
@@ -442,9 +442,9 @@ user.money += pay + user.dog * 1000
 user.lastwork = new Date() * 1
 let work = pickRandom(['los ruidos de lo clientes molestos no te dejan en paz, sin embargo tu paga fue de', 'fue una noche tranquila...\nganaste', 'porque elegiste este trabajo\n*esta pregunta retumba en tu cabeza*, sin embargo ganaste tu miseria de paga de'])
 m.reply(`${work} ${pay} dólares 💵`)
-}
+
 break
-case 'leñador': { 
+case 'leñador':  
 let user = global.db.data.users[m.sender] 
 let time = global.db.data.users[m.sender].lastwork + 600000  
 if (new Date - global.db.data.users[m.sender].lastwork < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(time - new Date())} para volver a trabajar!!*`)
@@ -459,7 +459,7 @@ user.lastwork = new Date() * 1
 user.axedurability -= lost - user.fox * 4
 let work = pickRandom(['este trabajo es demasiado bueno pero agotador, asi que este esfuerzo es recompensado por', '*piensas en cortar 20 troncos mas pero tu trabajo es tan bueno que ganas*'])
 m.reply(`${work} ${pay + user.dog * 1000} dolares 💵\n*a costa de este trabajo ganaste ${bonus + user.dog * 1000} XP*\n*pero tu hacha perdio ${lost - user.fox * 4} de durabilidad*`)
-}
+
 break
 default:
 
