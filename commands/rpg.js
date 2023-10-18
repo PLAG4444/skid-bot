@@ -409,6 +409,7 @@ m.reply(txt)
  async (conn, m, { args }) => {
  const { pickRandom } = require('../lib')
  let works = (args[0] || '').toLowerCase()
+ let user = global.db.data.users[m.sender] 
  let txt = `
 *Hola ${await conn.getName(m.sender)}*
 
@@ -434,7 +435,7 @@ m.reply(txt)
 switch (works) {
 
 case 'cajero': 
-let user = global.db.data.users[m.sender] 
+
 let time = global.db.data.users[m.sender].lastwork + 600000  
 if (new Date - global.db.data.users[m.sender].lastwork < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(time - new Date())} para volver a trabajar!!*`)
 let pay = Math.floor(Math.random() * 300)
@@ -445,7 +446,7 @@ m.reply(`${work} ${pay} dólares 💵`)
 
 break
 case 'leñador':  
-let user = global.db.data.users[m.sender] 
+
 let time = global.db.data.users[m.sender].lastwork + 600000  
 if (new Date - global.db.data.users[m.sender].lastwork < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(time - new Date())} para volver a trabajar!!*`)
 if (user.axe == 0) m.reply('*no fuistes contratado por la simple razon de que no tienes un hacha, subnormal*')
