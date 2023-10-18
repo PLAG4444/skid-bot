@@ -46,14 +46,14 @@ const mime = (quoted.msg || quoted).mimetype || ''
           await new Promise((resolve) => setTimeout(resolve, 2000));   
           await fs.unlinkSync(encmedia)  
       } else {  
-          m.reply(`*Envía una imagen/video con ${prefix + command}*\n_*(La duración del video solo puede ser de 10 segundos)*_`)  
+          m.reply(`*Envía una imagen/video con ${prefix + cmd.pattern}*\n_*(La duración del video solo puede ser de 10 segundos)*_`)  
           }  
 })
 cmd({
         pattern: "stickerround",
-        alias: ["roundstic","roundsticker"],
+        alias: ["roundstic","roundsticker", "sround"],
         desc: "crea un sticker en forma de redonda.",
-        category: "sticker",
+        category: "stickers",
 filename: __filename,
         use: '<responde a una imagen/video.>'
     },
@@ -79,7 +79,7 @@ cmd({
         pattern: "stickercrop",
         alias: ["scrop","cropsticker"],
         desc: "crea un sticker cortado.",
-        category: "sticker",
+        category: "stickers",
 filename: __filename,
         use: '<responde a una imagen/video.>'
     },
@@ -247,7 +247,7 @@ async (conn, m, { text }) => {
 })
 cmd({
 pattern: "qc",
-category: "sticker",
+category: "stickers",
 },
 async (conn, m, { args, text }) => {
 if (!args[0] && !m.quoted) return m.reply('pon un texto')
