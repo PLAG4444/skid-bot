@@ -588,75 +588,7 @@ await conn.sendMessage(m.chat, {
     throw new error
     }
     }
-    break
-    
-   
-   
-  
-   
-   
-    
-    
-        
-    case 'qc': {
-    if (!args[0] && !m.quoted) {
-      return conn.adReply(m.chat, `*nesecitas un texto*`)
-    }
-    let userPfp
-    if (m.quoted) {
-      try {
-        userPfp = await conn.profilePictureUrl(m.quoted.sender, "image")
-      } catch (e) {
-        userPfp = noperfil
-      }
-    } else {
-      try {
-        userPfp = await conn.profilePictureUrl(m.sender, "image")
-      } catch (e) {
-        userPfp = noperfil
-      }
-    }
-    const waUserName = pushname
-    const quoteText = m.quoted ? m.quoted.body : args.join(" ")
-    const quoteJson = {
-      type: "quote",
-      format: "png",
-      backgroundColor: "#FFFFFF",
-      width: 700,
-      height: 580,
-      scale: 2,
-      messages: [
-        {
-          entities: [],
-          avatar: true,
-          from: {
-            id: 1,
-            name: waUserName,
-            photo: {
-              url: userPfp,
-            },
-          },
-          text: quoteText,
-          replyMessage: {},
-        },
-      ],
-    }
-    try {
-      const quoteResponse = await axios.post("https://bot.lyo.su/quote/generate", quoteJson, {
-        headers: { "Content-Type": "application/json" },
-      })
-      const buffer = Buffer.from(quoteResponse.data.result.image, "base64")
-      conn.sendImageAsSticker(m.chat, buffer, m, {
-        packname: packname,
-        author: author,
-      })
-    } catch (error) {
-      console.error(error)
-      conn.adReply(m.chat, 'Error', menu, fkontak)
-    }
-    }
-    break
-    
+    break    
     case 'del': { 
     if (!m.isGroup) return m.reply(mess.group);  
     if (!isBotAdmins) return m.reply(mess.botAdmin);  
@@ -778,40 +710,7 @@ await conn.sendMessage(m.chat, {
   
   
   
-  case 'leave': {  
-    if (!isCreator) return m.reply(`*este comando solo es para mi jefe*`);  
-    m.reply(m.chat, `*Adios fue un gusto estar aqui hasta pronto*`);  
-    await conn.groupLeave(m.chat);  
-  }  
-  break  
   
-  case 'kick': {  
-    if (global.db.data.chats[m.chat].restrict) throw mess.restrict
-    if (!m.isGroup) return m.reply(mess.group);  
-    if (!isBotAdmins) return m.reply(mess.botAdmin);  
-    if (!isGroupAdmins) return m.reply(mess.admin);  
-    let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net';  
-    conn.groupParticipantsUpdate(m.chat, [users], 'remove');  
-  }  
-  break  
-  
-  case 'promote': {  
-    if (!m.isGroup) return m.reply(mess.group);  
-    if (!isBotAdmins) return m.reply(mess.botAdmin);  
-    if (!isGroupAdmins) return m.reply(mess.admin);  
-    let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net';  
-    await conn.groupParticipantsUpdate(m.chat, [users], 'promote')
-  }  
-  break  
-  
-  case 'demote': {  
-    if (!m.isGroup) return m.reply(mess.group);  
-    if (!isBotAdmins) return m.reply(mess.botAdmin);  
-    if (!isGroupAdmins) return m.reply(mess.admin);  
-    let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net';  
-    await conn.groupParticipantsUpdate(m.chat, [users], 'demote')
-  }  
-  break  
   
 
   case 'toqr':{
@@ -828,21 +727,7 @@ await conn.sendMessage(m.chat, {
   break		
   
   
-  case 'tagall': {  
-    if (!m.isGroup) return m.reply(mess.group);  
-    if (!isBotAdmins) return m.reply(mess.botAdmin);  
-    if (!isGroupAdmins) return m.reply(mess.admin);  
-    let teks = `✿ ━〔 *🍬 𝐈𝐍𝐕𝐎𝐂𝐀𝐂𝐈𝐎́𝐍 𝐌𝐀𝐒𝐈𝐕𝐀  🍬* 〕━ ✿\n\n`;  
-    teks += `✿ 𝐒𝐔 𝐀𝐃𝐌𝐈𝐍 𝐋𝐎𝐒 𝐈𝐍𝐕𝐎𝐂𝐀, 𝐑𝐄𝐕𝐈𝐕𝐀𝐍\n\n`;  
-    teks += `✿ 𝐌𝐄𝐍𝐒𝐀𝐉𝐄:  ${text ? text : 'no hay mensaje :v'}\n\n`;  
-    for (let mem of participants) {  
-      teks += `┃@${mem.id.split('@')[0]}\n⁩`;  
-    }  
-    teks += `┃\n`;  
-    teks += `╰━━━━━[ *${botname}* ]━━━━━⬣`;  
-    conn.sendMessage(m.chat, { text: teks, mentions: participants.map(a => a.id) }, { quoted: m });  
-  }  
-  break  
+  
   
  
     
@@ -1001,69 +886,6 @@ await conn.sendMessage(m.chat, {
  }
    }
 break
-
- 
-   
-   
-   
-   case 'setwelcome': case 'bienvenida': {
-   if (!m.isGroup) return m.reply(mess.group);  
-    if (!isBotAdmins) return m.reply(mess.botAdmin);  
-    if (!isGroupAdmins) return m.reply(mess.admin);  
-   let chats = global.db.data.chats[m.chat]
-   if (!text) throw '*❗ Pon algo para poner una bienvenida*\n*@user* = etiqueta al usuario\n*@subject* = nombre del grupo\n*@desc* = descripción'
-   chats.sWelcome = text
-   conn.reply(m.chat, '*❗ tu bienvenida fue configurada correctamente*', m)
-   }
-   break
-   case 'setbye': case 'despedida': {
-   if (!m.isGroup) return m.reply(mess.group);  
-    if (!isBotAdmins) return m.reply(mess.botAdmin);  
-    if (!isGroupAdmins) return m.reply(mess.admin);  
-   let chats = global.db.data.chats[m.chat]
-   if (!text) throw '*❗ Pon algo para poner una despedida*\n*@user* = etiqueta al usuario'
-   chats.sBye = text
-   conn.reply(m.chat, '*❗ tu bienvenida fue configurada correctamente*', m)
-   }
-   break
-   
-   
- 
- 
- 
- case 'setcmd':  case 'addcmd': {
-                if (!m.quoted) throw '*❗ Etiqueta un Sticker*'
-                if (!m.quoted.fileSha256) throw '*❗ Etiqueta un Sticker*'
-                if (!text) throw '*Que comando vas a añadir?*'
-                let sticker = global.db.data.sticker
-                let hash = m.quoted.fileSha256.toString('base64'); 
-                sticker[hash] = {text, mentionedJid: m.mentionedJid, creator: m.sender, at: + new Date, locked: false};
-                m.reply('*✅ Hecho*')
-                }
-            break
-            case 'delcmd': {
-                let hash = m.quoted.fileSha256.toString('base64')
-                if (!hash) throw '*Este id de sticker no existe*'
-                if (global.db.data.sticker[hash] && global.db.data.sticker[_sh].locked) throw '*❌ No tienes permiso de eliminar este comando*'        
-                delete global.db.data.sticker[hash]
-                m.reply('*✅ Hecho*')
-                }
-            break
-            case 'listcmd': {
-                let _teks = `*Lista de comandos*\n*⚠️ Info los stickers con bold estan bloqueados!!*\n${Object.entries(global.db.data.sticker).map(([key, value], index) => `${index + 1}. ${value.locked ? `*${key}*` : key} : ${value.text}`).join('\n')}`.trim()
-                conn.sendText(m.chat, _teks, m, { mentions: Object.values(global.db.data.sticker).map(x => x.mentionedJid).reduce((a,b) => [...a, ...b], []) })
-                }
-            break
-            case 'lockcmd':  {
-                if (!isCreator) throw mess.owner
-                if (!m.quoted) throw '*❗Etiqueta un sticker*'
-                if (!m.quoted.fileSha256) throw '*❗Etiqueta un sticker*'
-                let hash = m.quoted.fileSha256.toString('base64')
-                if (!(hash in global.db.data.sticker)) throw '*❗Este sticker no esta en mi base de datos*'
-                global.db.data.sticker[hash].locked = !/^un/i.test(command)
-                m.reply('*✅ Hecho*')
-                }
-            break
   
           case 'update':  
             if (!isCreator) return conn.sendMessage(m.chat, { text: mess.owner }, { quoted: m});  
@@ -1545,15 +1367,7 @@ break
               }
          
      
-              
-   if (body.startsWith('k')) { 
- if (!isCreator) return 
- try { 
- return m.reply(JSON.stringify(eval(body.slice(2)), null, '\t')) 
- } catch (e) { 
- e = String(e) 
- reply(e) 
- }}
+ 
   
           
           }
