@@ -186,7 +186,7 @@ global.numBot2 = conn.user.id
   command.on === "all" &&
   m.mtype &&
   m.message) {
-  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
+  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, chatUpdate });
   }
   })
 
