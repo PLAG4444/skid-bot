@@ -104,6 +104,9 @@ await conn.sendMessage(m.chat, {
         },
         async(conn, m) => {
             const { commands } = require('../lib');
+            const time = moment(moment()).format('HH:mm:ss')
+    moment.tz.setDefault('Asia/KOLKATA').locale('id')
+    const date = moment.tz('Asia/Kolkata').format('DD/MM/YYYY')
 let str = `╭────《 ` + global.botname + ` 》─────⊷\n`
 str += `│ ╭──────────────◆
 │ │ usuario: ${await conn.getName(m.sender)}
