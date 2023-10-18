@@ -108,9 +108,5 @@ if (user) { //@skidy89
    user.role = '🌌 Infinito III' 
  } else if (user.level <= 150) { 
    user.role = '🌠 Eterno' 
- }}} catch (error) { 
- m.error = error 
- if (error) { 
- console.error(m.error) 
  }}
 }) 
