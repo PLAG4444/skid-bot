@@ -221,6 +221,11 @@ var body = (typeof m.text == 'string' ? m.text : '')
   m.mtype === "stickerMessage"
   ) {
   command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
+  } else if (
+  command.on === "all" &&
+  m.mtype &&
+  m.message) {
+  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, chatUpdate });
   }
   })
 
