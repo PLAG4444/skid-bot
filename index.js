@@ -1,5 +1,5 @@
 require('./settings.js')
-const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins, clockString }= require('./lib')
+const { smsg, sleep, makeWaSocket, protoType, serialize, getGroupAdmins, clockString, useSQlite }= require('./lib')
 const events = require('./lib/commands')
 const { useMultiFileAuthState, DisconnectReason, proto, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, generateWAMessageFromContent, relayMessage } = require("@whiskeysockets/baileys")
 const gradient = require('gradient-string')
@@ -87,7 +87,7 @@ function clearTmp2() {
 async function startBot() {
 console.info = () => {}
 const msgRetryMap = (MessageRetryMap) => { }
-const {state, saveState, saveCreds} = await useMultiFileAuthState('./authFolder')
+const {state, saveState, saveCreds} = await useSQlite('./auth/auth.db')
 let { version, isLatest } = await fetchLatestBaileysVersion()
 
 const connectionSettings = {

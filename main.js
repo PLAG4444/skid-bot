@@ -82,57 +82,7 @@
   
   
   const sendImageAsUrl = ( url, caption ) => { conn.sendMessage(m.chat, { image:  {url: url }, caption: caption }, { quoted: m })}  
-
   
-  this.bet = this.bet ? this.bet : {}
-  if (m.sender in this.bet) {
-     if (m.isBaileys) return 
-     let { timeout, count } = this.bet[m.sender] 
-     let user = global.db.data.users[m.sender] 
-     let beforemoney = user.money * 1 
-     try {
-         if (/^(Si|si|sí)?$/i.test(m.text)) { 
-             let Bot = (Math.ceil(Math.random() * 91)) * 1 
-             let you = (Math.floor(Math.random() * 71)) * 1 
-             let status = 'perdiste'
-             if (Bot < you) { 
-                 user.money += count * 1 + user.dog * 2000
-                 user.exp += count * 100 + user.dog * 5000
-                 status = 'ganaste'
-             } else if (Bot > you) { 
-                 user.money -= count * 1 
-             } else { 
-                 status = 'empataste'
-                 user.money += (Math.floor(count / 1.5)) * 1 
-             } 
-             m.reply(` 
- | *JUGADOR* | *PUNTOS* | 
- *🤖 BOT:*   ${Bot} 
- *👤 TU:*    ${you} 
-  
- *tu ${status}*, tu ${status == 'ganaste' ? `Conseguiste *+${count * 2}*` : status == 'perdiste' ? `Perdiste *-${count * 1}*` : `Conseguiste *+${Math.floor(count / 1.5)}*`} dolares`.trim()) //`//`
-             clearTimeout(timeout) 
-             delete this.bet[m.sender] 
-             return !0 
-         } else if (/^(✖️|no)?$/i.test(txt)) { 
-             clearTimeout(timeout) 
-             delete this.bet[m.sender] 
-             m.reply('Rejected') 
-             return !0 
-         } 
-  
-     } catch (e) { 
-         clearTimeout(timeout) 
-         delete this.bet[m.sender] 
-         if (beforemoney > (user.money * 1)) user.money = beforemoney * 1 
-         m.reply('(Rejected)') 
-         return !0 
-     } finally { 
-         clearTimeout(timeout) 
-         delete this.bet[m.sender] 
-         return !0 
-     } 
- }
  if (global.db.data.chats[m.chat].antilink) {
   if (body.match(`chat.whatsapp.com`)) {  
   let delet = m.key.participant  
@@ -167,21 +117,7 @@
     await conn.sendNyanCat(m.chat, '*Lo siento extraño...*\n*los números arebes no estan permitidos aqui*', global.uhh, 'lo siento', 'los numeros arabes no se permiten aqui')
     await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
     }}
-    let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
-  for (let jid of mentionUser) {
-  let user = global.db.data.users[jid]
-  if (!user) continue
-  let afkTime = user.afkTime
-  if (!afkTime || afkTime < 0) continue
-  let reason = user.afkReason || ''
-  m.reply(`*❗ No lo etiquetes*\n*El esta afk ${reason ? 'por la razon ' + reason : 'Sin ninguna razon -_-'}*\nDurante ${clockString(new Date - afkTime)}`.trim())
-  }
-  if (global.db.data.users[m.sender].afkTime > -1) {
-  let user = global.db.data.users[m.sender]
-  m.reply(`*❗Dejaste de estar afk ${user.afkReason ? 'Por ' + user.afkReason : ''}*\n*Durante ${clockString(new Date - user.afkTime)} ^_^*`.trim())
-  user.afkTime = -1
-  user.afkReason = ''
-  }
+
   
   
 
@@ -673,17 +609,6 @@ await conn.sendMessage(m.chat, {
        conn.sendMessage(m.chat, {text: obfuscatedCode}, {quoted: m});
        break
             
-  case 'getcase':  
-    if (!isCreator) return conn.sendMessage(m.chat, { text: mess.owner }, { quoted: m});  
-    if (!text) return m.reply(`no hay comando a buscar o que?`)  
-    try {  
-    bbreak = 'break'  
-  m.reply('case ' + `'${args[0]}'` + fs.readFileSync('./main.js').toString().split(`case '${args[0]}'`)[1].split(bbreak)[0] + bbreak)  
-  } catch (err) {  
-  console.error(err)  
-  m.reply(" Error, tal vez no existe el comando")  
-  }  
-  break
   
   case 'sendcase':
   if (!isCreator) return conn.sendCart(m.chat, mess.owner)
@@ -845,48 +770,6 @@ await conn.sendMessage(m.chat, {
    }
    }
    break
-
-  
-  
-  
-
-   case 'apostar': {
-   this.bet = this.bet ? this.bet : {}
-   if (m.sender in this.bet) throw '¡¡Todavía estás apostando, espera hasta que se acabe!!'
-   try { 
-   let user = global.db.data.users[m.sender]
-   let count = (args[0] && number(parseInt(args[0])) ? Math.max(parseInt(args[0]), 1) : /all/i.test(args[0]) ? Math.floor(parseInt(user.money)) : 1) * 1 
-   if ((user.money * 1) < count) return m.reply('¡¡No tienes suficiente dinero!!')
-   if (!(m.sender in this.bet)) {
-   this.bet[m.sender] = {
-   sender: m.sender,
-   count,
-   timeout: setTimeout(() => (m.reply('*se acabo el tiempo*'), delete this.bet[m.sender]), 60000)
-   }
-   let txt =`¿Estás seguro de que quieres apostar? (si/no)\n\n*Apuesta:* ${count} 💵\n*⏰ Tienes 60 segundos para tomar una decisión*`
-   return conn.reply(m.chat, txt, m)
-   }
-   } catch (e) {
-   console.error(e)
-   if (m.sender in this.bet) {
-   let { timeout } = this.bet[m.sender]
-   clearTimeout(timeout)
-   delete this.bet[m.sender]
-   m.reply('*No elegiste nada*\n*apuesta rechazada*')
-   }
-   }
-    /** 
-  * Detect if thats number 
-  * @param {Number} x  
-  * @returns Boolean 
-  */ 
-   function number(x = 0) { 
-     x = parseInt(x) 
-     return !isNaN(x) && typeof x == 'number' 
- }
-   }
-break
-  
           case 'update':  
             if (!isCreator) return conn.sendMessage(m.chat, { text: mess.owner }, { quoted: m});  
            try {  
@@ -897,11 +780,6 @@ break
             await conn.sendMessage(m.chat, { text: updatee.toString() }, { quoted: m});  
          }  
            break  
-  
-         
-  
-          
-         
          case 'whatmusic': {
          let acrcloud = require('acrcloud')
          const acr = new acrcloud({ 
