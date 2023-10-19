@@ -1,5 +1,8 @@
 const { cmd } = require('../lib')
+const fetch = require('node-fetch')
+const { WAMessageStubType } = require("@whiskeysockets/baileys")
 require('../settings.js')
+
 const fs = require("fs")
 cmd({
 pattern: "hidetag",
