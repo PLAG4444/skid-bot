@@ -29,7 +29,6 @@ cmd({
 pattern: "instagramdl",
 category: "downloaders",
 desc: "descarga videos de Instagram",
-use " 
 }, async (conn, m, { args }) => {
 if (!args[0]) return m.reply(`*🚩 Ingresa un enlace de Instagram*\nEjemplo:\n${global.prefix}instagramdl https://www.instagram.com/reel/Cc0NuYBg8CR/?utm_source=ig_web_copy_link`)
 m.reply(global.mess.wait)
