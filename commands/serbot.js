@@ -298,7 +298,7 @@ require('../main.js')(skMods, m, chatUpdate, store)
    if (!fs.existsSync(path.join(__dirname, `./jadibot/${m.sender.split("@")[0]}`))) { 
    return m.reply(`tu sesion no existe`) 
    } else { 
-   fs.rmdirSync(`./jadibot/${m.sender.split("@")[0]}`, { recursive: true }) 
+   fs.rmdirSync(path.join(__dirname, `./jadibot/${m.sender.split("@")[0]}`, { recursive: true }) 
    return m.reply(`*❗ se elimino correctamente tu sesion*`) 
    } 
    } catch (e) { 
