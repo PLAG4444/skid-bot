@@ -85,10 +85,10 @@ function clearTmp2() {
 }
 
 async function startBot() {
-const { useSQliteauth } = require('./lib')
+
 console.info = () => {}
 const msgRetryMap = (MessageRetryMap) => { }
-const {state, saveState, saveCreds} = await useSQliteauth('./auth/auth.db')
+const {state, saveState, saveCreds} = await useMultiFileAuthState('./authFolder')
 let { version, isLatest } = await fetchLatestBaileysVersion()
 
 const connectionSettings = {
