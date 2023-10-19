@@ -159,8 +159,8 @@ let caption = `
  switch (repairs) {
 
  case 'hacha': {
- if (user.axe > 0) m.reply(`*te sientes estupido al intentar crear una hacha cuando ya tienes una...*\n(talvez querías mejorarlo con ${global.prefix}mejorar)`)
- if (user.wood < 4 || user.iron < 3)  m.reply(`*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`)
+ if (user.axe > 0) return m.reply(`*te sientes estupido al intentar crear una hacha cuando ya tienes una...*\n(talvez querías mejorarlo con ${global.prefix}mejorar)`)
+ if (user.wood < 4 || user.iron < 3) return m.reply(`*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`)
  user.wood -= 4
  user.iron -= 3
  user.axe += 1
@@ -170,8 +170,8 @@ let caption = `
  break
  
  case 'pico': {
- if (user.pickaxe > 0) m.reply(`*te sientes estupido al intentar crear un pico cuando ya tienes uno...*\n(talvez querías mejorarlo con ${global.prefix}mejorar)`)
- if (user.rock < 10 || user.iron < 5 || user.wood < 2) m.reply(`*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`)
+ if (user.pickaxe > 0) return m.reply(`*te sientes estupido al intentar crear un pico cuando ya tienes uno...*\n(talvez querías mejorarlo con ${global.prefix}mejorar)`)
+ if (user.rock < 10 || user.iron < 5 || user.wood < 2) return m.reply(`*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`)
  user.rock -= 10
  user.iron -= 5
  user.wood -= 2
@@ -182,8 +182,8 @@ let caption = `
  break
  
  case 'espada': {
- if (user.pickaxe > 0) m.reply(`*te sientes estupido al intentar crear una espada cuando ya tienes una...*\n(talvez querías mejorarlo con ${global.prefix}mejorar)`)
- if (user.wood < 10 || user.iron < 15) m.reply(`*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`)
+ if (user.pickaxe > 0) return m.reply(`*te sientes estupido al intentar crear una espada cuando ya tienes una...*\n(talvez querías mejorarlo con ${global.prefix}mejorar)`)
+ if (user.wood < 10 || user.iron < 15) return m.reply(`*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`)
  user.wood -= 10
  user.iron -= 15
  user.sword += 1
@@ -193,8 +193,8 @@ let caption = `
  break
  
  case 'armadura': {
- if (user.armor > 0) m.reply(`*te sientes estupido al intentar crear una armadura cuando ya tienes una...*\n(talvez querías mejorarlo con ${global.prefix}mejorar)`)
- if (user.diamond < 30) m.reply(`*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`)
+ if (user.armor > 0) return m.reply(`*te sientes estupido al intentar crear una armadura cuando ya tienes una...*\n(talvez querías mejorarlo con ${global.prefix}mejorar)`)
+ if (user.diamond < 30) return m.reply(`*Te das cuenta que te faltan materiales...*\n(puedes intentar checar tu inventario con .inv)`)
  user.diamond -= 30
  user.armor += 1
  user.armordurability = 70
@@ -407,7 +407,7 @@ m.reply(txt)
  category: "rpg",
  },
  async (conn, m, { args }) => {
- const { pickRandom } = require('../lib')
+ const { pickRandom, msToTime } = require('../lib')
  let works = (args[0] || '').toLowerCase()
  let user = global.db.data.users[m.sender] 
  let txt = `
@@ -446,7 +446,6 @@ m.reply(`${work} ${pay} dólares 💵`)
 }
 break
 case 'leñador':  {
-
 let time = global.db.data.users[m.sender].lastwork + 600000  
 if (new Date - global.db.data.users[m.sender].lastwork < 600000) return m.reply(`*Estas cansado*\n*Espera ${msToTime(time - new Date())} para volver a trabajar!!*`)
 if (user.axe == 0) m.reply('*no fuistes contratado por la simple razon de que no tienes un hacha, subnormal*')
@@ -506,24 +505,24 @@ let txt = `
 
 switch (shop) {
 case 'gato': {
-if (user.cat) m.reply('ya tienes esa mascota!!')
-if (user.money < hdog) m.reply('te falta dinero!!')
+if (user.cat) return m.reply('ya tienes esa mascota!!')
+if (user.money < hdog) return m.reply('te falta dinero!!')
 user.money -= hdog
 user.cat += 1
 m.reply('*gracias por comprar a este lindo gatito*\n*(la curacion de vida sube un %4)*')
 }
 break
 case 'perro': {
-if (user.dog) m.reply('ya tienes esa mascota!!')
-if (user.money < hdog) m.reply('te falta dinero!!')
+if (user.dog) return m.reply('ya tienes esa mascota!!')
+if (user.money < hdog) return m.reply('te falta dinero!!')
 user.money -= hdog
 user.dog += 1
 m.reply('*gracias por adoptar a un lindo perro*\n*(desde ahora las ganancias se duplicaran)*')
 }
 break
 case 'zorro': {
-if (user.fox) m.reply('ya tienes esa mascota!!')
-if (user.money < hfox) m.reply('te falta dinero!!')
+if (user.fox) return m.reply('ya tienes esa mascota!!')
+if (user.money < hfox) return m.reply('te falta dinero!!')
 user.money -= hfox
 user.fox += 1
 m.reply('*gracias por adoptar a un zorro*\n*(bonus de ataque, cooldowns reducidos)*')
@@ -561,7 +560,7 @@ let caption = `
 
 switch (repairs) {
 case 'hacha': {
- if (user.axe < 0) m.reply('*primero crea un hacha, genio*')
+ if (user.axe < 0) return m.reply('*primero crea un hacha, genio*')
  if (user.rock < 2|| user.iron < 2)  return conn.sendNyanCat(m.chat, '*te faltan materiales para craftear esto*', global.menu2, '[ I N F O ]', 'SIN MATERIALES', m)
  user.rock -= 2
  user.iron -= 2
@@ -571,7 +570,7 @@ case 'hacha': {
  break
  
  case 'pico': {
- if (user.pickaxe < 0) m.reply('*primero crea un pico, genio*')
+ if (user.pickaxe < 0) return m.reply('*primero crea un pico, genio*')
  if (user.iron < 5 || user.wood < 2) return conn.sendNyanCat(m.chat, '*te faltan materiales para craftear esto*', global.menu2, '[ I N F O ]', 'SIN MATERIALES', m)
  user.pickaxedurability = 100
  m.reply('*Bien, te acabas de reparar tu pico a madrazos. dejandolo como nuevo ⚒️*')
@@ -599,7 +598,7 @@ diamond: 9,
 iron: 12
 } 
 let cooldown = user.lastclaim + 86400000 - user.fox * 30
-if (new Date - user.lastclaim < 86400000) m.reply(`*❗ Ya reclamaste tu cofre diario*\n*espera ${msToTime(cooldown - new Date())} para volver a reclamar este cofre*`)
+if (new Date - user.lastclaim < 86400000) return m.reply(`*❗ Ya reclamaste tu cofre diario*\n*espera ${msToTime(cooldown - new Date())} para volver a reclamar este cofre*`)
 let txt = ''
 for (let reward of Object.keys(rewards)) {
 if (!(reward in user)) continue
@@ -638,6 +637,107 @@ let items = ['money', 'exp', 'limit', 'potion']
     timeout: setTimeout(() => (m.reply(`*❗ se acabo el tiempo*\n*la transacción se canceló 😓*`), delete this.confirm[m.sender]), 60 * 1000)
     }
 })   
+cmd({
+pattern: "transfer",
+alias: ["transferir"],
+desc: "transfierere a alguien",
+use: "@tag",
+category: "rpg",
+},
+async (conn, m, { args }) => {
+this.bet = this.bet ? this.bet : {}
+   if (m.sender in this.bet) throw '¡¡Todavía estás apostando, espera hasta que se acabe!!'
+   try { 
+   let user = global.db.data.users[m.sender]
+   let count = (args[0] && number(parseInt(args[0])) ? Math.max(parseInt(args[0]), 1) : /all/i.test(args[0]) ? Math.floor(parseInt(user.money)) : 1) * 1 
+   if ((user.money * 1) < count) return m.reply('¡¡No tienes suficiente dinero!!')
+   if (!(m.sender in this.bet)) {
+   this.bet[m.sender] = {
+   sender: m.sender,
+   count,
+   timeout: setTimeout(() => (m.reply('*se acabo el tiempo*'), delete this.bet[m.sender]), 60000)
+   }
+   let txt =`¿Estás seguro de que quieres apostar? (si/no)\n\n*Apuesta:* ${count} 💵\n*⏰ Tienes 60 segundos para tomar una decisión*`
+   return conn.reply(m.chat, txt, m)
+   }
+   } catch (e) {
+   console.error(e)
+   if (m.sender in this.bet) {
+   let { timeout } = this.bet[m.sender]
+   clearTimeout(timeout)
+   delete this.bet[m.sender]
+   m.reply('*No elegiste nada*\n*apuesta rechazada*')
+   }
+   }
+})
+
+cmd({ on: "all" }, async (conn, m, { args }) => {
+    let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
+  for (let jid of mentionUser) {
+  let user = global.db.data.users[jid]
+  if (!user) continue
+  let afkTime = user.afkTime
+  if (!afkTime || afkTime < 0) continue
+  let reason = user.afkReason || ''
+  m.reply(`*❗ No lo etiquetes*\n*El esta afk ${reason ? 'por la razon ' + reason : 'Sin ninguna razon -_-'}*\nDurante ${clockString(new Date - afkTime)}`.trim())
+  }
+  if (global.db.data.users[m.sender].afkTime > -1) {
+  let user = global.db.data.users[m.sender]
+  m.reply(`*❗Dejaste de estar afk ${user.afkReason ? 'Por ' + user.afkReason : ''}*\n*Durante ${clockString(new Date - user.afkTime)} ^_^*`.trim())
+  user.afkTime = -1
+  user.afkReason = ''
+  }
+})
+cmd({ on: "text" }, async (conn, m, { text, args, body }) => {
+this.bet = this.bet ? this.bet : {}
+  if (m.sender in this.bet) {
+     if (m.isBaileys) return 
+     let { timeout, count } = this.bet[m.sender] 
+     let user = global.db.data.users[m.sender] 
+     let beforemoney = user.money * 1 
+     try {
+         if (/^(Si|si|sí)?$/i.test(m.text)) { 
+             let Bot = (Math.ceil(Math.random() * 91)) * 1 
+             let you = (Math.floor(Math.random() * 71)) * 1 
+             let status = 'perdiste'
+             if (Bot < you) { 
+                 user.money += count * 1 + user.dog * 2000
+                 user.exp += count * 100 + user.dog * 5000
+                 status = 'ganaste'
+             } else if (Bot > you) { 
+                 user.money -= count * 1 
+             } else { 
+                 status = 'empataste'
+                 user.money += (Math.floor(count / 1.5)) * 1 
+             } 
+             m.reply(` 
+ | *JUGADOR* | *PUNTOS* | 
+ *🤖 BOT:*   ${Bot} 
+ *👤 TU:*    ${you} 
+  
+ *tu ${status}*, tu ${status == 'ganaste' ? `Conseguiste *+${count * 2}*` : status == 'perdiste' ? `Perdiste *-${count * 1}*` : `Conseguiste *+${Math.floor(count / 1.5)}*`} dolares`.trim()) //`//`
+             clearTimeout(timeout) 
+             delete this.bet[m.sender] 
+             return !0 
+         } else if (/^(✖️|no)?$/i.test(txt)) { 
+             clearTimeout(timeout) 
+             delete this.bet[m.sender] 
+             m.reply('Rejected') 
+             return !0 
+         } 
+  
+     } catch (e) { 
+         clearTimeout(timeout) 
+         delete this.bet[m.sender] 
+         if (beforemoney > (user.money * 1)) user.money = beforemoney * 1 
+         m.reply('(Rejected)') 
+         return !0 
+     } finally { 
+         clearTimeout(timeout) 
+         delete this.bet[m.sender] 
+         return !0 
+     }}
+})
 cmd({ on: "text" }, async (conn, m, { text, body }) => {
 this.confirm = this.confirm ? this.confirm : {}
   if (this.confirm[m.sender]) {
@@ -687,6 +787,15 @@ this.confirm = this.confirm ? this.confirm : {}
 function isNumber(x) { 
     return !isNaN(x); 
     }
+/** 
+  * Detect if thats number 
+  * @param {Number} x  
+  * @returns Boolean 
+  */ 
+   function number(x = 0) { 
+     x = parseInt(x) 
+     return !isNaN(x) && typeof x == 'number' 
+ }
 
 let file = require.resolve(__filename)  
   fs.watchFile(file, () => {  

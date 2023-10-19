@@ -97,35 +97,7 @@ await conn.sendMessage(m.chat, {
     }, { quoted: m})
     await conn.sendNyanCat(m.chat, '*ATENCION*\n*durante esta semana se estara mejorando al bot, por lo que habra muchos reinicios*', global.menu3, '[ I N F O ]', 'nueva update!!', m)
     })
-    cmd({
-            pattern: "list",
-            desc: "list menu",
-            category: "help"
-        },
-        async(conn, m) => {
-            const { commands } = require('../lib');
-            const time = moment(moment()).format('HH:mm:ss')
-    moment.tz.setDefault('Asia/KOLKATA').locale('id')
-    const date = moment.tz('Asia/Kolkata').format('DD/MM/YYYY')
-let str = `╭────《 ` + global.botname + ` 》─────⊷\n`
-str += `│ ╭──────────────◆
-│ │ usuario: ${await conn.getName(m.sender)}
-│ │ creador: Skid
-│ │ Plugins: ${commands.length}
-│ │ Hora: ${time}
-│ │ Fecha: ${date}
-│ ╰──────────────◆
-╰───────────────⊷\n`
-for (let i = 0; i < commands.length; i++) 
-{
-     if(commands[i].pattern==undefined) continue
-     str +=       `╭ ${i+1} *${commands[i].pattern}*\n` 
-     if(commands[i].desc=undefined) commands[i].desc=""
-     str += `╰➛ ${commands[i].desc}\n`
-}
-            return await conn.sendMessage(m.chat, { image: global.menu, caption: str })
-        }
-    )
+    
     cmd({
         pattern: "ping",
         desc: "verificar el ping",
