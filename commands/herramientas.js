@@ -1,10 +1,226 @@
-const { cmd, getRandom, fetchJson, TelegraPh } = require('../lib')
+const { cmd, getRandom, fetchJson, TelegraPh, getBuffer, getRandom } = require('../lib')
 const mimetype = require("mime-types")
+const fetch = require("node-fetch")
 require('../settings.js')
 const fs = require("fs")
-const { Sticker, createSticker, StickerTypes } = require("wa-sticker-formatter");
+const { Sticker, createSticker, StickerTypes } = require("wa-sticker-formatter")
+const ffmpeg = require('fluent-ffmpeg')
+const fs = require('fs')
+const { exec } = require('child_process')
+const JavaScriptObfuscator = require('javascript-obfuscator')
+
+cmd({
+pattern: "whatmusic",
+category: "herramientas",
+},
+async (conn, m, { mime }) => {
+let acrcloud = require('acrcloud')
+         const acr = new acrcloud({ 
+   host: 'identify-eu-west-1.acrcloud.com', 
+   access_key: 'c33c767d683f78bd17d4bd4991955d81', 
+   access_secret: 'bvgaIAEtADBTbLwiPGYlxupWqkNGIjT7J9Ag2vIu', 
+ }); 
+  
+   
+   if (/audio|video/.test(mime)) {
+     if ((quoted.msg || quoted).seconds > 20) return m.reply('El archivo que carga es demasiado grande, le sugerimos que corte el archivo grande a un archivo más pequeño, 10-20 segundos Los datos de audio son suficientes para identificar'); 
+     let media = await quoted.download(); 
+     let ext = mime.split('/')[1]; 
+     fs.writeFileSync(`../temp/${m.sender}.${ext}`, media); 
+     let  res = await acr.identify(fs.readFileSync(`../temp/${m.sender}.${ext}`)); 
+     let {code, msg} = res.status; 
+     if (code !== 0) throw msg; 
+     let {title, artists, album, genres, release_date} = res.metadata.music[0]; 
+     let txt = ` 
+ 𝚁𝙴𝚂𝚄𝙻𝚃𝙰𝙳𝙾𝚂 𝙳𝙴 𝙻𝙰 𝙱𝚄𝚂𝚀𝚄𝙴𝙳𝙰 
+  
+ • 📌 𝚃𝙸𝚃𝚄𝙻𝙾: ${title} 
+ • 👨‍🎤 𝙰𝚁𝚃𝙸𝚂𝚃𝙰: ${artists !== undefined ? artists.map((v) => v.name).join(', ') : 'No encontrado'} 
+ • 💾 𝙰𝙻𝙱𝚄𝙼: ${album.name || 'No encontrado'} 
+ • 🌐 𝙶𝙴𝙽𝙴𝚁𝙾: ${genres !== undefined ? genres.map((v) => v.name).join(', ') : 'No encontrado'} 
+ • 📆 𝙵𝙴𝙲𝙷𝙰 𝙳𝙴 𝙻𝙰𝙽𝚉𝙰𝙼𝙸𝙴𝙽𝚃𝙾: ${release_date || 'No encontrado'} 
+ `.trim(); 
+     m.reply(txt); 
+   } else { 
+   m.reply('*[❗𝐈𝐍𝐅𝐎❗] 𝚁𝙴𝚂𝙿𝙾𝙽𝙳𝙰 𝙰 𝚄𝙽 𝙰𝚄𝙳𝙸𝙾*')}
+ })
+
+const Effects = [
+  'bass', 'blown', 'deep', 'earrape', 'fast', 'fat', 'nightcore', 'reverse', 'robot', 'slow', 'smooth', 'squirrel'
+]
+
+Effects.forEach(effect => {
+  cmd({
+    pattern: effect,
+    desc: `Aplica efecto de audio ${effect}`,
+    category: 'Efectos de Audio',
+    use: 'Responde a un audio con este comando',
+  },
+  async (conn, m, { mime, command }) => {
+    try {
+      let set
+      if (/bass/.test(command)) set = '-af equalizer=f=54:width_type=o:width=2:g=20'
+      if (/blown/.test(command)) set = '-af acrusher=.1:1:64:0:log'
+      if (/deep/.test(command)) set = '-af atempo=4/4,asetrate=44500*2/3'
+      if (/earrape/.test(command)) set = '-af volume=12'
+      if (/fast/.test(command)) set = '-filter:a "atempo=1.63,asetrate=44100"'
+      if (/fat/.test(command)) set = '-filter:a "atempo=1.6,asetrate=22100"'
+      if (/nightcore/.test(command)) set = '-filter:a atempo=1.06,asetrate=44100*1.25'
+      if (/reverse/.test(command)) set = '-filter_complex "areverse"'
+      if (/robot/.test(command)) set = '-filter_complex "afftfilt=real=\'hypot(re,im)*sin(0)\':imag=\'hypot(re,im)*cos(0)\':win_size=512:overlap=0.75"'
+      if (/slow/.test(command)) set = '-filter:a "atempo=0.7,asetrate=44100"'
+      if (/smooth/.test(command)) set = '-filter:v "minterpolate=\'mi_mode=mci:mc_mode=aobmc:vsbmc=1:fps=120\'"'
+      if (/squirrel/.test(command)) set = '-filter:a "atempo=0.5,asetrate=65100"'
+
+      if (/audio/.test(mime)) {
+        let media = await conn.downloadAndSaveMediaMessage(m.quoted)
+        let ran = getRandom('.mp3')
+        exec(`ffmpeg -i ${media} ${set} ${ran}`, (err, stderr, stdout) => {
+          fs.unlinkSync(media)
+          if (err) return m.reply(err)
+          let buff = fs.readFileSync(ran)
+          conn.sendMessage(m.chat, { audio: buff, mimetype: 'audio/mpeg' }, { quoted: m })
+          fs.unlinkSync(ran)
+        })
+      } else {
+        m.reply(`Responde a un audio con este comando: *${prefix + effect}*`)
+      }
+    } catch (e) {
+      m.reply(`Hubo un error... ${e}`)
+    }
+  })
+})
 
 
+
+const styles = [
+  'blackpink', 'neon', 'greenneon', 'advanceglow', 'futureneon', 'sandwriting', 'sandsummer', 'sandengraved', 
+  'metaldark', 'neonlight', 'holographic', 'text1917', 'minion', 'deluxesilver', 'newyearcard', 'bloodfrosted',
+  'halloween', 'jokerlogo', 'fireworksparkle', 'natureleaves', 'bokeh', 'toxic', 'strawberry', 'box3d',
+  'roadwarning', 'breakwall', 'icecold', 'luxury', 'cloud', 'summersand', 'horrorblood', 'thunder', 'wetglass', 'multicolor3d', 'watercolor', 'luxurygold', 'galaxywallpaper', 'lighttext', 'beautifulflower',
+  'puppycute', 'royaltext', 'heartshaped', 'birthdaycake', 'galaxystyle', 'hologram3d', 'greenneon',
+  'glossychrome', 'greenbush', 'metallogo', 'noeltext', 'glittergold', 'textcake', 'starsnight', 'wooden3d',
+  'textbyname', 'writegalacy', 'galaxybat', 'snow3d', 'birthdayday', 'goldplaybutton', 'silverplaybutton', 'freefire',
+  'shadow', 'cup', 'cup1', 'romance', 'smoke', 'burnpaper', 'lovemessage', 'undergrass', 'love', 'coffe',
+  'woodheart', 'woodenboard', 'summer3d', 'wolfmetal', 'nature3d', 'underwater', 'golderrose', 'summernature',
+  'letterleaves', 'glowingneon', 'fallleaves', 'flamming', 'harrypotter', 'carvedwood'
+]
+
+styles.forEach(style => {
+  cmd({
+    pattern: style,
+    desc: `Crea un logo de estilo ${style}`,
+    category: 'LogosV2',
+    use: 'Skid bot',
+  },
+  async (conn, m, { args }) => {
+    if (args.length == 0) return m.reply(`Ejemplo de uso: ${global.prefix + style} Skid bot`)
+    conn.sendMessage(m.chat, { image: { url: `https://api.lolhuman.xyz/api/textprome/${style}?apikey=${lolkeysapi}&text=${args.join(' ')}` })
+  })
+})
+
+cmd({
+pattern: "lewd",
+category: "nsfw',
+group: true,
+nsfw: true,
+},
+async (conn, m) => {
+const buffer = await getBuffer(`https://api.lolhuman.xyz/api/random2/lewd?apikey=${lolkeysapi}`)
+conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: global.fkontak })
+})
+cmd({
+pattern: "gasm",
+category: "nsfw',
+group: true,
+nsfw: true,
+},
+async (conn, m) => {
+const buffer = await getBuffer(`https://api.lolhuman.xyz/api/random2/gasm?apikey=${lolkeysapi}`)
+conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: global.fkontak })
+})
+cmd({
+pattern: "anal",
+category: "nsfw',
+group: true,
+nsfw: true,
+},
+async (conn, m) => {
+const buffer = await getBuffer(`https://api.lolhuman.xyz/api/random2/anal?apikey=${lolkeysapi}`)
+conn.sendMessage(m.chat, { video: buffer, caption: "*Aqui tienes*", gifPlayBack: true }, { quoted: global.fkontak })
+})
+cmd({
+pattern: "holo",
+category: "nsfw',
+group: true,
+nsfw: true,
+},
+async (conn, m) => {
+const buffer = await getBuffer(`https://api.lolhuman.xyz/api/random2/holo?apikey=${lolkeysapi}`)
+conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: global.fkontak })
+})
+cmd({
+pattern: "tetas",
+category: "nsfw',
+group: true,
+nsfw: true,
+},
+async (conn, m) => {
+const buffer = await getBuffer(`https://api.lolhuman.xyz/api/random2/tits?apikey=${lolkeysapi}`)
+conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: global.fkontak })
+})
+cmd({
+pattern: "kiss",
+category: "rpg',
+group: true,
+},
+async (conn, m) => {
+if (!m.mentionedJid[0]) return m.reply("*A quien vas a besar qwq*")
+const buffer = await getBuffer(`https://api.lolhuman.xyz/api/random2/kiss,apikey=${lolkeysapi}`)
+conn.sendMessage(m.chat, { video: buffer, caption: `@${m.sender.split("@")[0]} Beso a ${m.mentionedJid.split("@")[0]}`, gifPlayBack: true }, { quoted: global.fkontak })
+})
+cmd({
+pattern: "erok",
+category: "nsfw',
+group: true,
+nsfw: true,
+},
+async (conn, m) => {
+const buffer = await getBuffer(`https://api.lolhuman.xyz/api/random2/erok?apikey=${lolkeysapi}`)
+conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: global.fkontak })
+})
+cmd({
+pattern: "solog",
+category: "nsfw',
+group: true,
+nsfw: true,
+},
+async (conn, m) => {
+const buffer = await getBuffer(`https://api.lolhuman.xyz/api/random2/solog?apikey=${lolkeysapi}`)
+conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: global.fkontak })
+})
+cmd({
+pattern: "feet",
+category: "nsfw',
+group: true,
+nsfw: true,
+},
+async (conn, m) => {
+const buffer = await getBuffer(`https://api.lolhuman.xyz/api/random2/feetg?apikey=${lolkeysapi}`)
+conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: global.fkontak })
+})
+cmd({
+pattern: "pussy",
+category: "nsfw',
+group: true,
+nsfw: true,
+},
+async (conn, m) => {
+const buffer = await getBuffer(`https://api.lolhuman.xyz/api/random2/pussy?apikey=${lolkeysapi}`)
+conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: global.fkontak })
+})
+
+    		
 cmd({
 pattern: "toimg",
 alias: ["tojpg", "topng", "jpg"],
@@ -43,7 +259,7 @@ const mime = (quoted.msg || quoted).mimetype || ''
           if ((m.quoted).seconds > 40) return m.reply('¡Máximo 40 segundos!')  
           media = await quoted.download()  
           let encmedia = await conn.sendVideoAsSticker(m.chat, media, m, { packname: packname, author: author })  
-          await new Promise((resolve) => setTimeout(resolve, 2000));   
+          await new Promise((resolve) => setTimeout(resolve, 2000))   
           await fs.unlinkSync(encmedia)  
       } else {  
           m.reply(`*Envía una imagen/video con ${prefix + cmd.pattern}*\n_*(La duración del video solo puede ser de 10 segundos)*_`)  
@@ -71,10 +287,22 @@ filename: __filename,
                 categories: ["🤩", "🎉"], // The sticker category
                 id: "12345", // The sticker id
                 quality: 75, // The quality of the output file
-            });
-            const buffer = await sticker.toBuffer();
-            return conn.sendMessage(m.chat, {sticker: buffer}, {quoted: m });
+            })
+            const buffer = await sticker.toBuffer()
+            return conn.sendMessage(m.chat, {sticker: buffer}, {quoted: m })
         } else return m.reply(`${cmd.use}`)})
+cmd({
+pattern: "acortar",
+category: "herramientas",
+use: "Github.com/Skidy89/skid-bot",
+},
+async (conn, m, { text }) => {
+if (!text) return m.reply(`*[❗] INFO [❗]*\n*Ingresa un link para acortar!!*`)
+  let shortUrl1 = await (await fetch(`https://tinyurl.com/api-create.php?url=${args[0]}`)).text()  
+  if (!shortUrl1) return m.reply(`*[❗] ERROR [❗]*`)
+  let done = `*LINK ACORTADO CORRECTAMENTE*\n*link: ${text}*\n*Link Acortado: ${shortUrl1}*`
+  m.reply(done)
+})
 cmd({
         pattern: "stickercrop",
         alias: ["scrop","cropsticker"],
@@ -97,9 +325,9 @@ filename: __filename,
                 categories: ["🤩", "🎉"], // The sticker category
                 id: "12345", // The sticker id
                 quality: 75, // The quality of the output file
-            });
-            const buffer = await sticker.toBuffer();
-            return conn.sendMessage(m.chat, {sticker: buffer}, {quoted: m });
+            })
+            const buffer = await sticker.toBuffer()
+            return conn.sendMessage(m.chat, {sticker: buffer}, {quoted: m })
         } else return m.reply(`${cmd.use}`)})
 cmd({
 pattern: "ia",
@@ -150,7 +378,7 @@ if (/image/.test(mime)) {
    await m.reply(mess.wait)
    await conn.sendFile(m.chat, anime, 'error.jpg', null, m) 
    } catch (e) {
-   m.reply('❗ *Hubo un error*\n*Responde solo a imagenes que tengas caras visibles* (⁠-⁠_⁠-⁠;⁠)')
+   m.reply('❗ *Hubo un error*\n*Responde solo a imagenes que tengas caras visibles* (⁠-⁠_⁠-⁠⁠)')
    }
    } else { 
    m.reply(`*❗ responde a una imagen unu*`)
@@ -241,7 +469,7 @@ category: "herramientas",
 async (conn, m, { text }) => {
  let { googleImage } = require('@bochilteam/scraper')
  let res = await googleImage(text)
- image = res[Math.floor(Math.random() * res.length)];
+ image = res[Math.floor(Math.random() * res.length)]
  ulr = image
  conn.sendMessage(m.chat, { image: { url: ulr }, caption: global.botname }, { quoted: global.fkontak })
 })
@@ -304,8 +532,63 @@ if (!args[0] && !m.quoted) return m.reply('pon un texto')
     }
 })
 
+cmd({
+pattern: "removebg",
+category: "herramientas",
+},
+async (conn, { mime }) => {
+if (/image/.test(mime)) {
+   const miMedia = await conn.downloadAndSaveMediaMessage(m.quoted)
+   const upload = await TelegraPh(miMedia)
+   let sremovebg = global.API(`https://api.lolhuman.xyz/api/removebg?apikey=${lolkeysapi}&img=${upload}`)
+   conn.sendFile(m.chat, sremovebg, 'error.png', null, this)
+   } else { 
+   this.reply(`*❗ responde a una imagen *`)
+   }
+})
 
-
+cmd({
+pattern: "ofuscar",
+category: "herramientas",
+},
+async (conn, m, { text }) => {
+if (!text) return m.reply("*Ingresa el codigo que vas a ofuscar.*"); 
+         function obfuscateCode(code) { 
+        return JavaScriptObfuscator.obfuscate(code, { 
+        compact: false, 
+          controlFlowFlattening: true, 
+        deadCodeInjection: true, 
+        simplify: true, 
+          numbersToExpressions: true, 
+        }).getObfuscatedCode(); 
+       } 
+      let obfuscatedCode = await obfuscateCode(text); 
+       conn.sendMessage(m.chat, {text: obfuscatedCode}, {quoted: m});
+})
+cmd({
+pattern: "nowa",
+category: "herramientas",
+},
+async (conn, m, { body, text }) => {
+let regex = /x/g 
+  if (!text) m.reply('⚠️ Falto el número.')
+  if (!body.match(regex)) m.reply(`*Ejemplo de uso: ${prefix + command} 521999340434x*`)
+  let random = body.match(regex).length, total = Math.pow(10, random), array = [] 
+  for (let i = 0; i < total; i++) { 
+  let list = [...i.toString().padStart(random, '0')] 
+  let result = text.replace(regex, () => list.shift()) + '@s.whatsapp.net' 
+  if (await conn.onWhatsApp(result).then(v => (v[0] || {}).exists)) { 
+  let info = await conn.fetchStatus(result).catch(_ => {}) 
+  array.push({ exists: true, jid: result, ...info }) 
+  } else { 
+  array.push({ exists: false, jid: result }) 
+  }} 
+  let txt = 'Registrados\n\n' + array.filter(v => v.exists).map(v => `• Nro: wa.me/${v.jid.split('@')[0]}\n*• Bio:* ${v.status || 'Sin descripcion'}\n*• Fecha:* ${formatDate(v.setAt)}`).join('\n\n') + '\n\n*No registrados*\n\n' + array.filter(v => !v.exists).map(v => v.jid.split('@')[0]).join('\n') 
+  m.reply(txt) 
+  function formatDate(n, locale = 'id') { 
+  let d = new Date(n) 
+  return d.toLocaleDateString(locale, { timeZone: 'Asia/Jakarta' })}
+})
 
 let file = require.resolve(__filename)  
   fs.watchFile(file, () => {  

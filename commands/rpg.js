@@ -1,4 +1,4 @@
-const { cmd, msToTime, pickRandom, getRandom }= require('../lib/commands.js')
+const { canLevelUp, xpRange, cmd, msToTime, pickRandom, getRandom, clockString }= require('../lib/commands.js')
 const fs = require('fs')
 cmd({
 pattern: "lb",
@@ -738,6 +738,83 @@ this.bet = this.bet ? this.bet : {}
          return !0 
      }}
 })
+
+cmd({
+pattern: "levelup",
+category: "rpg",
+}, async (conn, m) => {
+let name = await conn.getName(m.sender); 
+    let user = global.db.data.users[m.sender]; 
+   if (!canLevelUp(user.level, user.exp, global.multiplier)) { 
+     let {min, xp, max} = xpRange(user.level, global.multiplier); 
+     throw ` 
+ ┌───⊷ *NIVEL* 
+ ▢ Nombre : *${await conn.getName(m.sender)}* 
+ ▢ Nivel : *${user.level}* 
+ ▢ XP : *${user.exp - min}/${xp}* 
+ ▢ Rango : *${user.role}*
+ └────────────── 
+  
+ Te falta *${max - user.exp}* de *XP* para subir de nivel 
+ `.trim(); 
+   } 
+   let before = user.level * 1; 
+   while (canLevelUp(user.level, user.exp, global.multiplier)) user.level++; 
+   if (before !== user.level) {
+   let bonus = Math.ceil(50 * user.level)
+   user.money += bonus
+   let strt = `.             ${user.role}`
+   let str = ` 
+ ┌─⊷ *LEVEL UP* 
+ ▢ Nivel anterior : *${before}* 
+ ▢ Nivel actual : *${user.level}* 
+ ▢ Bonus: *+${bonus} dolares*
+ └────────────── 
+  
+ *_Cuanto más interactúes con los bots, mayor será tu nivel_* 
+ `.trim()
+ throw str
+ //let image = await levelup(strt, user.level)
+ //conn.sendMessage(m.chat, { image: image, caption: str }, {quoted: m})
+ }    
+})
+cmd({
+pattern: "perfil",
+category: "rpg",
+}, async (conn, m) => {
+avatar = await conn.profilePictureUrl(who, 'image').catch((_) => 'https://telegra.ph/file/24fa902ead26340f3df2c.png')
+   let { money, exp, role, limit, level, health, potion } = global.db.data.users[who]
+   conn.sendMessage(m.chat, { image: { url: avatar }, caption: `*Perfil de ${await conn.getName(who)}*\n*♥️ Salud: ${health}*\n*⚔️ Rol: ${role}*\n*⬆️ Nivel: ${level}*\n*✨ Exp: ${exp}*\n*💵 Dinero: ${money}*\n*💎 Diamantes: ${limit}*\n*🥤 Pocion: ${potion}*`}, { quoted: fkontak })
+})
+
+cmd({ 
+pattern: "afk",
+category: "rpg",
+},
+async (conn, m, { text }) => {
+   let user = global.db.data.users[m.sender]
+   user.afkTime = + new Date
+   user.afkReason = text
+   m.reply(`*Esta bien ${m.pushName}...*\n les dire a los que te etiqueten que estas *AFK* ${text ? 'por ' + text : 'sin razon'} nwn`)
+})
+cmd({ on: "all" }, async (m) => {
+let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
+for (let jid of mentionUser) {
+let user = global.db.data.users[jid]
+if (!user) continue
+let afkTime = user.afkTime
+if (!afkTime || afkTime < 0) continue
+let reason = user.afkReason || ''
+m.reply(`este usuario esta inactivo \n\n${reason ? 'por la razon: ' + reason : 'sin razon'}\n*estuvo inactivo por* ${clockString(new Date - afkTime)}`.trim())}
+if (global.db.data.users[m.sender].afkTime > -1) {
+let user = global.db.data.users[m.sender]
+m.reply(`*🕔 dejaste de estar afk 🕔*
+${user.afkReason ? '\n*razon :* ' + user.afkReason : ''}\n*estuvo inactivo por:* ${clockString(new Date - user.afkTime)}`.trim())
+user.afkTime = -1
+user.afkReason = ''
+}
+})
+
 cmd({ on: "text" }, async (conn, m, { text, body }) => {
 this.confirm = this.confirm ? this.confirm : {}
   if (this.confirm[m.sender]) {

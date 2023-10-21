@@ -241,7 +241,21 @@ if (!text) m.reply(`*[❗] Ingrese un enlace de X (twitter), ejemplo: ${global.p
      return; 
    } 
  })
-
+cmd({
+pattern: "mediafire",
+category: "downloaders",
+},
+async (conn, m, { text }) => {
+let { mediafiredl } = require('@bochilteam/scraper')
+  if (!text) throw '*❗Ingresa un elnace de mediafire*'
+  try {
+  let m_sk =  await mediafiredl(text)
+  m.reply(`*📦 Nombre:* ${m_sk.filename}\n*📂 Peso:* ${m_sk.filesizeH}\n*📰 Tipo*: ${m_sk.ext}\n*espera a que tu archivo sea enviado*`)
+  await conn.sendFile(m.chat, m_sk.url, m_sk.filename, '', m, null, {mimetype: m_sk.ext, asDocument: true}); 
+   } catch (error) {
+   throw (error + `\n❗ Reportalo al creador`)
+   }
+})
 const _twitterapi = (id) => `https://info.tweeload.site/status/${id}.json`; 
  const getAuthorization = async () => { 
      const { data } = await axios.default.get("https://pastebin.com/raw/SnCfd4ru"); 

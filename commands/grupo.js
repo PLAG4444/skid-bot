@@ -2,8 +2,24 @@ const { cmd } = require('../lib')
 const fetch = require('node-fetch')
 const { WAMessageStubType } = require("@whiskeysockets/baileys")
 require('../settings.js')
-
 const fs = require("fs")
+cmd({
+pattern: "grupo",
+category: "grupos",
+admin: true,
+group: true,
+botAdmin: true,
+}, async (conn, m, { args }) => {
+if (args[0] === 'abrir') {
+    m.reply(`*GRUPO ABIERTO CON EXITO✅*`)
+    await conn.groupSettingUpdate(m.chat, 'not_announcement')
+    } else if (args[0] === 'cerrar') {
+    m.reply(`*GRUPO CERRADO CON EXITO✅*`)
+    await conn.groupSettingUpdate(m.chat, 'announcement')
+    } else {
+    conn.sendPoll(m.chat, '*❗ Elige una opcion*', [`${command.charAt(0).toUpperCase()+command.slice(1)} abrir`,`${command.charAt(0).toUpperCase()+command.slice(1)} cerrar`])
+    }
+})
 cmd({
 pattern: "hidetag",
 desc: "taguea a todos los usuarios",
@@ -111,7 +127,59 @@ async (conn, m, { text }) => {
    conn.reply(m.chat, '*❗ tu bienvenida fue configurada correctamente*', m)
    
 })
-
+cmd({
+pattern: "del",
+category: "grupos",
+admin: true,
+botAdmin: true,
+group: true,
+},
+async (conn, m) => {
+if (!m.quoted) throw `*❗ Etiqueta un mensaje*`
+      try { 
+     const delet = m.message.extendedTextMessage.contextInfo.participant; 
+     const bang = m.message.extendedTextMessage.contextInfo.stanzaId; 
+     return conn.sendMessage(m.chat, {delete: {remoteJid: m.chat, fromMe: false, id: bang, participant: delet}}); 
+     } catch { 
+     m.quoted.delete()
+     }
+})
+cmd({ on: "all" }, async (conn, m, { body, isGroupAdmins, isBotAdmins, mime, quoted }) => {
+ if (global.db.data.chats[m.chat].antilink) {
+  if (body.match(`chat.whatsapp.com`)) {  
+  let delet = m.key.participant  
+  let bang = m.key.id  
+  m.reply(`*「 ANTI LINK 」*\n\n*LINK DETECTADO*\n*No se permiten links de otros grupos, seras eliminado*`)  
+  if (!isBotAdmins) return m.reply(mess.botAdmin)
+  if (isGroupAdmins) return m.reply('*Eres admin asi que no seras eliminado ^w^')
+  conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet }})  
+  conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}}  
+ if (global.db.data.chats[m.chat].autoSticker) {  
+ if (/image/.test(mime)) {  
+ m.reply(mess.wait) 
+ media = await quoted.download()  
+ let encmedia = await conn.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author })  
+ await fs.unlinkSync(encmedia)  
+ } else if (/video/.test(mime)) {  
+ if ((quoted.msg || quoted).seconds > 40) return m.reply('¡Máximo 40 segundos!')  
+ media = await quoted.download()  
+ let encmedia = await conn.sendVideoAsSticker(m.chat, media, m, { packname: global.packname, author: goblal.author })  
+ await new Promise((resolve) => setTimeout(resolve, 2000));   
+ await fs.unlinkSync(encmedia)  
+ }}
+    if (global.db.data.chats[m.chat].antiFake) {
+    if (!isBotAdmins) return m.reply(mess.botAdmin)
+    if (m.chat && m.sender.startsWith('1')) {
+    await conn.sendNyanCat(m.chat, '*Lo siento extraño...*\n*los números de USA no estan permitidos aqui*', global.uhh, 'lo siento', 'los numeros de USA no se permiten aqui')
+    await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+    }}    
+    if (global.db.data.chats[m.chat].antiArabe) {
+    if (!isBotAdmins) return m.reply(mess.botAdmin)
+    if (m.chat && m.sender.startsWith('212')) {
+    await conn.sendNyanCat(m.chat, '*Lo siento extraño...*\n*los números arebes no estan permitidos aqui*', global.uhh, 'lo siento', 'los numeros arabes no se permiten aqui')
+    await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+    }}
+})
 cmd({ on: "all" }, async (conn, m, { participants }) => {
   if (!m.messageStubType || !m.isGroup) return !0; 
    const groupName = (await conn.groupMetadata(m.chat)).subject; 
