@@ -20,6 +20,8 @@ const NodeCache = require('node-cache')
 const { format } = require('util')
 const pino = require('pino')
 const store = require('./lib')
+const mimetype = require("mime-types")  
+
 protoType()
 serialize()
 var low
@@ -120,15 +122,16 @@ conn.ev.on("messages.upsert", async (chatUpdate) => {
 conn.pushMessage(chatUpdate.messages).catch(console.error)
 let m = chatUpdate.messages[chatUpdate.messages.length - 1]
 m = smsg(conn, m) || m
-if (!m) return
-if (m.isBaileys) return
-if (!chatUpdate) return
-if (!conn.public && !m.key.fromMe && chatUpdate.type === 'notify') return
-if (global.db.data == null) await loadDatabase()
-var body = (typeof m.text == 'string' ? m.text : '') 
-global.numBot = conn.user.jid
-global.numBot2 = conn.user.id
+  if (!m) return
+  if (m.isBaileys) return
+  if (!chatUpdate) return
+  if (!conn.public && !m.key.fromMe && chatUpdate.type === 'notify') return
+  if (global.db.data == null) await loadDatabase()
+  var body = (typeof m.text == 'string' ? m.text : '') 
+  global.numBot = conn.user.jid
+  global.numBot2 = conn.user.id
   const prefix = new RegExp('^[' + ('/i!#$%+£¢€¥^°=¶∆×÷π√✓©®:;?&.\\-').replace(/[|\\{}()[\]^$+*?.\-\^]/g, '\\$&') + ']')
+  
   const isCmd = body ? prefix.test(body) : false
   const args = body.trim().split(/ +/).slice(1) 
   const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(m.sender) 
@@ -142,10 +145,25 @@ global.numBot2 = conn.user.id
   const isGroupAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false 
   const cmdName = isCmd ? body.slice(1).trim().split(" ")[0].toLowerCase() : false
   const text = args.join(" ")
+  const quoted = m.quoted ? m.quoted : m 
+  const mime = (quoted.msg || quoted).mimetype || '' 
+  const isPrem = isCreator || global.db.data.users[m.sender].premiumTime > 0
   if (isCmd) {
   const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
   if (cmd) {
   try {
+  if (global.opts['queque'] && m.text && !(isCreator || isPrems)) {
+      const queque = conn.msgqueque; const time = 1000 * 5;
+      const previousID = queque[queque.length - 1];
+      queque.push(m.id || m.key.id);
+      setInterval(async function() {
+        if (queque.indexOf(previousID) === -1) clearInterval(conn);
+        await sleep(time);
+      }, time);
+    }
+  if (cmd.plugin && !isPrems) {
+  return conn.sendNyanCat(m.chat, "✨ Este comando es solo para usuarios premium", global.menu2, 'aviso', 'alerta', m)
+  }
   if (cmd.owner && !isCreator) {
   return conn.sendNyanCat(m.chat, mess.owner, global.menu2, 'aviso', 'alerta', m)
   }
@@ -161,9 +179,29 @@ global.numBot2 = conn.user.id
   if (cmd.restrict && global.db.data.chats[m.chat].restrict) {
   return conn.sendNyanCat(m.chat, mess.restrict, global.menu2, 'aviso', 'alerta', m)
   }
-  cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName })
+  if (cmd.nsfw && global.db.data.chats[m.chat].antiNsfw) { // if command has nsfw
+  conn.sendNyanCat(m.chat, `*Para usar este comando necesitas activar el comando nsfw (comandos +18)*`, global.menu2, 'AVISO', null, m)
+  continue
+  }
+  if (cmd.level > global.db.data.users[m.sender].level) { // level has not reached 🚩
+  conn.sendNyanCat(m.chat, `*Para usar este comando necesitas ser nivel ${cmd.level}*\n*Tu nivel es de ${global.db.data.users[m.sender].level}*`, global.menu2, 'AVISO RPG', null, m)
+  continue
+  }
+  if (cmd.money > global.db.data.users[m.sender].money ) {
+  conn.sendNyanCat(m.chat, `*Para usar este comando necesitas ${cmd.money} dolares*\n*Tu dinero es de ${global.db.data.users[m.sender].money}*`, global.menu2, 'AVISO RPG', null, m)
+  continue
+  }
+  
+  cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, mime })
   } catch (e) {
-  m.reply(format(e))
+  m.error = e;
+  console.error(e);
+  if (e) {
+  let text = format(e);
+  for (const key of Object.values(global.APIKeys)) {
+  text = text.replace(new RegExp(key, 'g'), '#HIDDEN#');
+  }
+  await m.reply(text)
   }}}
   
   events.commands.map(async(command) => {
@@ -275,10 +313,17 @@ lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut ? startB
 if (connection == 'open') {
 conn.logger.info(`\n╭┈ ┈ ┈ ┈ ┈ • ${vs} • ┈ ┈ ┈ ┈ ┈╮\n┊Skid bot Se Conecto Correctamente a WhatsApp\n╰┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈ ┈╯`)
 fs.readdirSync(__dirname + "/commands").forEach((plugin) => {
+try {
 if (path.extname(plugin).toLowerCase() == ".js") {
 require(__dirname + "/commands/" + plugin)
 }
+conn.logger?.info("Comandos instalados y ejecutados sin problemas ✅")
+} catch (e) {
+conn.logger?.warn("syntax error loading" + plugin + "\n\nERROR\n\n" + e)
+}
 })
+
+
 }})
 conn.ev.on('creds.update', saveCreds)
 conn.public = true
