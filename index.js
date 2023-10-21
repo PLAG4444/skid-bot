@@ -151,8 +151,9 @@ m = smsg(conn, m) || m
   if (isCmd) {
   const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
   if (cmd) {
+  const command = cmd.pattern || cmd.alias
   try {
-  if (global.opts['queque'] && m.text && !(isCreator || isPrems)) {
+  if (global.opts['queque'] && m.text && !(isCreator || isPrem)) {
       const queque = conn.msgqueque; const time = 1000 * 5;
       const previousID = queque[queque.length - 1];
       queque.push(m.id || m.key.id);
@@ -189,7 +190,7 @@ m = smsg(conn, m) || m
   return conn.sendNyanCat(m.chat, `*Para usar este comando necesitas ${cmd.money} dolares*\n*Tu dinero es de ${global.db.data.users[m.sender].money}*`, global.menu2, 'AVISO RPG', null, m)
   }
   
-  cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, mime })
+  cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, mime, command })
   } catch (e) {
   m.error = e;
   console.error(e);
@@ -202,27 +203,19 @@ m = smsg(conn, m) || m
   }}}}
   
   events.commands.map(async(command) => {
-
+   
+  const extra = { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, body, chatUpdate }
 
   if (body && command.on === "body") {
-  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, body });
+  command.function(conn, m,  );
   } else if (m.text && command.on === "text") {
-  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
-  } else if (
-  (command.on === "image" || command.on === "photo") &&
-  m.mtype === "imageMessage"
-  ) {
-  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
-  } else if (
-  command.on === "sticker" &&
-  m.mtype === "stickerMessage"
-  ) {
-  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
-  } else if (
-  command.on === "all" &&
-  m.mtype &&
-  m.message) {
-  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, chatUpdate });
+  command.function(conn, m, extra);
+  } else if ((command.on === "image" || command.on === "photo") &&  m.mtype === "imageMessage") {
+  command.function(conn, m, extra);
+  } else if ( command.on === "sticker" && m.mtype === "stickerMessage" ) {
+  command.function(conn, m, extra);
+  } else if (command.on === "all" && m.mtype && m.message) {
+  command.function(conn, m, extra);
   }
   })
 
