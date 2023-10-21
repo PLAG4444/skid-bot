@@ -185,7 +185,20 @@ var body = (typeof m.text == 'string' ? m.text : '')
   if (isCmd) {
   const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
   if (cmd) {
+  const command = cmd.pattern || cmd.alias
   try {
+  if (global.opts['queque'] && m.text && !(isCreator || isPrem)) {
+      const queque = conn.msgqueque; const time = 1000 * 5;
+      const previousID = queque[queque.length - 1];
+      queque.push(m.id || m.key.id);
+      setInterval(async function() {
+        if (queque.indexOf(previousID) === -1) clearInterval(conn);
+        await sleep(time);
+      }, time);
+    }
+  if (cmd.plugin && !isPrems) {
+  return conn.sendNyanCat(m.chat, "✨ Este comando es solo para usuarios premium", global.menu2, 'aviso', 'alerta', m)
+  }
   if (cmd.owner && !isCreator) {
   return conn.sendNyanCat(m.chat, mess.owner, global.menu2, 'aviso', 'alerta', m)
   }
@@ -201,33 +214,41 @@ var body = (typeof m.text == 'string' ? m.text : '')
   if (cmd.restrict && global.db.data.chats[m.chat].restrict) {
   return conn.sendNyanCat(m.chat, mess.restrict, global.menu2, 'aviso', 'alerta', m)
   }
-  cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName })
+  if (cmd.nsfw && global.db.data.chats[m.chat].antiNsfw) { // if command has nsfw
+  return conn.sendNyanCat(m.chat, `*Para usar este comando necesitas activar el comando nsfw (comandos +18)*`, global.menu2, 'AVISO', null, m)
+  }
+  if (cmd.level > global.db.data.users[m.sender].level) { // level has not reached 🚩
+  return conn.sendNyanCat(m.chat, `*Para usar este comando necesitas ser nivel ${cmd.level}*\n*Tu nivel es de ${global.db.data.users[m.sender].level}*`, global.menu2, 'AVISO RPG', null, m)
+  }
+  if (cmd.money > global.db.data.users[m.sender].money ) {
+  return conn.sendNyanCat(m.chat, `*Para usar este comando necesitas ${cmd.money} dolares*\n*Tu dinero es de ${global.db.data.users[m.sender].money}*`, global.menu2, 'AVISO RPG', null, m)
+  }
+  
+  cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, mime, command })
   } catch (e) {
-  m.reply(format(e))
-  }}}
+  m.error = e;
+  console.error(e);
+  if (e) {
+  let text = format(e);
+  for (const key of Object.values(global.APIKeys)) {
+  text = text.replace(new RegExp(key, 'g'), '#HIDDEN#');
+  }
+  await m.reply(text)
+  }}}}
   
   events.commands.map(async(command) => {
+  const extra = { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, body, chatUpdate }
   if (body && command.on === "body") {
-  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, body });
+  command.function(conn, m,  );
   } else if (m.text && command.on === "text") {
-  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
-  } else if (
-  (command.on === "image" || command.on === "photo") &&
-  m.mtype === "imageMessage"
-  ) {
-  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
-  } else if (
-  command.on === "sticker" &&
-  m.mtype === "stickerMessage"
-  ) {
-  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName });
-  } else if (
-  command.on === "all" &&
-  m.mtype &&
-  m.message) {
-  command.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, chatUpdate });
-  }
-  })
+  command.function(conn, m, extra);
+  } else if ((command.on === "image" || command.on === "photo") &&  m.mtype === "imageMessage") {
+  command.function(conn, m, extra);
+  } else if ( command.on === "sticker" && m.mtype === "stickerMessage" ) {
+  command.function(conn, m, extra);
+  } else if (command.on === "all" && m.mtype && m.message) {
+  command.function(conn, m, extra);
+  }})
 
 require('../main.js')(skMods, m, chatUpdate, store)
 })

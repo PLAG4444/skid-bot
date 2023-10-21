@@ -177,7 +177,7 @@ group: true,
 async (conn, m) => {
 if (!m.mentionedJid[0]) return m.reply("*A quien vas a besar qwq*")
 const buffer = await getBuffer(`https://api.lolhuman.xyz/api/random2/kiss,apikey=${lolkeysapi}`)
-conn.sendMessage(m.chat, { video: buffer, caption: `@${m.sender.split("@")[0]} Beso a ${m.mentionedJid.split("@")[0]}`, gifPlayBack: true }, { quoted: global.fkontak })
+conn.sendMessage(m.chat, { video: buffer, caption: `@${m.sender.split("@")[0]} Beso a ${m.mentionedJid.split("@")[0]}`, gifPlayBack: true, mentions: [m.sender, m.mentionedJid] }, { quoted: global.fkontak })
 })
 cmd({
 pattern: "erok",
@@ -565,6 +565,51 @@ if (!text) return m.reply("*Ingresa el codigo que vas a ofuscar.*");
       let obfuscatedCode = await obfuscateCode(text); 
        conn.sendMessage(m.chat, {text: obfuscatedCode}, {quoted: m});
 })
+
+case 'toqr':{
+  if (!text) return m.reply('*por favor manda un link para convertirlo en qr*')
+
+   let qruwu = await qrcode.toDataURL(q, { scale: 35 })
+   let data = new Buffer.from(qruwu.replace('data:image/png;base64,', ''), 'base64')
+   let buff = getRandom('.jpg')
+   await fs.writeFileSync('./'+buff, data)
+   let medi = fs.readFileSync('./' + buff)
+  await conn.sendMessage(m.chat, { image: medi, caption: `*aqui tienes tu qr*\n*${botname}*`}, { quoted: m })
+   setTimeout(() => { fs.unlinkSync(buff) }, 10000)
+  }
+  break		
+  
+  
+     
+   case 'wallpaper':
+   if (!text) throw `*❗ Ejemplo: ${prefix + command} gawr gura*` 
+   let { wallpaper, wallpaperv2 } = require('@bochilteam/scraper')
+   let _res = await (/2/.test(command) ? wallpaperv2 : wallpaper)(text) 
+   let _img = _res[Math.floor(Math.random() * _res.length)]
+   conn.sendMessage(m.chat, { image: { url: _img }, caption: `*✨ Aqui tienes tu wallpaper de ${text}*`}, { quoted: fgif })
+   break
+   
+
+  case 'togif': {
+    if (!quoted) throw 'Responde a un sticker animado'
+    if (!/webp/.test(mime)) throw `*Responde a un sticker animado*`
+    await m.reply(mess.wait)
+    let { webp2mp4File } = require('./lib')
+    let media = await conn.downloadAndSaveMediaMessage(quoted)
+    let webpToMp4 = await webp2mp4File(media)
+    await conn.sendMessage(m.chat, { video: { url: webpToMp4.result, caption: 'Convert Webp To Video' }, gifPlayback: true }, {quoted:m})
+    await fs.unlinkSync(media)
+    }
+    break
+
+          case 'pinterest':  
+          if (!text) return m.reply('𝚒𝚗𝚐𝚛𝚎𝚜𝚊 𝚞𝚗 𝚝𝚎𝚡𝚝𝚘 𝚙𝚊𝚛𝚊 𝚋𝚞𝚜𝚌𝚊𝚛 𝚎𝚗 𝚙𝚒𝚗𝚝𝚎𝚛𝚎𝚜𝚝')  
+          m.reply(mess.wait)  
+          lol = await pinterest(text) //.catch(m.reply)  
+          result = lol[Math.floor(Math.random() * lol.length)];  
+          sendImageAsUrl(result, `*-------「 PINTEREST 」-------*\n🤠 busqueda de ${text}\n🔗 url ${result}`)  
+          break  y,
+          6''''''''''''''
 cmd({
 pattern: "nowa",
 category: "herramientas",
