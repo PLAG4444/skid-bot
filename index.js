@@ -180,16 +180,13 @@ m = smsg(conn, m) || m
   return conn.sendNyanCat(m.chat, mess.restrict, global.menu2, 'aviso', 'alerta', m)
   }
   if (cmd.nsfw && global.db.data.chats[m.chat].antiNsfw) { // if command has nsfw
-  conn.sendNyanCat(m.chat, `*Para usar este comando necesitas activar el comando nsfw (comandos +18)*`, global.menu2, 'AVISO', null, m)
-  continue
+  return conn.sendNyanCat(m.chat, `*Para usar este comando necesitas activar el comando nsfw (comandos +18)*`, global.menu2, 'AVISO', null, m)
   }
   if (cmd.level > global.db.data.users[m.sender].level) { // level has not reached 🚩
-  conn.sendNyanCat(m.chat, `*Para usar este comando necesitas ser nivel ${cmd.level}*\n*Tu nivel es de ${global.db.data.users[m.sender].level}*`, global.menu2, 'AVISO RPG', null, m)
-  continue
+  return conn.sendNyanCat(m.chat, `*Para usar este comando necesitas ser nivel ${cmd.level}*\n*Tu nivel es de ${global.db.data.users[m.sender].level}*`, global.menu2, 'AVISO RPG', null, m)
   }
   if (cmd.money > global.db.data.users[m.sender].money ) {
-  conn.sendNyanCat(m.chat, `*Para usar este comando necesitas ${cmd.money} dolares*\n*Tu dinero es de ${global.db.data.users[m.sender].money}*`, global.menu2, 'AVISO RPG', null, m)
-  continue
+  return conn.sendNyanCat(m.chat, `*Para usar este comando necesitas ${cmd.money} dolares*\n*Tu dinero es de ${global.db.data.users[m.sender].money}*`, global.menu2, 'AVISO RPG', null, m)
   }
   
   cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, mime })
