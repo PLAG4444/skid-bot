@@ -199,7 +199,7 @@ m = smsg(conn, m) || m
   text = text.replace(new RegExp(key, 'g'), '#HIDDEN#');
   }
   await m.reply(text)
-  }}}
+  }}}}
   
   events.commands.map(async(command) => {
 
