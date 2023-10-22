@@ -203,7 +203,7 @@ conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: 
 })
 cmd({
 pattern: "kiss",
-category: "rpg',
+category: "rpg",
 group: true,
 },
 async (conn, m) => {
