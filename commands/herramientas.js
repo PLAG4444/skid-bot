@@ -153,7 +153,7 @@ styles.forEach(style => {
 
 cmd({
 pattern: "lewd",
-category: "nsfw',
+category: "nsfw",
 group: true,
 nsfw: true,
 },
@@ -163,7 +163,7 @@ conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: 
 })
 cmd({
 pattern: "gasm",
-category: "nsfw',
+category: "nsfw",
 group: true,
 nsfw: true,
 },
@@ -173,7 +173,7 @@ conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: 
 })
 cmd({
 pattern: "anal",
-category: "nsfw',
+category: "nsfw",
 group: true,
 nsfw: true,
 },
@@ -183,7 +183,7 @@ conn.sendMessage(m.chat, { video: buffer, caption: "*Aqui tienes*", gifPlayBack:
 })
 cmd({
 pattern: "holo",
-category: "nsfw',
+category: "nsfw",
 group: true,
 nsfw: true,
 },
@@ -193,7 +193,7 @@ conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: 
 })
 cmd({
 pattern: "tetas",
-category: "nsfw',
+category: "nsfw",
 group: true,
 nsfw: true,
 },
@@ -213,7 +213,7 @@ conn.sendMessage(m.chat, { video: buffer, caption: `@${m.sender.split("@")[0]} B
 })
 cmd({
 pattern: "erok",
-category: "nsfw',
+category: "nsfw",
 group: true,
 nsfw: true,
 },
@@ -223,7 +223,7 @@ conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: 
 })
 cmd({
 pattern: "solog",
-category: "nsfw',
+category: "nsfw",
 group: true,
 nsfw: true,
 },
@@ -233,7 +233,7 @@ conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: 
 })
 cmd({
 pattern: "feet",
-category: "nsfw',
+category: "nsfw",
 group: true,
 nsfw: true,
 },
@@ -243,7 +243,7 @@ conn.sendMessage(m.chat, { image: buffer, caption: "*Aqui tienes*" }, { quoted: 
 })
 cmd({
 pattern: "pussy",
-category: "nsfw',
+category: "nsfw",
 group: true,
 nsfw: true,
 },
