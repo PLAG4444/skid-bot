@@ -209,7 +209,7 @@ group: true,
 async (conn, m) => {
 if (!m.mentionedJid[0]) return m.reply("*A quien vas a besar qwq*")
 const buffer = await getBuffer(`https://api.lolhuman.xyz/api/random2/kiss,apikey=${lolkeysapi}`)
-conn.sendMessage(m.chat, { video: buffer, caption: `@${m.sender.split("@")[0]} Beso a ${m.mentionedJid.split("@")[0]}`, gifPlayBack: true, mentions: [m.sender, m.mentionedJid] }, { quoted: global.fkontak })
+conn.sendMessage(m.chat, { video: buffer, caption: `@${m.sender.split("@")[0]} Beso a ${m.mentionedJid[0].split("@")[0]}`, gifPlayBack: true, mentions: [m.sender, m.mentionedJid] }, { quoted: global.fkontak })
 })
 cmd({
 pattern: "erok",
