@@ -147,7 +147,7 @@ styles.forEach(style => {
   },
   async (conn, m, { args }) => {
     if (args.length == 0) return m.reply(`Ejemplo de uso: ${global.prefix + style} Skid bot`)
-    conn.sendMessage(m.chat, { image: { url: `https://api.lolhuman.xyz/api/textprome/${style}?apikey=${lolkeysapi}&text=${args.join(' ')}` })
+    conn.sendMessage(m.chat, { image: { url: `https://api.lolhuman.xyz/api/textprome/${style}?apikey=${lolkeysapi}&text=${args.join(' ')}` }, caption: "aqui tienes" })
   })
 })
 
