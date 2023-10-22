@@ -2,7 +2,7 @@
 // @gata_dios  
 // @Skidy89  
 // Ladron de codigo
-// @elrebelde21
+// @Diego-Ofc
   
   // Importaciones   
   require("./settings")
