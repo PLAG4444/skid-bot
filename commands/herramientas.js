@@ -5,7 +5,6 @@ require('../settings.js')
 const fs = require("fs")
 const { Sticker, createSticker, StickerTypes } = require("wa-sticker-formatter")
 const ffmpeg = require('fluent-ffmpeg')
-const fs = require('fs')
 const { exec } = require('child_process')
 const JavaScriptObfuscator = require('javascript-obfuscator')
 
