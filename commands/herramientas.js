@@ -598,7 +598,7 @@ if (!text) return m.reply("*Ingresa el codigo que vas a ofuscar.*");
        conn.sendMessage(m.chat, {text: obfuscatedCode}, {quoted: m});
 })
 
-case 'toqr':{
+/*case 'toqr':{
   if (!text) return m.reply('*por favor manda un link para convertirlo en qr*')
 
    let qruwu = await qrcode.toDataURL(q, { scale: 35 })
@@ -640,8 +640,7 @@ case 'toqr':{
           lol = await pinterest(text) //.catch(m.reply)  
           result = lol[Math.floor(Math.random() * lol.length)];  
           sendImageAsUrl(result, `*-------「 PINTEREST 」-------*\n🤠 busqueda de ${text}\n🔗 url ${result}`)  
-          break  y,
-          6''''''''''''''
+          break*/
 cmd({
 pattern: "nowa",
 category: "herramientas",
