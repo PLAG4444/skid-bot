@@ -35,7 +35,7 @@ const mongoDB = require('./database/mongoDB')
 global.opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())
 const dbAdapter = /^https?:\/\//.test(opts['db'])
   ? new cloudDBAdapter(opts['db'])
-  : /mongodb/.test(opts['db'])
+  : /mongod
   ? new mongoDB(opts['db'])
   : new JSONFile(`./database.json`)
 global.db = new Low(dbAdapter)
@@ -118,7 +118,7 @@ conn.sSubject = '*「 Grupos 」*\n*el nombre del grupo fue cambiado!!*\n*el nue
 conn.sIcon = '*「 Grupos 」*\n*Se cambio la foto del grupo ^w^*'
 conn.sRevoke = '*「 Grupos 」*\n*Hay un nuevo link del grupo nwn*\n*nuevo link:* @revoke'
 
-conn.ev.on("messages.upsert", async (chatUpdate) => {
+conn.ev.on("meschatUpdate) => {
 conn.pushMessage(chatUpdate.messages).catch(console.error)
 let m = chatUpdate.messages[chatUpdate.messages.length - 1]
 m = smsg(conn, m) || m
@@ -129,7 +129,7 @@ m = smsg(conn, m) || m
   if (global.db.data == null) await loadDatabase()
   var body = (typeof m.text == 'string' ? m.text : '') 
   global.numBot = conn.user.jid
-  global.numBot2 = conn.user.id
+  global.
   const prefix = new RegExp('^[' + ('/i!#$%+£¢€¥^°=¶∆×÷π√✓©®:;?&.\\-').replace(/[|\\{}()[\]^$+*?.\-\^]/g, '\\$&') + ']')
   
   const isCmd = body ? prefix.test(body) : false
@@ -147,8 +147,7 @@ m = smsg(conn, m) || m
   const text = args.join(" ")
   const quoted = m.quoted ? m.quoted : m 
   const mime = (quoted.msg || quoted).mimetype || '' 
-  const isPrem = isCreator || global.db.data.users[m.sender].premiumTime > 0
-  if (isCmd) {
+  const isPrem = isCreator || global.db.data.users[m.sender].premiumTi >
   const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
   if (cmd) {
   const command = cmd.pattern || cmd.alias
@@ -190,9 +189,7 @@ m = smsg(conn, m) || m
   return conn.sendNyanCat(m.chat, `*Para usar este comando necesitas ${cmd.money} dolares*\n*Tu dinero es de ${global.db.data.users[m.sender].money}*`, global.menu2, 'AVISO RPG', null, m)
   }
   
-  cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadata, groupName, mime, command })
-  } catch (e) {
-  m.error = e;
+  cmd.function(conn, m, { text, args, isCreator, body, isBot, isGroupAdmins, isBotAdmins, groupAdmins, participants, groupMetadatm.error = e;
   console.error(e);
   if (e) {
   let text = format(e);
